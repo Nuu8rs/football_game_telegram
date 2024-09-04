@@ -105,17 +105,18 @@ class CORE_LEAGUE:
 
     async def starting_matches(self, matches: List['LeagueFight']) -> None:
         for i, match in enumerate(matches):
-            self.schedule_match_start(i, match)
-
+            if match.first_club_id == 228 or match.second_club_id == 228:
+                self.schedule_match_start(i, match)
+                break
     def schedule_match_start(self, index: int, match: 'LeagueFight') -> None:
         
-        match_date = match.time_to_start
-        start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21, minute=0, second=index % 60, microsecond=0)
-        start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15, second=index % 60, microsecond=0)
+        # match_date = match.time_to_start
+        # start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21, minute=0, second=index % 60, microsecond=0)
+        # start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15, second=index % 60, microsecond=0)
         
-        # current_time = datetime.now()
-        # start_time_sender = current_time + timedelta(seconds=5)
-        # start_time_fight = current_time + timedelta(minutes=1)
+        current_time = datetime.now()
+        start_time_sender = current_time + timedelta(seconds=1)
+        start_time_fight = current_time + timedelta(seconds=10)
 
         fight = ClubFight(match.first_club, match.second_club, start_time_fight, match.match_id)
         user_sender = UserSender(match.first_club, match.second_club, match_id=fight.match_id)

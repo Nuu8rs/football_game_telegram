@@ -4,7 +4,7 @@ from enum import Enum
 from urllib.parse import quote
 
 from dotenv import load_dotenv
-
+from datetime import datetime
 
 load_dotenv()
 
@@ -18,6 +18,8 @@ DB_PORT     = quote(os.getenv("DB_PORT"))
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CONST_ENERGY = 70
+
+EPOCH_ZERO = datetime(1970, 1, 1)
 
 class DatabaseType(Enum):
     USER = 'bot'

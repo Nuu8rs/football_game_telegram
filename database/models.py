@@ -1,9 +1,9 @@
 import datetime
-from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer, Boolean, Float, func
+from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer, Boolean, Float, text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from config import PositionCharacter, Gender, LEAGUES, CONST_ENERGY
+from config import PositionCharacter, Gender, LEAGUES, CONST_ENERGY, EPOCH_ZERO
 import math
 
 
@@ -42,6 +42,8 @@ class Character(Base):
     gender         = Column(String(255))
     
     character_in_training = Column(Boolean, default=False)
+    last_education_reward_date = Column(DateTime, default=EPOCH_ZERO, server_default=text('\'1970-01-01 00:00:00\''))
+
     # time_character_training = Column(DateTime, nullable=True)
     # training_characteristic = Column(String(255), nullable=True)
     

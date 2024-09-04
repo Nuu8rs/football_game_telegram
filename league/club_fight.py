@@ -107,23 +107,24 @@ class ClubFight:
     async def _winners_remuneration(self):
         winners_characters = self.determine_winner_users()
         for winner_character in winners_characters:
-            exp,coins = GET_RANDOM_NUMBER(),GET_RANDOM_NUMBER()
-            
-            await CharacterService.add_exp_character(
-                character=winner_character,
-                amount_exp_add=exp
-            )
-            await CharacterService.update_money_character(
-                character=winner_character,
-                amount_money_adjustment=coins
-            )
-            await self.battle_bot._send_message_to_character(
-                character=winner_character,
-                text=self.battle_bot.get_text_send_reward(
-                    exp_points=exp,
-                    coins=coins
+            if not winner_character.is_bot:
+                exp,coins = GET_RANDOM_NUMBER(),GET_RANDOM_NUMBER()
+                
+                await CharacterService.add_exp_character(
+                    character=winner_character,
+                    amount_exp_add=exp
                 )
-            )
+                await CharacterService.update_money_character(
+                    character=winner_character,
+                    amount_money_adjustment=coins
+                )
+                await self.battle_bot._send_message_to_character(
+                    character=winner_character,
+                    text=self.battle_bot.get_text_send_reward(
+                        exp_points=exp,
+                        coins=coins
+                    )
+                )
 
             
 

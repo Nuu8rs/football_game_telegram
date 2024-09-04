@@ -47,8 +47,8 @@ def select_donate_energy_keyboard(club_id: int):
     return keyboard.adjust(1).as_markup()
 
 
-def menu_training_centr():
+def menu_education_cernter():
     return(
         InlineKeyboardBuilder()
-        .button(text = "Піти", callback_data= "s")
+        .button(text = "Забрати награду с навчального центра", callback_data= "get_rewards_education_center")
     )
