@@ -110,6 +110,9 @@ MAX_LEN_MEMBERS_CLUB = 11
 
 TIME_FIGHT = timedelta(seconds=20)
 TIME_RESET_ENERGY = CronTrigger(hour=12, minute=45)
+
+DELTA_TIME_EDUCATION_REWARD = timedelta(hours=12)
+
 HOURS_END_TIME = 22
 
 

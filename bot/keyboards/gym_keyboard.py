@@ -9,7 +9,7 @@ def menu_gym():
             .button(text = "🗄 Тренувальна база")
             .button(text = "🏫 Навчальний центр")
             .attach(menu_plosha())
-            .adjust(1)
+            .adjust(2,1)
             .as_markup(resize_keyboard=True)
             )
 
@@ -50,5 +50,6 @@ def select_donate_energy_keyboard(club_id: int):
 def menu_education_cernter():
     return(
         InlineKeyboardBuilder()
-        .button(text = "Забрати награду с навчального центра", callback_data= "get_rewards_education_center")
+        .button(text = "🏆 Забрати нагороду з навчального центру", callback_data= "get_rewards_education_center")
+        .as_markup()
     )

@@ -11,7 +11,7 @@ from logging_config import logger
 async def start_functional():
     await init_db()
     await reset_energy_characters.reset_energy_character()
-    await core_league.setup_league()
+    # await core_league.setup_league()
 
 
 async def init_db():

@@ -8,7 +8,8 @@ from database.models import Character
 from services.character_service import CharacterService
 
 from bot.keyboards.gym_keyboard import menu_education_cernter
-from constants import GET_RANDOM_NUMBER
+from constants import GET_RANDOM_NUMBER, DELTA_TIME_EDUCATION_REWARD
+from utils.club_utils import get_text_education_center_reward
 
 
 education_center_router = Router()
@@ -36,4 +37,15 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
         character=character,
         amount_money_adjustment=coins
     )
-    await query.message.answer("🎓 <b>Після навчального центру ваш персонаж отримав:</b>✨ {exp} <b>досвіду</b>  💰 {coins} <b>монет</b>")
+    await CharacterService.update_character_education_time(
+        character=character,
+        amount_add_time=DELTA_TIME_EDUCATION_REWARD
+    )
+    
+    
+    
+    await query.message.answer(get_text_education_center_reward(
+        exp = exp,
+        coins=coins,
+        delta_time_education_reward=DELTA_TIME_EDUCATION_REWARD
+    ))

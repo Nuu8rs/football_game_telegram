@@ -2,7 +2,7 @@ from database.models import Character
 from database.session import get_session
 from sqlalchemy import select, update
 from config import DatabaseType, CONST_ENERGY
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class CharacterService:
 
@@ -151,6 +151,18 @@ class CharacterService:
                 except:
                     pass
                 character.exp = character.exp+amount_exp_add
+                merged_obj = await session.merge(character)
+                await session.commit()
+                return merged_obj
+            
+    async def update_character_education_time(character: Character, amount_add_time: timedelta):
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    session.add(character)
+                except:
+                    pass
+                character.education_reward_date = character.education_reward_date+amount_add_time
                 merged_obj = await session.merge(character)
                 await session.commit()
                 return merged_obj

@@ -42,7 +42,7 @@ class Character(Base):
     gender         = Column(String(255))
     
     character_in_training = Column(Boolean, default=False)
-    last_education_reward_date = Column(DateTime, default=EPOCH_ZERO, server_default=text('\'1970-01-01 00:00:00\''))
+    education_reward_date = Column(DateTime, default=EPOCH_ZERO, server_default=text('\'1970-01-01 00:00:00\''))
 
     # time_character_training = Column(DateTime, nullable=True)
     # training_characteristic = Column(String(255), nullable=True)
