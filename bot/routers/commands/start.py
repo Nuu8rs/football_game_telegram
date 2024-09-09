@@ -5,7 +5,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import CommandStart
 
 from bot.keyboards.menu_keyboard import main_menu
-from database.models import UserBot, Character
+
+from database.models.club import Club
+from database.models.user_bot import UserBot
+from database.models.character import Character
 from constants import PLOSHA_PEREMOGU
 
 start_router = Router()

@@ -4,7 +4,9 @@ from aiogram.fsm.context import FSMContext
 
 from datetime import datetime, timedelta
 
-from database.models import Character, UserBot
+from database.models.user_bot import UserBot
+from database.models.character import Character
+
 from services.character_service import CharacterService
 
 from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, menu_gym

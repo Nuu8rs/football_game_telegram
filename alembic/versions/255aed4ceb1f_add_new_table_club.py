@@ -26,6 +26,8 @@ def upgrade() -> None:
     sa.Column('league', sa.String(length=100), nullable=False),
     sa.Column('owner_id', sa.BigInteger(), nullable=False),
     sa.Column('link_to_chat', sa.String(length=255), nullable=True),
+    sa.Column('energy_applied', sa.Integer(), server_default='0', nullable=True),
+
     sa.ForeignKeyConstraint(['owner_id'], ['users.user_id'], ),
     sa.PrimaryKeyConstraint('id')
     )

@@ -4,7 +4,11 @@ from aiogram.fsm.context import FSMContext
 
 from datetime import datetime, timedelta
 
-from database.models import Character, UserBot
+
+from database.models.club import Club
+from database.models.user_bot import UserBot
+from database.models.character import Character
+
 from services.club_service import ClubService
 
 from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym
@@ -23,7 +27,7 @@ join_to_fight_router = Router()
 async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, character: Character):
     if character.character_in_training:
         return await query.answer(
-            text = "Ваш персонаж на тренуванні, ви не можете взяти участь у битві"
+            text = "Ваш персонаж на тренуванні, ви не можете взяти участь у матчі"
         )
     
     
@@ -50,7 +54,7 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
             match_id=callback_data.match_id,
             club = club
         )
-        await query.message.answer(text = "✅ <b>Ваш персонаж був доданий на битву</b>")
+        await query.message.answer(text = "✅ <b>Ваш персонаж був доданий на матч</b>")
         await query.message.edit_reply_markup(reply_markup=None)
     
     else:

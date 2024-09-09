@@ -1,4 +1,8 @@
-from database.models import Character, UserBot, Club
+
+from database.models.club import Club
+from database.models.user_bot import UserBot
+from database.models.character import Character
+
 from logging_config import logger
 from loader import bot
 from bot.keyboards.league_keyboard import keyboard_to_join_character_to_fight
@@ -7,7 +11,7 @@ from constants import JOIN_TO_FIGHT
 
 class UserSender:
     TEMPLATE_JOIN_TO_FIGHT = """
-    ⚽️ Битва між клубами <b>{name_first_club}</b> та <b>{name_second_club}</b>! 
+    ⚽️ Матч між клубами <b>{name_first_club}</b> та <b>{name_second_club}</b>! 
     
     """
     

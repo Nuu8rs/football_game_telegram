@@ -3,15 +3,17 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 from database.session import engine
-from database.models import Base
+from database.model_base import Base
 
 from config import BOT_TOKEN
 from logging_config import logger
 
 async def start_functional():
     await init_db()
-    await reset_energy_characters.reset_energy_character()
-    # await core_league.setup_league()
+    await reset_energy_characters.start_reset_energy()
+    await reset_aplied_energy_club.start_reset_energy()
+    await education_reward_reminder.start_reminder()
+    await core_league.setup_league()
 
 
 async def init_db():
@@ -25,7 +27,12 @@ dp.startup.register(start_functional)
 
 
 from league.core_leauge import CORE_LEAGUE, LeagueService
-from schedulers.scheduler_energy import EnergyResetScheduler
+from schedulers.scheduler_energy import EnergyResetScheduler, EnergyApliedClubResetScheduler
+from schedulers.scheduler_education import EducationRewardReminderScheduler
+
 reset_energy_characters = EnergyResetScheduler()
+reset_aplied_energy_club = EnergyApliedClubResetScheduler()
+education_reward_reminder = EducationRewardReminderScheduler()
+
 league_service = LeagueService()
 core_league  = CORE_LEAGUE(league_service)

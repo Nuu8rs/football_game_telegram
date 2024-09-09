@@ -4,7 +4,10 @@ from aiogram.fsm.context import FSMContext
 
 from datetime import datetime, timedelta
 
-from database.models import Character, UserBot
+from database.models.club import Club
+from database.models.user_bot import UserBot
+from database.models.character import Character
+
 from services.league_service import LeagueFightService
 from services.club_service import ClubService
 from bot.keyboards.league_keyboard import menu_league_zone, keyboard_to_join_character_to_fight

@@ -5,7 +5,7 @@ from .utils_keyboard import menu_plosha
 def keyboard_to_join_character_to_fight(match_id: int):
     return (
         InlineKeyboardBuilder()
-        .button(text = "⚽️ Приєднатися до битви!", callback_data=JoinToFight(
+        .button(text = "⚽️ Приєднатися до матчу!", callback_data=JoinToFight(
             match_id=match_id
         ))
         .as_markup()

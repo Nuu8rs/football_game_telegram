@@ -4,7 +4,8 @@ from aiogram.fsm.context import FSMContext
 
 import re
 
-from database.models import Character, UserBot
+from database.models.user_bot import UserBot
+from database.models.character import Character
 
 from services.character_service import CharacterService
 from services.user_service import UserService

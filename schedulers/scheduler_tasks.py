@@ -4,7 +4,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.jobstores.base import JobLookupError
 
 
-from database.models import Character
+from database.models.character import Character
 from services.character_service import CharacterService
 from datetime import datetime, timedelta
 

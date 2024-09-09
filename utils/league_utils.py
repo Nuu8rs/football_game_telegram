@@ -1,4 +1,6 @@
-from database.models import Club, LeagueFight
+from database.models.club import Club
+from database.models.league_fight import LeagueFight
+
 from league.club_fight import ClubFight
 from datetime import datetime
 from services.league_service import LeagueFightService
@@ -42,7 +44,7 @@ async def get_text_league(club: Club):
 def get_text_calendar_matches(matches: list[LeagueFightService], club_id: int):
     sorted_fights = sorted(matches, key=lambda fight: fight.time_to_start)
 
-    schedule_table = "📅 <b>Розклад битв</b>\n\n"
+    schedule_table = "📅 <b>Розклад матчів</b>\n\n"
     
     current_time = datetime.now()
     next_match_index = None
@@ -56,7 +58,7 @@ def get_text_calendar_matches(matches: list[LeagueFightService], club_id: int):
             opponent_club = fight.first_club
         
         if fight.time_to_start < current_time:
-            match_status = "♟ Битва пройшла"
+            match_status = "♟ Матч пройшов"
         else:
             match_status = "📍 Скоро буде"
             if next_match_index is None:
@@ -78,7 +80,7 @@ def get_text_result(fights: list[LeagueFight], club_id: int):
     filtered_fights = [fight for fight in fights if fight.time_to_start < current_time]
     sorted_fights:list[LeagueFight] = sorted(filtered_fights, key=lambda fight: fight.time_to_start)
 
-    schedule_table = "📅 <b>Результати битв</b>\n\n"
+    schedule_table = "📅 <b>Результати матчей</b>\n\n"
     
     for index, fight in enumerate(sorted_fights, start=1):
         if fight.first_club_id == club_id:

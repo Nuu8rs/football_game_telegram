@@ -1,4 +1,6 @@
-from database.models import Club, Character
+from database.models.character import Character
+from database.models.club import Club
+
 from datetime import datetime, timedelta
 
 def get_club_text(club: Club, character: Character) -> str:

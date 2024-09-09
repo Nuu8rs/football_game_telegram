@@ -1,12 +1,16 @@
 from enum import Enum
+from enum import Enum as PyEnum
 
 from aiogram.types import FSInputFile
 from apscheduler.triggers.cron import CronTrigger
-from database.models import Character
+
+from database.models.character import Character
+from database.models.item import Item
+
 from datetime import datetime, timedelta
 
 from config import PositionCharacter, Gender
-import random
+import random, json
 
 DEFENDER_character_const = Character(
     name="",
@@ -16,6 +20,7 @@ DEFENDER_character_const = Character(
     speed=6,
     endurance=5,
     gender="",
+    exp = 0,
     created_at=datetime.utcnow()   
 )
 MIDFIELDER_character_const = Character(
@@ -26,6 +31,7 @@ MIDFIELDER_character_const = Character(
     speed=6,
     endurance=6,
     gender="",
+    exp = 0,
     created_at=datetime.utcnow()   
 )
 GOALKEEPER_character_const = Character(
@@ -36,6 +42,7 @@ GOALKEEPER_character_const = Character(
     speed=5,
     endurance=8,
     gender="",
+    exp = 0,
     created_at=datetime.utcnow()   
 )
 ATTACKER_character_const  = Character(
@@ -46,12 +53,66 @@ ATTACKER_character_const  = Character(
     speed=7,
     endurance=6,
     gender="",
+    exp = 0,
     created_at=datetime.utcnow()   
 )
     
+BASE_STATS_ITEMS = {
+    "technique": 1,
+    "kicks": 1,
+    "ball_selection": 1,
+    "speed": 1,
+    "endurance": 1,
+}
     
-gradation_level = ("E","F","D","C","B","A","S")
+class ItemCategory(PyEnum):
+    T_SHIRT = "T-shirt"
+    SHORTS = "Shorts"
+    GAITERS = "Gaiters"
+    BOOTS = "Boots"
     
+t_shirt_const = Item(
+    name = "👕 Футболка",
+    category = ItemCategory.T_SHIRT,
+    level_required = 0,
+    price = 10,
+    stats = BASE_STATS_ITEMS
+
+)
+shorts_const = Item(
+    name = "🩳 Шорти",
+    category = ItemCategory.SHORTS,
+    level_required = 0,
+    price = 10,
+    stats = BASE_STATS_ITEMS
+
+)
+gaiterst_const = Item(
+    name = "🧦 Гетри",
+    category = ItemCategory.GAITERS,
+    level_required = 0,
+    price = 10,
+    stats = BASE_STATS_ITEMS
+
+)
+boots_const = Item(
+    name = "👢 Бутси",
+    category = ItemCategory.SHORTS,
+    level_required = 0,
+    price = 10,
+    stats = BASE_STATS_ITEMS
+
+)
+
+const_items = {
+    ItemCategory.T_SHIRT : t_shirt_const,
+    ItemCategory.SHORTS : shorts_const,
+    ItemCategory.GAITERS : gaiterst_const,
+    ItemCategory.BOOTS : boots_const,
+    
+}
+
+
 chance_add_point = {
     timedelta(seconds = 5)   : 90,
     timedelta(minutes = 30)  : 25,
@@ -98,18 +159,18 @@ photos = {
 def get_photo_character(character: Character) -> FSInputFile:
     return FSInputFile(photos.get((character.gender_enum, character.position_enum), 'path/to/default_photo.jpg'))
 
-GYM_PHOTO       = FSInputFile("src/gym_photo.jpg")
-CLUB_PHOTO      = FSInputFile("src/club_photo.jpg")
-FIGHT_MENU      = FSInputFile("src/fight_club_menu.jpg")
-JOIN_TO_FIGHT   = FSInputFile("src/join_to_fight.jpg")
-LEAGUE_PHOTO    = FSInputFile("src/league_photo.jpg")
-PLOSHA_PEREMOGU = FSInputFile("src/plosha_peremogu.jpg") 
-
+GYM_PHOTO        = FSInputFile("src/gym_photo.jpg")
+CLUB_PHOTO       = FSInputFile("src/club_photo.jpg")
+FIGHT_MENU       = FSInputFile("src/fight_club_menu.jpg")
+JOIN_TO_FIGHT    = FSInputFile("src/join_to_fight.jpg")
+LEAGUE_PHOTO     = FSInputFile("src/league_photo.jpg")
+PLOSHA_PEREMOGU  = FSInputFile("src/plosha_peremogu.jpg") 
+EDUCATION_CENTER = FSInputFile("src/education_center_photo.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 
-TIME_FIGHT = timedelta(seconds=20)
-TIME_RESET_ENERGY = CronTrigger(hour=12, minute=45)
+TIME_FIGHT = timedelta(hours=1)
+TIME_RESET_ENERGY = CronTrigger(hour=22, minute=1)
 
 DELTA_TIME_EDUCATION_REWARD = timedelta(hours=12)
 

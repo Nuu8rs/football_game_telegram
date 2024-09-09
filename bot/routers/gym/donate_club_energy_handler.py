@@ -4,7 +4,10 @@ from aiogram.fsm.context import FSMContext
 
 from datetime import datetime, timedelta
 
-from database.models import Character, Club
+from database.models.club import Club
+from database.models.user_bot import UserBot
+from database.models.character import Character
+
 from services.character_service import CharacterService
 from services.club_service import ClubService
 
@@ -21,6 +24,9 @@ donate_club_energy_router = Router()
 
 @donate_club_energy_router.message(F.text == "🗄 Тренувальна база")
 async def training_facilities_handler(message: Message, character: Character, state: FSMContext):
+    if not character.club_id:
+        return await message.answer("❌ Ви не перебуваєте в клубі, тому ви не можете отримати від клубу посилення")
+    
     await state.set_state(SelectCountDonateEnergyState.select_count_energy)
     club = await ClubService.get_club(club_id=character.club_id)
     await message.answer(text = get_text_training_facilities(club=club),

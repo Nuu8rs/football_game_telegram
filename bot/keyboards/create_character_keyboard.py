@@ -1,7 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from ..callbacks.character_callbacks import SelectGender,SelectPositionCharacter, CreateCharacter
 from constants import Gender, PositionCharacter
-from database.models import Character
+from database.models.character import Character
 
 def set_gender_keyboard():
     return (InlineKeyboardBuilder()

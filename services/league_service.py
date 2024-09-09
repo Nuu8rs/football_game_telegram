@@ -1,4 +1,4 @@
-from database.models import LeagueFight
+from database.models.league_fight import LeagueFight
 from database.session import get_session
 from sqlalchemy import update
 from sqlalchemy import select, or_

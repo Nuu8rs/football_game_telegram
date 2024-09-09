@@ -4,7 +4,10 @@ from apscheduler.triggers.date import DateTrigger
 
 from services.club_service import ClubService
 from services.league_service import LeagueFightService
-from database.models import Club, LeagueFight
+
+from database.models.club import Club
+from database.models.league_fight import LeagueFight
+
 from utils.randomaizer import check_chance
 from datetime import datetime, timedelta
 from typing import List, Tuple, Dict
@@ -78,7 +81,7 @@ class CORE_LEAGUE:
         self.scheduler_league.start()
 
     async def generate_and_schedule_new_fights(self, groups: List[List['Club']]) -> None:
-        start_date = datetime(2024, 8, 24) 
+        start_date = datetime(2024, 9, 7) 
         for group in groups:
             group_id = random.randint(1,100000)
             matches = self.league_service.generate_round_robin_schedule(group) 
@@ -105,18 +108,18 @@ class CORE_LEAGUE:
 
     async def starting_matches(self, matches: List['LeagueFight']) -> None:
         for i, match in enumerate(matches):
-            if match.first_club_id == 228 or match.second_club_id == 228:
+            # if match.first_club_id == 228 or match.second_club_id == 228:
                 self.schedule_match_start(i, match)
-                break
+                # break
     def schedule_match_start(self, index: int, match: 'LeagueFight') -> None:
         
-        # match_date = match.time_to_start
-        # start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21, minute=0, second=index % 60, microsecond=0)
-        # start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15, second=index % 60, microsecond=0)
+        match_date = match.time_to_start
+        start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21, minute=0, second=index % 60, microsecond=0)
+        start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15, second=index % 60, microsecond=0)
         
-        current_time = datetime.now()
-        start_time_sender = current_time + timedelta(seconds=1)
-        start_time_fight = current_time + timedelta(seconds=10)
+        # current_time = datetime.now()
+        # start_time_sender = current_time + timedelta(seconds=1)
+        # start_time_fight = current_time + timedelta(seconds=10)
 
         fight = ClubFight(match.first_club, match.second_club, start_time_fight, match.match_id)
         user_sender = UserSender(match.first_club, match.second_club, match_id=fight.match_id)

@@ -6,7 +6,11 @@ import random
 from apscheduler.triggers.cron import CronTrigger
 
 from constants import FIGHT_MENU, TIME_FIGHT, GET_RANDOM_NUMBER
-from database.models import Character, Club
+
+from database.models.club import Club
+from database.models.user_bot import UserBot
+from database.models.character import Character
+
 from loader import bot
 from logging_config import logger
 from services.character_service import CharacterService
@@ -163,7 +167,7 @@ class ClubFight:
 
 class BattleBot:
     TEMPLATE_FIGHT = """
-⚽️ Починається епічна битва між клубами <b>{name_first_club}</b> та <b>{name_second_club}</b>! 
+⚽️ Починається епічний матч між клубами <b>{name_first_club}</b> та <b>{name_second_club}</b>! 
 
 📊 Поточний рахунок: <b>{goals_first_club}</b> - <b>{goals_second_club}</b>.
 
@@ -175,7 +179,7 @@ class BattleBot:
     """
 
     TEMPLATE_END = """
-🎉 Битва між клубами <b>{name_first_club}</b> та <b>{name_second_club}</b> завершена! 
+🎉 Матч між клубами <b>{name_first_club}</b> та <b>{name_second_club}</b> завершена! 
 
 📊 Кінцевий рахунок: <b>{goals_first_club}</b> - <b>{goals_second_club}</b>.
 
@@ -187,11 +191,11 @@ class BattleBot:
     """
     
     TEMPLATE_NOT_CHARACTERS = """
-На жаль, ніхто з учасників не з'явився на цю битву. 😔
+На жаль, ніхто з учасників не з'явився на цей матч. 😔
     """
 
     TEMPLATE_SEND_REWARD_CHARACTER = """
-🎉 За цю битву між клубами '{name_first_club}' і '{name_second_club}' ви отримали:
+🎉 За цей матч між клубами '{name_first_club}' і '{name_second_club}' ви отримали:
 ✨ {exp_points} досвіду
 💰 {coins} монет
     """
@@ -223,7 +227,7 @@ class BattleBot:
 
     def get_text_winners(self) -> str:
         if self.fight_instance.goals_first_club == self.fight_instance.goals_second_club:
-            winner_section = "🎉 Битва завершилась внічию!"
+            winner_section = "🎉 Матч завершився внічию!"
         else:
             winner, loser = self._determine_winner_loser()
             winner_section = f"""

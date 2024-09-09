@@ -1,4 +1,4 @@
-from database.models import UserBot
+from database.models.user_bot import UserBot
 from database.session import get_session
 from sqlalchemy.future import select
 from config import DatabaseType

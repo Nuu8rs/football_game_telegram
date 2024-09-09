@@ -2,7 +2,9 @@ from aiogram import Router,  Bot, F
 from aiogram.types import Message, FSInputFile
 from aiogram.fsm.context import FSMContext
 
-from database.models import UserBot, Character
+from database.models.user_bot import UserBot
+from database.models.character import Character
+
 from constants import get_photo_character, GYM_PHOTO
 from utils.character_utils import get_character_text
 

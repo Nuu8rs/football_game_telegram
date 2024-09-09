@@ -1,9 +1,7 @@
-from database.models import Club
+from database.models.club import Club
 from database.session import get_session
 from sqlalchemy.future import select
-from sqlalchemy import func
-from sqlalchemy.orm import joinedload
-from config import DatabaseType
+from sqlalchemy import func, update
 from typing import Dict, List
 from constants import MAX_LEN_MEMBERS_CLUB
 
@@ -105,3 +103,14 @@ class ClubService:
                 club.energy_applied += count_energy
                 merged_obj = await session.merge(club)
                 return merged_obj
+            
+    @classmethod
+    async def reset_energy_aplied_not_bot_clubs(cls):
+        async for session in get_session():
+            async with session.begin():
+                await session.execute(
+                    update(Club)
+                    .where(Club.is_fake_club == False)
+                    .values(energy_applied=0)
+                )
+                await session.commit()

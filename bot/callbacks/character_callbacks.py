@@ -1,6 +1,6 @@
 from aiogram.filters.callback_data import CallbackData
 from constants import Gender, PositionCharacter
-from database.models import Character
+from database.models.character import Character
 
 class SelectGender(CallbackData, prefix="select_gender"):
     gender: Gender

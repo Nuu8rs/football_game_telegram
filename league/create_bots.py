@@ -1,4 +1,8 @@
-from database.models import Club, Character, UserBot
+
+from database.models.club import Club
+from database.models.user_bot import UserBot
+from database.models.character import Character
+
 from services import user_service,club_service, character_service
 from constants import MAX_LEN_MEMBERS_CLUB, Gender, PositionCharacter
 

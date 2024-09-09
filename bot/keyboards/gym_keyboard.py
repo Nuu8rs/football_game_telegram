@@ -1,13 +1,18 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from ..callbacks.gym_calbacks import SelectGymType, SelectTimeGym, SelectCountDonateEnergy
+from ..callbacks.massage_room_callbacks import SelectCountGetEnergy
+
 from datetime import timedelta
 from .utils_keyboard import menu_plosha
+
+
+count_energys = [5,10,20,50,70]
+
 
 def menu_gym():
     return (ReplyKeyboardBuilder()
             .button(text = "🧤 Піти на тренування")
-            .button(text = "🗄 Тренувальна база")
-            .button(text = "🏫 Навчальний центр")
+            .button(text = "💆‍♂️ Масажний зал")
             .attach(menu_plosha())
             .adjust(2,1)
             .as_markup(resize_keyboard=True)
@@ -37,7 +42,6 @@ def select_time_to_gym(gym_type: str):
 
 def select_donate_energy_keyboard(club_id: int):
     keyboard = InlineKeyboardBuilder()
-    count_energys = [5,10,20,50,70]
     for count_energy in count_energys:
         keyboard.button(text=f"Пожертвувати [{count_energy}] 🔋", 
                         callback_data=SelectCountDonateEnergy(
@@ -53,3 +57,10 @@ def menu_education_cernter():
         .button(text = "🏆 Забрати нагороду з навчального центру", callback_data= "get_rewards_education_center")
         .as_markup()
     )
+    
+def menu_massage_room():
+    keyboard = InlineKeyboardBuilder()
+    for count_energy in count_energys:
+        keyboard.button(text = f"Купить [{count_energy}] 🔋", 
+                        callback_data=SelectCountGetEnergy(count_energy=count_energy))
+    return keyboard.adjust(1).as_markup()

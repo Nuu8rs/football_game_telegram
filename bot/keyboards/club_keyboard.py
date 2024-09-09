@@ -1,5 +1,10 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
-from database.models import Club, UserBot
+
+from database.models.club import Club
+from database.models.user_bot import UserBot
+
+
+
 from .utils_keyboard import switch_buttons, menu_plosha
 from ..callbacks.switcher import SwitchClub
 from ..callbacks.club_callbacks import SelectClubToJoin, JoinToClub

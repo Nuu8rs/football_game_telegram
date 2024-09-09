@@ -1,4 +1,4 @@
-from database.models import Club
+from database.models.club import Club
 
 def get_text_training_facilities(club: Club) -> str:
     options_text = (

@@ -2,7 +2,7 @@ from aiogram import Router, Bot, F
 from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
 
-from database.models import Character, UserBot
+from database.models.user_bot import UserBot
 
 from services.character_service import CharacterService
 from services.user_service import UserService

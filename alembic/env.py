@@ -18,7 +18,13 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from database.models import Base  # Импортируйте вашу базу моделей
+from database.model_base import Base  # Импортируйте вашу базу моделей
+from database.models.user_bot import UserBot
+from database.models.character import Character
+from database.models.club import Club
+from database.models.league_fight import LeagueFight
+from database.models.item import Item
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
