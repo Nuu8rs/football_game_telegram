@@ -13,7 +13,7 @@ def create_defender() -> Character:
         endurance=5,
         gender="",
         exp=0,
-        money=0
+        money=0,
         created_at=datetime.utcnow()
     )
 
@@ -27,7 +27,7 @@ def create_midfielder() -> Character:
         endurance=6,
         gender="",
         exp=0,
-        money=0
+        money=0,
         created_at=datetime.utcnow()
     )
 
@@ -41,7 +41,7 @@ def create_goalkeeper() -> Character:
         endurance=8,
         gender="",
         exp=0,
-        money=0
+        money=0,
         created_at=datetime.utcnow()
     )
 
@@ -55,7 +55,7 @@ def create_attacker() -> Character:
         endurance=6,
         gender="",
         exp=0,
-        money=0
+        money=0,
         created_at=datetime.utcnow()
     )
 
