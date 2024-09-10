@@ -12,51 +12,8 @@ from datetime import datetime, timedelta
 from config import PositionCharacter, Gender
 import random, json
 
-DEFENDER_character_const = Character(
-    name="",
-    technique=3,
-    kicks=4,
-    ball_selection=7,
-    speed=6,
-    endurance=5,
-    gender="",
-    exp = 0,
-    created_at=datetime.utcnow()   
-)
-MIDFIELDER_character_const = Character(
-    name="",
-    technique=4,
-    kicks=3,
-    ball_selection=8,
-    speed=6,
-    endurance=6,
-    gender="",
-    exp = 0,
-    created_at=datetime.utcnow()   
-)
-GOALKEEPER_character_const = Character(
-    name="",
-    technique=2,
-    kicks=5,
-    ball_selection=5,
-    speed=5,
-    endurance=8,
-    gender="",
-    exp = 0,
-    created_at=datetime.utcnow()   
-)
-ATTACKER_character_const  = Character(
-    name="",
-    technique=3,
-    kicks=7,
-    ball_selection=2,
-    speed=7,
-    endurance=6,
-    gender="",
-    exp = 0,
-    created_at=datetime.utcnow()   
-)
-    
+
+
 BASE_STATS_ITEMS = {
     "technique": 1,
     "kicks": 1,
@@ -97,7 +54,7 @@ gaiterst_const = Item(
 )
 boots_const = Item(
     name = "👢 Бутси",
-    category = ItemCategory.SHORTS,
+    category = ItemCategory.BOOTS,
     level_required = 0,
     price = 10,
     stats = BASE_STATS_ITEMS
@@ -129,12 +86,6 @@ const_energy_by_time = {
     timedelta(minutes = 120) : 60,
 }
 
-const_character = {
-    PositionCharacter.DEFENDER   : DEFENDER_character_const,
-    PositionCharacter.ATTACKER   : ATTACKER_character_const,
-    PositionCharacter.GOALKEEPER : GOALKEEPER_character_const,
-    PositionCharacter.MIDFIELDER : MIDFIELDER_character_const,
-}
 
 const_name_characteristics = {
     "technique"        : "🎯 Техніка",

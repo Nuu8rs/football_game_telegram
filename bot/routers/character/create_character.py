@@ -12,7 +12,8 @@ from bot.keyboards.create_character_keyboard import set_gender_keyboard, select_
 from bot.states.create_character_state import CreateCharacterState
 from bot.callbacks.character_callbacks import SelectGender, SelectPositionCharacter, CreateCharacter
 
-from constants import const_character, get_photo_character
+from constants import  get_photo_character
+from const_character import CREATE_CHARACTER_CONST
 from utils.character_utils import get_character_text
 
 
@@ -52,7 +53,7 @@ async def view_info_character(query: CallbackQuery, state: FSMContext, callback_
         return
     
     data = await state.get_data()
-    character = const_character[callback_data.position]
+    character = CREATE_CHARACTER_CONST(callback_data.position)
     character.name   = data['name_character']
     character.gender = data['gender_character']
     character.position = callback_data.position
@@ -75,7 +76,7 @@ async def create_character_handler(query: CallbackQuery, state: FSMContext, user
     
     data = await state.get_data()
     
-    character = const_character[callback_data.position]
+    character = CREATE_CHARACTER_CONST(callback_data.position)
     character.name   = data['name_character']
     character.gender = data['gender_character']
     character.position = callback_data.position

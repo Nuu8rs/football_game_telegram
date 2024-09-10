@@ -30,7 +30,7 @@ coverage.xml
 *.log
 
 # Конфигурационные файлы
-# *.ini
+*.ini
 *.cfg
 *.json
 

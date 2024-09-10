@@ -1,5 +1,7 @@
 from constants import Gender
 from database.models.character import Character
+from sqlalchemy.orm.exc import DetachedInstanceError
+
 
 def get_character_text(character: Character) -> str:
     gender_specific_text = {
@@ -15,13 +17,17 @@ def get_character_text(character: Character) -> str:
 
     level_text = f"<b>🏆 Рівень:</b> {character.level} [{character.exp}/{next_level_threshold}]"
     
-    # Проверка экипированных вещей
-    t_shirt_text = character.t_shirt.name if character.t_shirt else "Не экипировано"
-    shorts_text = character.shorts.name if character.shorts else "Не экипировано"
-    gaiters_text = character.gaiters.name if character.gaiters else "Не экипировано"
-    boots_text = character.boots.name if character.boots else "Не экипировано"
+    try:
+        t_shirt_text = character.t_shirt.name if character.t_shirt else "Не экипировано"
+        shorts_text = character.shorts.name if character.shorts else "Не экипировано"
+        gaiters_text = character.gaiters.name if character.gaiters else "Не экипировано"
+        boots_text = character.boots.name if character.boots else "Не экипировано"
+    except DetachedInstanceError:
+        t_shirt_text = "Не экипировано"
+        shorts_text =  "Не экипировано"
+        gaiters_text =  "Не экипировано"
+        boots_text =  "Не экипировано" 
 
-    # Шаблон с добавлением информации о вещах
     character_text_template = f"""
 <b>⚽ Персонаж:</b> {character.name}
 
