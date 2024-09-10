@@ -81,7 +81,7 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
         task_id=f"{user.user_id}_gym_{callback_data.gym_type}_time_{callback_data.gym_time}",
         run_after=callback_data.gym_time,
         type_characteristics=callback_data.gym_type,
-        character = character,
+        characters_user_id = character.characters_user_id,
         bot=query.bot,
         user_id=user.user_id
     )

@@ -22,10 +22,11 @@ class GymTaskScheduler:
 
     async def point_spread_character(self, 
                                      type_characteristics: str, 
-                                     character: Character, 
+                                     character_user_id: int, 
                                      time_job_gym: timedelta,
                                      bot: Bot,
                                      user_id: int):
+        character = await CharacterService.get_character(character_user_id)
         chance = check_chance(chance_add_point[time_job_gym])
         if chance:
             await CharacterService.update_character_field(
@@ -53,7 +54,7 @@ class GymTaskScheduler:
     async def schedule_task(self, task_id: str, 
                       run_after: timedelta, 
                       type_characteristics: str, 
-                      character: Character,
+                      characters_user_id: int,
                       bot: Bot,
                       user_id: int):
         
@@ -62,7 +63,7 @@ class GymTaskScheduler:
             trigger='date', 
             run_date=datetime.now() + run_after,
             id=task_id,
-            args=[type_characteristics, character, run_after, bot, user_id]
+            args=[type_characteristics, characters_user_id, run_after, bot, user_id]
         )
         logger.debug(f"START TASK {task_id}")
         self.scheduler.start()

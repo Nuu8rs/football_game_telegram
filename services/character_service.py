@@ -19,6 +19,15 @@ class CharacterService:
                 all_characters_not_bot = result.scalars().all()
                 return all_characters_not_bot
    
+    @classmethod
+    async def get_character(cls, character_user_id: int) -> Character:
+        async for session in get_session():
+            async with session.begin():
+                result = await session.execute(
+                    select(Character).where(Character.characters_user_id == character_user_id)
+                )
+                current_character = result.scalar_one_or_none()
+                return current_character
     
     @classmethod
     async def create_character(cls, character_obj: Character) -> Character:
@@ -81,10 +90,10 @@ class CharacterService:
                     session.add(character_obj)
                 except:
                     pass
+                merged_obj = await session.merge(character_obj)
                 current_energy = getattr(merged_obj, 'current_energy', 0)
                 new_energy = current_energy - energy_consumed
                 setattr(merged_obj, 'current_energy', max(new_energy, 0))
-                merged_obj = await session.merge(character_obj)
                 await session.commit()
                 
     

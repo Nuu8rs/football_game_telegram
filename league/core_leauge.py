@@ -81,7 +81,7 @@ class CORE_LEAGUE:
         self.scheduler_league.start()
 
     async def generate_and_schedule_new_fights(self, groups: List[List['Club']]) -> None:
-        start_date = datetime(2024, 9, 7) 
+        start_date = datetime(2024, 9, 10) 
         for group in groups:
             group_id = random.randint(1,100000)
             matches = self.league_service.generate_round_robin_schedule(group) 
