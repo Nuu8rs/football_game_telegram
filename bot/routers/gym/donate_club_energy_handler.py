@@ -54,11 +54,9 @@ async def select_count_donate_energy_callback_handler(query: CallbackQuery, stat
                                               max_energy_donate = int(500 - club.energy_applied)
                                           ))
     
-    await donate_energy_from_club(
-        character=character,
-        club=club,
-        count_energy=callback_data.count_energy
-    )
+    await ClubService.donate_energy(club=club, count_energy=callback_data.count_energy)
+    await CharacterService.consume_energy(character_obj=character,
+                                          energy_consumed=callback_data.count_energy)
     await query.message.answer(f"Вітаю ви поповнили енергію у свій клуб на {callback_data.count_energy} 🔋")
     await state.clear()
     
@@ -80,16 +78,11 @@ async def select_count_donate_energy_message_handler(message: Message, state: FS
                                           "Ви можете поповнити на енергію на {max_energy_donate}".format(
                                               max_energy_donate = int(500 - club.energy_applied)
                                           ))
-    await donate_energy_from_club(
-        character=character,
-        club=club,
-        count_energy=count_energy
-    )    
+        
+        
+    await ClubService.donate_energy(club=club, count_energy=count_energy)
+    await CharacterService.consume_energy(character_obj=character,
+                                          energy_consumed=count_energy)
     await message.answer(f"Вітаю ви поповнили енергію у свій клуб на {count_energy} 🔋")
     await state.clear()
 
-
-async def donate_energy_from_club(character: Character, club: Club, count_energy: int) -> None:
-    await CharacterService.consume_energy(character_obj=character,
-                                          energy_consumed=count_energy)
-    await ClubService.donate_energy(club=club, count_energy=count_energy)

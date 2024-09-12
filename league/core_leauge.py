@@ -96,7 +96,7 @@ class CORE_LEAGUE:
         for day, match_date in enumerate(match_dates):
             current_day_matches = matches[day]
             for j, (first_club, second_club) in enumerate(current_day_matches):
-                start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21, minute=0, second=(j % 60), microsecond=0)
+                start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
 
                 await LeagueFightService.create_league_fight(
                     match_id=str(uuid.uuid4()),
@@ -108,21 +108,23 @@ class CORE_LEAGUE:
 
     async def starting_matches(self, matches: List['LeagueFight']) -> None:
         for i, match in enumerate(matches):
-            # if match.first_club_id == 228 or match.second_club_id == 228:
+            
                 self.schedule_match_start(i, match)
-                # break
+                
     def schedule_match_start(self, index: int, match: 'LeagueFight') -> None:
         
         match_date = match.time_to_start
-        start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21, minute=0, second=index % 60, microsecond=0)
-        start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15, second=index % 60, microsecond=0)
+        # start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
+        # start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15)
         
-        # current_time = datetime.now()
-        # start_time_sender = current_time + timedelta(seconds=1)
-        # start_time_fight = current_time + timedelta(seconds=10)
+        start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
+        current_time = datetime.now()
+        start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
+        start_time_fight = start_time_sender + timedelta(seconds=30)
+        
 
         fight = ClubFight(match.first_club, match.second_club, start_time_fight, match.match_id)
-        user_sender = UserSender(match.first_club, match.second_club, match_id=fight.match_id)
+        user_sender = UserSender(match_id=fight.match_id)
 
         self.scheduler_league.add_job(user_sender.send_messages_to_users, trigger=DateTrigger(start_time_sender))
         self.scheduler_league.add_job(fight.start, trigger=DateTrigger(start_time_fight))

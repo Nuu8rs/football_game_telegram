@@ -14,6 +14,7 @@ from database.models.character import Character
 from loader import bot
 from logging_config import logger
 from services.character_service import CharacterService
+from services.club_service import ClubService
 from services.league_service import LeagueFightService
 from utils.randomaizer import check_chance
 
@@ -53,7 +54,38 @@ class ClubFight:
             'fight_instance': self
         }
 
+    async def update_info_clubs(self):
+        self.first_club_orig = await ClubService.get_club(club_id=self.first_club_orig.id)
+        self.second_club_orig = await ClubService.get_club(club_id=self.second_club_orig.id)
+
+        characters_first_club = self.first_club_copy.characters
+        characters_second_club = self.second_club_copy.characters
+
+        self.first_club_copy = self._create_club_copy(self.first_club_orig)
+        self.second_club_copy = self._create_club_copy(self.second_club_orig)
+
+        first_club_ids = {char.characters_user_id for char in self.first_club_orig.characters}
+        second_club_ids = {char.characters_user_id for char in self.second_club_orig.characters}
+
+        updated_first_club_characters = []
+        updated_second_club_characters = []
+
+
+
+        for character in characters_first_club:
+            if character.characters_user_id in first_club_ids:
+                updated_first_club_characters.append(character)
+
+
+        for character in characters_second_club:
+            if character.characters_user_id in second_club_ids:
+                updated_second_club_characters.append(character)
+        
+        self.first_club_copy.characters = updated_first_club_characters
+        self.second_club_copy.characters = updated_second_club_characters
+
     async def start(self):
+        await self.update_info_clubs() 
         if self._clubs_have_no_characters():
             return await self.battle_bot.send_messages_to_users(
                 text=self.battle_bot.TEMPLATE_NOT_CHARACTERS
@@ -130,11 +162,7 @@ class ClubFight:
                     )
                 )
 
-            
-
     async def _finalize_fight(self):
-        
-        
         await self.battle_bot.send_messages_to_users(
             text=self.battle_bot.get_text_winners()
         )
@@ -211,7 +239,7 @@ class BattleBot:
             'name_second_club': self.fight_instance.second_club_orig.name_club,
             'goals_first_club': self.fight_instance.goals_first_club,
             'goals_second_club': self.fight_instance.goals_second_club,
-            'power_first_club': self.fight_instance.first_club_copy.total_power,
+            'power_first_club': self.fight_instance.first_club_copy.total_power ,
             'power_second_club': self.fight_instance.second_club_copy.total_power,
         }
         if extra_context:

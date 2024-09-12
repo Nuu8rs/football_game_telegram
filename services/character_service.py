@@ -90,10 +90,9 @@ class CharacterService:
                     session.add(character_obj)
                 except:
                     pass
-                merged_obj = await session.merge(character_obj)
-                current_energy = getattr(merged_obj, 'current_energy', 0)
-                new_energy = current_energy - energy_consumed
-                setattr(merged_obj, 'current_energy', max(new_energy, 0))
+                new_energy = character_obj.current_energy - energy_consumed
+                setattr(character_obj, 'current_energy', max(new_energy, 0))
+                await session.merge(character_obj)
                 await session.commit()
                 
     

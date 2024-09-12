@@ -170,3 +170,13 @@ class LeagueFightService:
                 except SQLAlchemyError as e:
                     print(f"Ошибка при увеличении счета в матче {match_id}: {e}")
                     return None
+                
+                
+    @classmethod
+    async def get_league_fight(cls, match_id: str) -> LeagueFight:
+        async for session in get_session():
+            async with session.begin():
+                stmt = select(LeagueFight).filter_by(match_id = match_id)
+                result = await session.execute(stmt)
+                club = result.scalar_one_or_none()
+                return club

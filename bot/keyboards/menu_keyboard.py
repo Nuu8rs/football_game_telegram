@@ -13,6 +13,7 @@ def main_menu(user: UserBot):
         keyboard.button(text = "🏫 Навчальний центр")
         keyboard.button(text = "🗄 Тренувальна база")
         keyboard.button(text = "🏬 Магазин")
+        # keyboard.button(text = "🏆 Зал слави")
 
     
     return keyboard.adjust(2).as_markup(resize_keyboard = True)

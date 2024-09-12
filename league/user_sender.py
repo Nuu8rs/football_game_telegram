@@ -1,13 +1,14 @@
 
 from database.models.club import Club
-from database.models.user_bot import UserBot
 from database.models.character import Character
+
+from services.league_service import LeagueFightService
 
 from logging_config import logger
 from loader import bot
 from bot.keyboards.league_keyboard import keyboard_to_join_character_to_fight
 from constants import JOIN_TO_FIGHT
-
+import asyncio
 
 class UserSender:
     TEMPLATE_JOIN_TO_FIGHT = """
@@ -17,17 +18,21 @@ class UserSender:
     
     
     def __init__(self, 
-                 first_club: Club,
-                 second_club: Club,
                  match_id: int) -> None:
-        self.first_club = first_club
-        self.second_club = second_club
-        
-        
-        self.characters = first_club.characters + second_club.characters
         self.match_id = match_id
+        self.characters = []
+        self.first_club = None
+        self.second_club = None
+        
+    async def _post_init(self):
+        league_fight = await LeagueFightService.get_league_fight(self.match_id)
+        self.first_club: Club = league_fight.first_club
+        self.second_club: Club = league_fight.second_club
+        self.characters = self.second_club.characters + self.first_club.characters
         
     async def send_messages_to_users(self):
+        await self._post_init()
+        
         for character in self.characters:
             await self.__send_message(character)
 
@@ -40,6 +45,7 @@ class UserSender:
     async def __send_message(self, character: Character):
         try:
             if not character.is_bot:
+                await asyncio.sleep(1)
                 await bot.send_photo(
                     chat_id=character.characters_user_id,
                     photo=JOIN_TO_FIGHT,
@@ -48,5 +54,6 @@ class UserSender:
                         match_id=self.match_id
                     )
                 )
+                logger.info(f"ОТПРАВИЛ СООБЩЕНИЕ {character.name} ID USER {character.characters_user_id}")
         except Exception as E:
-            logger.error(f"Failed to send message to {character.owner.user_name}\nError: {E}")
+            logger.error(f"Failed to send message to {character.characters_user_id}\nError: {E}")

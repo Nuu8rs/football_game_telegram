@@ -23,11 +23,13 @@ my_club_router = Router()
 
 @my_club_router.message(F.text == "🎪 Мій клуб")
 async def get_my_club_handler(message: Message, user: UserBot, character: Character):
-    await message.answer("Вітаю у клубі",reply_markup=menu_club())
     if  not character.club_id:
         return await message.answer("На жаль, у вас немає клубу, ви можете створити свій клуб, або приєднатися до вже реалізованого клубу",
                                     reply_markup=create_or_join_club())
-
+        
+        
+    await message.answer("Вітаю у клубі",reply_markup=menu_club())
+    
     club = await ClubService.get_club(club_id=character.club_id)
     await message.answer_photo(
         photo=CLUB_PHOTO,
