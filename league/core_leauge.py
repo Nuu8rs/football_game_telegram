@@ -114,13 +114,13 @@ class CORE_LEAGUE:
     def schedule_match_start(self, index: int, match: 'LeagueFight') -> None:
         
         match_date = match.time_to_start
-        # start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
-        # start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15)
+        start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
+        start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15)
         
-        start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
-        current_time = datetime.now()
-        start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
-        start_time_fight = start_time_sender + timedelta(seconds=30)
+        # start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
+        # current_time = datetime.now()
+        # start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
+        # start_time_fight = start_time_sender + timedelta(seconds=30)
         
 
         fight = ClubFight(match.first_club, match.second_club, start_time_fight, match.match_id)
