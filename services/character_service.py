@@ -8,6 +8,17 @@ from datetime import datetime, timedelta
 from enum import Enum
 
 class CharacterService:
+    @classmethod
+    async def get_all_characters(cls) -> list[Character]:
+        async for session in get_session():
+            async with session.begin():
+                result = await session.execute(
+                    select(Character)
+                )
+                all_characters_not_bot = result.scalars().all()
+                return all_characters_not_bot
+   
+
 
     @classmethod
     async def get_all_users_not_bot(cls) -> list[Character]:

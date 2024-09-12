@@ -11,7 +11,8 @@ from services.items_service import ItemService
 from bot.keyboards.magazine_keyboard import select_type_items_keyboard, gradation_values_item, buy_item
 from bot.callbacks.magazine_callbacks import SelectTypeItems, SelectGradationLevelItem
 
-from constants import const_items, ItemCategory
+from constants import  ItemCategory
+from const_items import CREATE_ITEM_CONST
 
 magazine_router = Router()
 
@@ -29,7 +30,7 @@ async def select_item(query: CallbackQuery, state: FSMContext, character: Charac
 @magazine_router.callback_query(SelectGradationLevelItem.filter())
 async def select_gradation_level(query: CallbackQuery, state: FSMContext, character: Character, callback_data: SelectGradationLevelItem):
     item_category = ItemCategory(callback_data.item)
-    item_obj = const_items[item_category]
+    item_obj = CREATE_ITEM_CONST(item_category)
     await state.update_data(select_buy_item = item_obj)
     await query.message.answer(f"Вы хотите купить ({item_obj.name})\n\nЦена - {item_obj.price} 💵", 
                                reply_markup=buy_item())
@@ -67,7 +68,6 @@ async def select_gradation_level(query: CallbackQuery, state: FSMContext, charac
     item = await ItemService.create_item(
         item_obj=item
     )
-    print(item)
     await CharacterService.update_money_character(
         character=character,
         amount_money_adjustment= -item.price
@@ -76,4 +76,5 @@ async def select_gradation_level(query: CallbackQuery, state: FSMContext, charac
         character_obj=character,
         item_obj=item
     )
+    await query.message.answer(f"Вітаю ви купили річ {item.name}")
     

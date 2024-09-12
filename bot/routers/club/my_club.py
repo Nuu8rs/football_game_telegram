@@ -33,7 +33,7 @@ async def get_my_club_handler(message: Message, user: UserBot, character: Charac
     club = await ClubService.get_club(club_id=character.club_id)
     await message.answer_photo(
         photo=CLUB_PHOTO,
-        caption=get_club_text(club=club,
+        caption= await get_club_text(club=club,
                               character=character),
         reply_markup=club_menu_keyboard(
             club=club,

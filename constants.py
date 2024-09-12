@@ -117,6 +117,7 @@ JOIN_TO_FIGHT    = FSInputFile("src/join_to_fight.jpg")
 LEAGUE_PHOTO     = FSInputFile("src/league_photo.jpg")
 PLOSHA_PEREMOGU  = FSInputFile("src/plosha_peremogu.jpg") 
 EDUCATION_CENTER = FSInputFile("src/education_center_photo.jpg")
+HALL_FAME_PHOTO  = FSInputFile("src/hall_fame_photo.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 

@@ -38,7 +38,7 @@ async def get_name_club(message: Message, state: FSMContext, user: UserBot, char
     
     await message.answer_photo(
         photo=CLUB_PHOTO,
-        caption=get_club_text(
+        caption=await get_club_text(
             club = club,
             character=character
             ),

@@ -1,14 +1,21 @@
 from database.models.character import Character
 from database.models.club import Club
 
+from services.character_service import CharacterService
+from services.club_service import ClubService
+
 from datetime import datetime, timedelta
 
-def get_club_text(club: Club, character: Character) -> str:
+async def get_club_text(club: Club, character: Character) -> str:
+    character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
+    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power}</b>] [<b>{character_leader.level} рів.</b>]"
+    club = await ClubService.get_club(club_id=club.id)
+    
     text = f"""
 ⚽ Гравець: {character.name}
 
 🏆 Клуб: {club.name_club}
-👑 Лідер: {club.owner.user_name}
+👑 Лідер: {text_leader}
 🏅 Дивізіон: {club.league}
 
 📊 Моє місце в рейтингу клубу: {calculate_character_rank(
@@ -67,15 +74,26 @@ def rating_club(club: Club, character: Character) -> str:
         elif rank == 3:
             return "🥉"
         else:
-            return ""
+            return "🏅"
 
+    # Сортируем персонажей по убыванию силы
     sorted_characters = sorted(club.characters, key=lambda c: c.full_power, reverse=True)
     rank_texts = []
+    
     for idx, char in enumerate(sorted_characters, start=1):
         medal = get_medal_emoji(idx)
+        # Формируем строку с добавлением силы и уровня персонажа
         if char.characters_user_id == character.characters_user_id:
-            rank_texts.append(f"{medal} {idx} місце - <b><a href='tg://user?id={char.characters_user_id}'>{char.name} 🩳</a></b>")
+            rank_texts.append(
+                f"{medal} {idx} місце - <b><a href='tg://user?id={char.characters_user_id}'>{char.name}</a>🩳 </b> "
+                f"[💪 <b>{char.full_power}</b>] [<b>{char.level} рів.</b>]"
+            )
         else:
-            rank_texts.append(f"{medal} {idx} місце - <a href='tg://user?id={char.characters_user_id}'>{char.name}</a>")
+            rank_texts.append(
+                f"{medal} {idx} місце - <a href='tg://user?id={char.characters_user_id}'>{char.name}</a> "
+                f"[<b>💪 {char.full_power}</b>] [<b>{char.level} рів.</b>]"
+            )
+    
+    # Объединяем строки для финального текста
     ranking_text = "\n".join(rank_texts)
     return ranking_text
