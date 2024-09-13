@@ -1,4 +1,6 @@
 from database.models.club import Club
+from database.models.character import Character
+
 from database.session import get_session
 from sqlalchemy.future import select
 from sqlalchemy import func, update
@@ -112,5 +114,25 @@ class ClubService:
                     update(Club)
                     .where(Club.is_fake_club == False)
                     .values(energy_applied=0)
+                )
+                await session.commit()
+                
+    @classmethod
+    async def transfer_club_owner(cls, club: Club, new_owner_id: int) -> None:
+        async for session in get_session():
+            async with session.begin():
+                club.owner_id = new_owner_id
+                merged_obj = await session.merge(club)
+                await session.commit()
+                return merged_obj
+            
+    @classmethod
+    async def remove_all_characters_from_club(cls, club: Club) -> None:
+        async for session in get_session():
+            async with session.begin():
+                await session.execute(
+                    update(Character)
+                    .where(Character.club_id == club.id)
+                    .values(club_id=None)
                 )
                 await session.commit()

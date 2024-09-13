@@ -32,6 +32,7 @@ class Character(Base):
     
     character_in_training = Column(Boolean, default=False)
     education_reward_date = Column(DateTime, default=EPOCH_ZERO, server_default=text('\'1970-01-01 00:00:00\''))
+    time_to_join_club     = Column(DateTime, default=EPOCH_ZERO, server_default=text('\'1970-01-01 00:00:00\''))
     
     created_at     = Column(DateTime, default=datetime.datetime.utcnow)
     is_bot         = Column(Boolean, default=False)

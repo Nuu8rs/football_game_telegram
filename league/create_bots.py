@@ -35,7 +35,7 @@ def generate_team_names(num_teams = 1):
 class BOTS:
     
     def __init__(self, average_club_strength: int, name_league: str) -> None:
-        self.average_club_strength = average_club_strength
+        self.average_club_strength = average_club_strength + random.randint(1,50)
         self.name_league = name_league
     
     @property

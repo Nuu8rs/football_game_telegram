@@ -24,6 +24,7 @@ league_router = Router()
 
 @league_router.message(F.text == "🏟 Стадіон")
 async def get_my_character(message: Message, character: Character):
+    
     if not character.club_id:
         return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
     

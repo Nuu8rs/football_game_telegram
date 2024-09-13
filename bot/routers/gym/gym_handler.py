@@ -20,7 +20,7 @@ gym_router = Router()
 
 @gym_router.message(F.text == "🖲 Тренажерний зал")
 async def go_to_gym(message: Message):
-    await message.answer("Вітаю у тренажерному залі", reply_markup=menu_gym())
+    await message.answer("Вітаємо тебе у тренажерному залі! Піти на тренування та покращити навички? Відновити енергію у масажному залі? Обирати тобі!", reply_markup=menu_gym())
     
 @gym_router.message(F.text == "🧤 Піти на тренування")
 async def go_to_gym(message: Message):

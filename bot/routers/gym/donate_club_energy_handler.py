@@ -24,6 +24,8 @@ donate_club_energy_router = Router()
 
 @donate_club_energy_router.message(F.text == "🗄 Тренувальна база")
 async def training_facilities_handler(message: Message, character: Character, state: FSMContext):
+    await message.answer("Вітаю на тренувальній базі\n<b>Покращення діє лише на наступний матч!</b>")
+    
     if not character.club_id:
         return await message.answer("❌ Ви не перебуваєте в клубі, тому ви не можете отримати від клубу посилення")
     

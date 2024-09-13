@@ -145,25 +145,27 @@ class CharacterService:
                 except:
                     pass
                 character.club_id = club_id
+                character.time_to_join_club = datetime.now()
                 merged_obj = await session.merge(character)
                 await session.commit()
                 return merged_obj
             
-    @classmethod
-    async def update_energy_for_non_bots(cls):
-        async for session in get_session():
-            async with session.begin():
-                try:
-                    stmt = (
-                        update(Character) 
-                        .where(Character.is_bot == False)
-                        .values(current_energy=CONST_ENERGY)
-                    )
-                    await session.execute(stmt)
-                    await session.commit()
-                except Exception as e:
-                    await session.rollback()
-                    raise e
+@classmethod
+async def update_energy_for_non_bots(cls):
+    async for session in get_session():
+        async with session.begin():
+            try:
+                stmt = (
+                    update(Character)
+                    .where(Character.is_bot == False)
+                    .where(Character.current_energy <= CONST_ENERGY) 
+                    .values(current_energy=CONST_ENERGY)
+                )
+                await session.execute(stmt)
+                await session.commit()
+            except Exception as e:
+                await session.rollback()
+                raise e
                 
     @classmethod
     async def leave_club(cls, character: Character):

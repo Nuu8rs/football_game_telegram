@@ -8,8 +8,6 @@ class ItemService:
     
     @classmethod
     async def create_item(cls, item_obj: Item) -> Item:
-        item_obj.stats = json.dumps(item_obj.stats)
-        
         if isinstance(item_obj.category, Enum):
             item_obj.category = item_obj.category.value
         

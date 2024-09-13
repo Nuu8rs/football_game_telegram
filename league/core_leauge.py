@@ -35,7 +35,7 @@ class LeagueService:
             for sublist in sublists:
                 if len(sublist) < LIMIT_CLUB:
                     bots_menu = BOTS(
-                        average_club_strength=(sum([club.total_power for club in sublist])+ random.randint(1,50)),
+                        average_club_strength=(sum([club.total_power for club in sublist])),
                         name_league=league
                     )
                     bots_clubs = await bots_menu.create_bot_clubs(LIMIT_CLUB - len(sublist))

@@ -8,3 +8,6 @@ class JoinToClub(CallbackData, prefix = "join_to_club"):
     
 class LeaveThisClub(CallbackData, prefix = "leave_club"):
     club_id: int
+    
+class TransferOwner(CallbackData, prefix="transfer_owner"):
+    user_id_new_owner: int

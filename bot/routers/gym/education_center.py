@@ -19,7 +19,7 @@ education_center_router = Router()
 @education_center_router.message(F.text == "🏫 Навчальний центр")
 async def go_to_gym(message: Message):
     await message.answer_photo(photo=EDUCATION_CENTER,
-        caption="Ласкаво просимо до навчального центру\nТут ви зможете підняти свій рівень", reply_markup=menu_education_cernter()
+        caption="Ласкаво просимо до навчального центру\nТут Ви можете отримати досвід задля покращення рівня гравця, та отримати монети за вдале навчання, кожні 12 годин! ", reply_markup=menu_education_cernter()
         )
     
 @education_center_router.callback_query(F.data == "get_rewards_education_center")

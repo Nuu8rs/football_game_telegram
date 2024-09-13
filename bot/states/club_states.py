@@ -8,3 +8,6 @@ class ChangeClubChatLink(StatesGroup):
     
 class FindClub(StatesGroup):
     send_name_club = State()
+    
+class SendMessageMembers(StatesGroup):
+    send_message_members = State()

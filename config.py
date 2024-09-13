@@ -17,7 +17,7 @@ DB_NAME     = quote(os.getenv("DB_NAME"))
 DB_PORT     = quote(os.getenv("DB_PORT"))
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-CONST_ENERGY = 70
+CONST_ENERGY = 150
 
 EPOCH_ZERO = datetime(1970, 1, 1)
 

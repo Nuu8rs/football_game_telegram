@@ -13,7 +13,7 @@ async def start_functional():
     await reset_energy_characters.start_reset_energy()
     await reset_aplied_energy_club.start_reset_energy()
     await education_reward_reminder.start_reminder()
-    # await core_league.setup_league()
+    await core_league.setup_league()
 
 
 async def init_db():

@@ -15,8 +15,10 @@ from bot.callbacks.club_callbacks import LeaveThisClub
 from bot.keyboards.club_keyboard import create_or_join_club, club_menu_keyboard, menu_club
 from bot.states.club_states import ChangeClubChatLink
 
+
+from utils.club_utils import get_club_text, rating_club, send_message_characters_club
+
 from constants import CLUB_PHOTO
-from utils.club_utils import get_club_text, rating_club
 
 
 my_club_router = Router()
@@ -84,3 +86,9 @@ async def leave_club_handler(query: CallbackQuery, user: UserBot, character: Cha
     await CharacterService.leave_club(character)
     await query.message.edit_reply_markup(reply_markup=None)
     await query.message.reply(f"<b>Ви вийшли з клубу</b> - {club.name_club}")
+    await send_message_characters_club(
+        characters_club=club.characters,
+        my_character=character,
+        text=f"☹️ Персонаж <b>{character.name}</b> покинул ваш клуб"
+    )
+

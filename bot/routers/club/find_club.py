@@ -1,9 +1,9 @@
 from aiogram import Router, Bot, F
 from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
+from datetime import datetime, timedelta
 
 from database.models.club import Club
-from database.models.user_bot import UserBot
 from database.models.character import Character
 
 from services.club_service import ClubService
@@ -14,8 +14,10 @@ from bot.keyboards.club_keyboard import find_club, join_to_club_keyboard
 from bot.callbacks.club_callbacks import SelectClubToJoin, JoinToClub
 from bot.callbacks.switcher import SwitchClub
 
+from loader import logger
+
 from constants import CLUB_PHOTO
-from utils.club_utils import get_club_description
+from utils.club_utils import get_club_description, send_message_characters_club
 
 find_club_router = Router()
 
@@ -78,12 +80,15 @@ async def view_club(query: CallbackQuery, callback_data: SelectClubToJoin):
     club = await ClubService.get_club(club_id=callback_data.club_id)
     await query.message.answer_photo(
         photo=CLUB_PHOTO,
-        caption=get_club_description(club=club),
+        caption=await get_club_description(club=club),
         reply_markup=join_to_club_keyboard(club_id=callback_data.club_id)
     )
     
 @find_club_router.callback_query(JoinToClub.filter())
 async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: JoinToClub, character: Character):
+    if character.time_to_join_club + timedelta(days=1) < datetime.now():
+        return await query.answer("Ви не можете приєднатися до клубу, не минув 1 день після вступу до іншого клубу", show_alert=True)
+    
     if character.club_id:
         return await query.message.answer("Ви вже й так у клубі")
     
@@ -92,4 +97,11 @@ async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: J
         character=character,
         club_id=callback_data.club_id
     )
+    club = await ClubService.get_club(character.club_id)
+    await send_message_characters_club(
+        characters_club=club.characters,
+        my_character=character,
+        text=f"🎟 Вітаємо у вашому клубі поповнення, приєднався новий учасник <b>{character.name}</b>"
+    )
     await query.message.answer("🎉 Вітаю ви приєдналися до клубу")
+    

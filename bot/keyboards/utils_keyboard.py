@@ -21,5 +21,5 @@ def switch_buttons(total_items: int, current_index: int, switch_type, items_per_
 
 def menu_plosha():
     keyboard = ReplyKeyboardBuilder()
-    keyboard.button(text = "⬅️ До площі переможців")
+    keyboard.button(text = "⬅️ Головна площа")
     return keyboard

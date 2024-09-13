@@ -1,3 +1,5 @@
+from aiogram import Bot
+
 from database.models.character import Character
 from database.models.club import Club
 
@@ -5,6 +7,7 @@ from services.character_service import CharacterService
 from services.club_service import ClubService
 
 from datetime import datetime, timedelta
+from loader import logger, bot
 
 async def get_club_text(club: Club, character: Character) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
@@ -32,11 +35,16 @@ async def get_club_text(club: Club, character: Character) -> str:
     return text
 
 
-def get_club_description(club: Club) -> str:
+async def get_club_description(club: Club) -> str:
+    character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
+    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power}</b>] [<b>{character_leader.level} рів.</b>]"
+    club = await ClubService.get_club(club_id=club.id)
+
+    
     text = f"""
 ⚽ Клуб: {club.name_club}
 
-👑 Лідер: {club.owner.user_name}
+👑 Лідер: {text_leader}
 🏅 Дивізіон: {club.league}
 💪 Загальна сила клубу: {club.total_power}
 👥 Кількість членів у клубі: {len(club.characters)}
@@ -97,3 +105,14 @@ def rating_club(club: Club, character: Character) -> str:
     # Объединяем строки для финального текста
     ranking_text = "\n".join(rank_texts)
     return ranking_text
+
+
+async def send_message_characters_club(characters_club: list[Character],
+                                       my_character: Character, text: str):
+    for character in characters_club:
+        if character.characters_user_id == my_character.characters_user_id:
+            continue
+        try:
+            await bot.send_message(chat_id= character.characters_user_id, text = text)
+        except Exception as E:
+            logger.error("НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ ПЕРСОНАЖУ {}")
