@@ -8,12 +8,13 @@ from database.models.user_bot import UserBot
 from database.models.character import Character
 
 from services.character_service import CharacterService
+from services.reminder_character_service import RemiderCharacterService
 
 from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, menu_gym
 from bot.callbacks.gym_calbacks import SelectGymType, SelectTimeGym
 
 from constants import GYM_PHOTO, const_name_characteristics, const_energy_by_time
-from schedulers.scheduler_tasks import GymTaskScheduler
+from schedulers.scheduler_gym import GymTaskScheduler
 
 
 gym_router = Router()
@@ -56,7 +57,7 @@ async def select_position_character(query: CallbackQuery):
     
 @gym_router.callback_query(SelectTimeGym.filter())
 async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: UserBot, character: Character):
-    if character.character_in_training:
+    if character.reminder.character_in_training:
         return await query.message.reply("<b>Ваш персонаж і так уже тренується</b>")
     
     if character.current_energy <= const_energy_by_time[callback_data.gym_time]:
@@ -77,16 +78,20 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
                                      )
                                      ,reply_markup=None)
     scheduler = GymTaskScheduler()
-    await scheduler.schedule_task(
-        task_id=f"{user.user_id}_gym_{callback_data.gym_type}_time_{callback_data.gym_time}",
-        run_after=callback_data.gym_time,
-        type_characteristics=callback_data.gym_type,
-        characters_user_id = character.characters_user_id,
-        bot=query.bot,
-        user_id=user.user_id
+    await scheduler.add_job_gym(
+        character=character,
+        time_job_gym=callback_data.gym_time,
+        type_characteristics=callback_data.gym_type
     )
-    await CharacterService.toggle_character_training_status(
-        character_obj=character
+    await RemiderCharacterService.update_training_info(
+        character_id=character.id,
+        training_stats=callback_data.gym_type,
+        time_start_training=datetime.now(),
+        time_training_seconds=callback_data.gym_time.total_seconds()
+    )
+    await RemiderCharacterService.toggle_character_training_status(
+        character_id=character.id,
+        
     )
     
     await CharacterService.consume_energy(

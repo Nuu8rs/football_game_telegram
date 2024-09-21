@@ -68,3 +68,6 @@ def CREATE_CHARACTER_CONST(position: PositionCharacter) -> Character:
         return create_goalkeeper()
     elif position == PositionCharacter.ATTACKER:
         return create_attacker()
+    
+    
+    

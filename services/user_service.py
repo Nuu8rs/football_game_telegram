@@ -21,3 +21,11 @@ class UserService:
                 result = await session.execute(stmt)
                 user = result.scalar_one_or_none()
                 return user
+            
+    @classmethod
+    async def get_all_users(cls) -> list[UserBot]:
+        async for session in get_session():
+            async with session.begin(): 
+                stmt = select(UserBot)
+                result = await session.execute(stmt)
+                return result.scalars().all()

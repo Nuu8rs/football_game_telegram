@@ -50,7 +50,8 @@ async def send_message_all_member_club(message: Message, state: FSMContext, char
             )            
         except Exception as E:
             logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ {character.name}")
-
+    await state.clear()
+    
 @owner_option_club_router.callback_query(F.data == "transfer_rights")
 async def transfer_rights_club(query: CallbackQuery, character: Character):
     if not character.club_id:

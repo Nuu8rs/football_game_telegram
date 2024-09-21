@@ -26,7 +26,7 @@ async def get_club_text(club: Club, character: Character) -> str:
         characters_list=club.characters
     )}
 
-💪 Загальна сила клубу: {club.total_power}
+💪 Загальна сила клубу: {club.total_power:.2f}
 👥 Кількість членів у клубі: {len(club.characters)}
     """
     if club.link_to_chat:
@@ -46,7 +46,7 @@ async def get_club_description(club: Club) -> str:
 
 👑 Лідер: {text_leader}
 🏅 Дивізіон: {club.league}
-💪 Загальна сила клубу: {club.total_power}
+💪 Загальна сила клубу: {club.total_power:.2f}
 👥 Кількість членів у клубі: {len(club.characters)}
     """
     return text

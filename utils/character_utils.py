@@ -37,11 +37,11 @@ def get_character_text(character: Character) -> str:
 <b>👤 Стать:</b> {character.gender_enum.value}
 <b>🏅 Позиція:</b> {character.position_description} 
 
-<b>🎯 Техніка:</b> {character.effective_technique}
-<b>🥋 Удари:</b> {character.effective_kicks}
-<b>🛡️ Відбір м’яча:</b> {character.effective_ball_selection}
-<b>⚡ Швидкість:</b> {character.effective_speed}
-<b>🏃 Витривалість:</b> {character.effective_endurance}
+<b>🎯 Техніка:</b> {character.effective_technique:.1f}
+<b>🥋 Удари:</b> {character.effective_kicks:.1f}
+<b>🛡️ Відбір м’яча:</b> {character.effective_ball_selection:.1f}
+<b>⚡ Швидкість:</b> {character.effective_speed:.1f}
+<b>🏃 Витривалість:</b> {character.effective_endurance:.1f}
 
 <b>💪 Сумарна сила:</b> {character.full_power:.1f}
 

@@ -1,41 +1,26 @@
-def round_robin_schedule(clubs):
-    """Создает расписание матчей методом кругового турнира."""
-    num_clubs = len(clubs)
-    if num_clubs % 2 != 0:
-        clubs.append(None)  # Добавляем "пустой" клуб, если количество нечетное
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 
-    num_days = num_clubs - 1
-    half_size = num_clubs // 2
 
-    schedule = []
+    
+    
 
-    for day in range(num_days):
-        daily_matches = []
-        for i in range(half_size):
-            club1 = clubs[i]
-            club2 = clubs[num_clubs - i - 1]
-            if club1 is not None and club2 is not None:
-                daily_matches.append((club1, club2))
-        schedule.append(daily_matches)
+import asyncio
+from database.models.character import Character
+from database.models.club import Club
+from services.match_character_service import MatchCharacterService
+from services.club_service import ClubService
+from services.character_service import CharacterService
+from services.league_service import LeagueFightService
 
-        # Поворот списка клубов
-        clubs = [clubs[0]] + [clubs[-1]] + clubs[1:-1]
+from utils.randomaizer import check_chance
+from constants import GET_RANDOM_NUMBER
 
-    return schedule
+from typing import List
+import random
 
-def print_schedule(schedule):
-    """Печатает расписание матчей."""
-    for day, matches in enumerate(schedule, start=1):
-        print(f"День {day}:")
-        for match in matches:
-            print(f"  {match[0]} vs {match[1]}")
-        print()
+TIME_FIGHT = timedelta(hours=1)
 
-# Список клубов
-clubs = [f"Клуб {i+1}" for i in range(20)]
 
-# Генерация расписания матчей
-schedule = round_robin_schedule(clubs)
 
-# Печать расписания матчей
-print_schedule(schedule)

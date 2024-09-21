@@ -6,6 +6,7 @@ from apscheduler.jobstores.base import JobLookupError
 
 from database.models.character import Character
 from services.character_service import CharacterService
+from services.reminder_character_service import RemiderCharacterService
 from datetime import datetime, timedelta
 
 from constants import chance_add_point, const_name_characteristics
@@ -22,7 +23,7 @@ class GymTaskScheduler:
         
         
         
-    async def gym_spread_character(character: Character,
+    async def gym_spread_character(self, character: Character,
                              time_job_gym: timedelta,
                              type_characteristics: str
                             ):
@@ -46,8 +47,8 @@ class GymTaskScheduler:
                     type_characteristics = const_name_characteristics[type_characteristics]
                 )
             )            
-        await CharacterService.toggle_character_training_status(character_obj=character)
-        
+        await RemiderCharacterService.toggle_character_training_status(character_id=character.id)
+        await RemiderCharacterService.update_training_info(character_id=character.id)
     
     async def add_job_gym(self, character: Character, time_job_gym: timedelta, type_characteristics: str):
         self.scheduler.add_job(
@@ -61,22 +62,22 @@ class GymTaskScheduler:
 
 
     async def cheking_job_gym(self):
-        all_character_in_gym = await CharacterService.get_characters_in_training()
+        all_character_in_gym = await RemiderCharacterService.get_characters_in_training()
         for character in all_character_in_gym:
-            if character.time_character_training < datetime.now():
+            if character.reminder.end_time_training < datetime.now():
                 await self.gym_spread_character(
-                    character = character,
-                    time_job_gym=timedelta(minutes = 60),
-                    type_characteristics=character.training_characteristic
+                    character            = character,
+                    time_job_gym         = character.reminder.time_training,
+                    type_characteristics = character.reminder.training_stats
                 )
-        
             else:
                 self.scheduler.add_job(
                     self.gym_spread_character, 
                     trigger='date', 
-                    run_date=character.time_character_training,
-                    args=[character, timedelta(minutes = 60), character.training_characteristic]
+                    run_date=character.reminder.end_time_training,
+                    args=[character, character.reminder.time_training, character.reminder.training_stats]
                 )
+                
 
         self.scheduler.start()
             

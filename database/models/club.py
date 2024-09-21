@@ -1,6 +1,7 @@
 from sqlalchemy import Column, BigInteger, String, ForeignKey, Boolean, Integer
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
+from database.models.character import Character
 
 from config import LEAGUES
 from database.model_base import Base
@@ -21,7 +22,7 @@ class Club(Base):
     energy_applied = Column(Integer, default=0, server_default='0')
     
     owner          = relationship("UserBot", back_populates="clubs", lazy="selectin")
-    characters     = relationship("Character", back_populates="club", lazy="selectin")
+    characters:Mapped[list['Character']]  = relationship("Character", back_populates="club", lazy="selectin")
 
     @hybrid_property
     def total_power(self) -> int:

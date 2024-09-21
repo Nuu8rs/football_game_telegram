@@ -1,14 +1,16 @@
 from database.models.club import Club
 from database.models.league_fight import LeagueFight
 
-from league.club_fight import ClubFight
+from league.club_fight import ClubMatchManager, ClubMatch
 from datetime import datetime
 from services.league_service import LeagueFightService
+from services.club_service  import ClubService
 
-def get_future_matches_by_club(club: Club) -> list[ClubFight]: 
+
+def get_future_matches_by_club(club: Club) -> list[ClubMatch]: 
     current_time = datetime.now()
     
-    all_fights_club = ClubFight.get_match_by_club(club)
+    all_fights_club = ClubMatchManager.get_match_by_club(club)
     return [match for match in all_fights_club if match.start_time > current_time]
     
     
@@ -18,8 +20,9 @@ async def get_text_league(club: Club):
     if not current_match:
         return "⚽️ Твоя ліга: <b>{name_league}</b>\n\nМатчів немає, відпочивайте".format(name_league = club.league)
     
-    fight_istance = ClubFight.get_fight_by_id(match_id=current_match.match_id)
-    enemy_club = fight_istance.second_club_orig if club.id != fight_istance.second_club_orig.id else fight_istance.first_club_orig 
+    fight_istance = ClubMatchManager.get_fight_by_id(match_id=current_match.match_id)
+    enemy_club_id = fight_istance.clubs_in_match.second_club_id if club.id != fight_istance.clubs_in_match.second_club_id else fight_istance.clubs_in_match.first_club_id 
+    enemy_club = await ClubService.get_club(enemy_club_id)
     
     text = """
 ⚽️ Твоя ліга: <b>{name_league}</b>
@@ -111,7 +114,7 @@ def get_text_result(fights: list[LeagueFight], club_id: int):
     return schedule_table
 
 
-def get_text_rating(fights):
+def get_text_rating(fights: list[ClubMatch]):
     # Словари для подсчета очков, голов забитых, пропущенных и разницы голов
     club_points = {}
     club_goals_scored = {}

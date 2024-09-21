@@ -39,6 +39,19 @@ class CharacterService:
                 )
                 current_character = result.scalar_one_or_none()
                 return current_character
+            
+
+    @classmethod
+    async def get_character_by_id(cls, character_id: int) -> Character:
+        async for session in get_session():
+            async with session.begin():
+                result = await session.execute(
+                    select(Character).where(Character.id == character_id)
+                )
+                current_character = result.scalar_one_or_none()
+                return current_character
+    
+            
     
     @classmethod
     async def create_character(cls, character_obj: Character) -> Character:
@@ -83,15 +96,6 @@ class CharacterService:
                 await session.commit()
                 return merged_obj
 
-    @classmethod
-    async def get_characters_in_training(cls) -> list[Character]:
-        async for session in get_session():
-            async with session.begin():
-                result = await session.execute(select(Character).where(Character.character_in_training == True))
-                characters_in_training = result.scalars().all()
-                return characters_in_training
-
-
 
     @classmethod
     async def consume_energy(cls, character_obj: Character, energy_consumed: int) -> Character:
@@ -121,20 +125,6 @@ class CharacterService:
                 setattr(merged_obj, 'current_energy', max(new_energy, 0))
                 await session.commit()
 
-     
-    @classmethod
-    async def toggle_character_training_status(cls, character_obj: Character) -> Character:
-        async for session in get_session():
-            async with session.begin():
-                try:
-                    session.add(character_obj)
-                except:
-                    pass
-                merged_obj = await session.merge(character_obj)
-                current_status = getattr(merged_obj, 'character_in_training', False)
-                new_status = not current_status
-                setattr(merged_obj, 'character_in_training', new_status)
-                await session.commit()
                 
     @classmethod        
     async def update_character_club_id(cls,character: Character ,club_id: int):
@@ -145,7 +135,7 @@ class CharacterService:
                 except:
                     pass
                 character.club_id = club_id
-                character.time_to_join_club = datetime.now()
+                character.reminder.time_to_join_club = datetime.now()
                 merged_obj = await session.merge(character)
                 await session.commit()
                 return merged_obj

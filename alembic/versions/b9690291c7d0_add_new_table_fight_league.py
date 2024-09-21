@@ -30,7 +30,8 @@ def upgrade() -> None:
     sa.Column('goal_second_club', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['first_club_id'], ['clubs.id'], ),
     sa.ForeignKeyConstraint(['second_club_id'], ['clubs.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('match_id') 
     )
     op.create_index(op.f('ix_league_fight_id'), 'league_fight', ['id'], unique=False)
     # ### end Alembic commands ###

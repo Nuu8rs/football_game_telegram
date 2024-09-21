@@ -1,5 +1,7 @@
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.types import ReplyKeyboardRemove
 from database.models.user_bot import UserBot
+from ..callbacks.menu_callbacks import NextInstruction
 
 def main_menu(user: UserBot):
     keyboard = ReplyKeyboardBuilder()
@@ -17,3 +19,12 @@ def main_menu(user: UserBot):
 
     
     return keyboard.adjust(2).as_markup(resize_keyboard = True)
+
+def menu_instruction(index_instruction: int):
+    return (InlineKeyboardBuilder()
+            .button(text = "➡️ Далі", callback_data=NextInstruction(index_instruction=index_instruction))
+            .as_markup()
+            )
+    
+def remove_keyboard():
+    return ReplyKeyboardRemove(remove_keyboard=True)

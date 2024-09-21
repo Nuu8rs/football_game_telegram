@@ -14,9 +14,8 @@ from bot.keyboards.league_keyboard import menu_league_zone, keyboard_to_join_cha
 
 from constants import LEAGUE_PHOTO, JOIN_TO_FIGHT
 
-from schedulers.scheduler_tasks import GymTaskScheduler
 from utils.league_utils import get_text_league, get_text_calendar_matches, get_text_result, get_text_rating
-from .join_to_fight_handler import join_to_match
+
 
 league_router = Router()
 

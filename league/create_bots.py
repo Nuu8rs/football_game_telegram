@@ -35,7 +35,7 @@ def generate_team_names(num_teams = 1):
 class BOTS:
     
     def __init__(self, average_club_strength: int, name_league: str) -> None:
-        self.average_club_strength = average_club_strength + random.randint(1,50)
+        self.average_club_strength = average_club_strength
         self.name_league = name_league
     
     @property
@@ -71,11 +71,11 @@ class BOTS:
         character_obj = Character(
             characters_user_id = user.user_id,
             name = self.random_user_name,
-            technique = average_power,
-            kicks = average_power,
-            ball_selection = average_power,
-            speed = average_power,
-            endurance = average_power,
+            technique = average_power + random.randint(1,5),
+            kicks = average_power + random.randint(1,5),
+            ball_selection = average_power + random.randint(1,5),
+            speed = average_power + random.randint(1,5),
+            endurance = average_power + random.randint(1,5) ,
             position = PositionCharacter.ATTACKER,
             gender = Gender.MAN,
             club_id = club.id,

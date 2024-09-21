@@ -86,7 +86,7 @@ async def view_club(query: CallbackQuery, callback_data: SelectClubToJoin):
     
 @find_club_router.callback_query(JoinToClub.filter())
 async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: JoinToClub, character: Character):
-    if character.time_to_join_club  + timedelta(days=1) > datetime.now():
+    if character.reminder.time_to_join_club  + timedelta(days=1) > datetime.now():
         return await query.answer("Ви не можете приєднатися до клубу, не минув 1 день після вступу до іншого клубу", show_alert=True)
     
     if character.club_id:

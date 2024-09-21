@@ -8,9 +8,6 @@ from services.character_service import CharacterService
 from bot.keyboards.gym_keyboard import menu_massage_room
 from bot.callbacks.massage_room_callbacks import SelectCountGetEnergy
 
-from constants import GYM_PHOTO, const_name_characteristics, const_energy_by_time
-from schedulers.scheduler_tasks import GymTaskScheduler
-
 
 massage_room_router = Router()
 

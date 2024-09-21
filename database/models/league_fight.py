@@ -1,22 +1,23 @@
 from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 
 from database.model_base import Base
+from database.models.club import Club
 
 class LeagueFight(Base):
     __tablename__ = "league_fight"
     
     id               = Column(BigInteger, primary_key=True, index=True)
-    match_id         = Column(String(255), nullable=False)
+    match_id         = Column(String(255), nullable=False, unique=True)
     group_id         = Column(String(255), nullable=False)
     time_to_start    = Column(DateTime)
   
     first_club_id    = Column(BigInteger, ForeignKey('clubs.id'), nullable=False)
     second_club_id   = Column(BigInteger, ForeignKey('clubs.id'), nullable=False)
     
-    first_club       = relationship("Club", foreign_keys=[first_club_id], lazy="selectin")
-    second_club      = relationship("Club", foreign_keys=[second_club_id], lazy="selectin")
+    first_club:Mapped["Club"]   = relationship("Club", foreign_keys=[first_club_id], lazy="selectin")
+    second_club:Mapped["Club"]  = relationship("Club", foreign_keys=[second_club_id], lazy="selectin")
     
     goal_first_club  = Column(Integer, default=0)
     goal_second_club = Column(Integer, default=0)

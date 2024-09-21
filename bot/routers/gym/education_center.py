@@ -24,8 +24,8 @@ async def go_to_gym(message: Message):
     
 @education_center_router.callback_query(F.data == "get_rewards_education_center")
 async def get_rewards_education_cernter(query: CallbackQuery, character: Character):
-    if not datetime.now() > character.education_reward_date:
-        time_to_get_reward = character.education_reward_date - datetime.now()
+    if not datetime.now() > character.reminder.education_reward_date:
+        time_to_get_reward = character.reminder.education_reward_date - datetime.now()
         hours, remainder = divmod(time_to_get_reward.seconds, 3600)
         minutes, _ = divmod(remainder, 60)        
 

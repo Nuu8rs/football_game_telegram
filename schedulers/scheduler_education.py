@@ -34,14 +34,14 @@ class EducationRewardReminderScheduler():
                                trigger='date',
                                run_date = time_get_reward)
         
-        
+
     async def start_reminder(self):
         all_not_bot_users = await CharacterService.get_all_users_not_bot()
         for character in all_not_bot_users:
-            if character.education_reward_date == EPOCH_ZERO:
+            if character.reminder.education_reward_date == EPOCH_ZERO:
                 continue
             
-            if character.education_reward_date > datetime.now():
+            if character.reminder.education_reward_date > datetime.now():
                 await self.add_job_remind(
                     character=character,
                     time_get_reward=character.education_reward_date

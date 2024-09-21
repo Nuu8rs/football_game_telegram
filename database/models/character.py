@@ -2,9 +2,12 @@ import datetime
 
 from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer, Boolean, text
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped
 
-from config import PositionCharacter, Gender, CONST_ENERGY, EPOCH_ZERO
+from config import PositionCharacter, Gender, CONST_ENERGY, POSITION_DECLENSIONS, POSITION_COEFFICIENTS
+from database.models.reminder_character import ReminderCharacter
+
+
 from database.model_base import Base
 
 
@@ -30,15 +33,19 @@ class Character(Base):
     position       = Column(String(255))
     gender         = Column(String(255))
     
-    character_in_training = Column(Boolean, default=False)
-    education_reward_date = Column(DateTime, default=EPOCH_ZERO, server_default=text('\'1970-01-01 00:00:00\''))
-    time_to_join_club     = Column(DateTime, default=EPOCH_ZERO, server_default=text('\'1970-01-01 00:00:00\''))
-    
     created_at     = Column(DateTime, default=datetime.datetime.utcnow)
     is_bot         = Column(Boolean, default=False)
     
     owner = relationship("UserBot", back_populates="characters", lazy="selectin")
     club = relationship("Club", back_populates="characters", lazy="selectin")
+    reminder: Mapped["ReminderCharacter"]  = relationship(
+        "ReminderCharacter", 
+        back_populates="character", 
+        uselist=False, 
+        cascade="all, delete-orphan", 
+        lazy="selectin"
+    )
+
 
     t_shirt_id = Column(BigInteger, ForeignKey('items.id'))
     shorts_id = Column(BigInteger, ForeignKey('items.id'))
@@ -88,29 +95,11 @@ class Character(Base):
     
     @property
     def position_description(self):
-        position_declensions = {
-            PositionCharacter.MIDFIELDER: {
-                Gender.MAN: "Півзахисник",
-                Gender.WOMAN: "Півзахисниця"
-            },
-            PositionCharacter.DEFENDER: {
-                Gender.MAN: "Захисник",
-                Gender.WOMAN: "Захисниця"
-            },
-            PositionCharacter.GOALKEEPER: {
-                Gender.MAN: "Воротар",
-                Gender.WOMAN: "Воротарка"
-            },
-            PositionCharacter.ATTACKER: {
-                Gender.MAN: "Нападник",
-                Gender.WOMAN: "Нападниця"
-            }
-        }
-        
+
         position_enum = self.position_enum
         gender_enum = self.gender_enum
         if position_enum and gender_enum:
-            return position_declensions[position_enum][gender_enum]
+            return POSITION_DECLENSIONS[position_enum][gender_enum]
         return None
     
     @property
@@ -137,23 +126,23 @@ class Character(Base):
     
     @property
     def effective_technique(self):
-        return self.technique + self.item_stats['technique']
+        return (self.technique * POSITION_COEFFICIENTS[self.position_enum].get("technique",1))  + self.item_stats['technique']
 
     @property
     def effective_kicks(self):
-        return self.kicks + self.item_stats['kicks']
+        return (self.kicks * POSITION_COEFFICIENTS[self.position_enum].get("kicks",1)) + self.item_stats['kicks']
 
     @property
     def effective_ball_selection(self):
-        return self.ball_selection + self.item_stats['ball_selection']
+        return ( self.ball_selection * POSITION_COEFFICIENTS[self.position_enum].get("ball_selection",1)) + self.item_stats['ball_selection']
 
     @property
     def effective_speed(self):
-        return self.speed + self.item_stats['speed']
+        return (self.speed * POSITION_COEFFICIENTS[self.position_enum].get("speed",1)) + self.item_stats['speed']
 
     @property
     def effective_endurance(self):
-        return self.endurance + self.item_stats['endurance']
+        return (self.endurance * POSITION_COEFFICIENTS[self.position_enum].get("endurance",1)) + self.item_stats['endurance']
 
     @property
     def full_power(self) -> int:

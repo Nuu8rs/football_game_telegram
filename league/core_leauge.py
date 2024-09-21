@@ -1,22 +1,21 @@
+import uuid
+import random
+from datetime import datetime, timedelta
+from typing import List, Tuple, Dict
+
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
 
 from services.club_service import ClubService
 from services.league_service import LeagueFightService
-
 from database.models.club import Club
 from database.models.league_fight import LeagueFight
 
-from utils.randomaizer import check_chance
-from datetime import datetime, timedelta
-from typing import List, Tuple, Dict
-from copy import deepcopy
 from .create_bots import BOTS
-from .club_fight import ClubFight
+from .club_fight import ClubMatch
 from .user_sender import UserSender
 from logging_config import logger
-import uuid, random
 
 LIMIT_CLUB = 20
 
@@ -107,11 +106,10 @@ class CORE_LEAGUE:
                 )
 
     async def starting_matches(self, matches: List['LeagueFight']) -> None:
-        for i, match in enumerate(matches):
-            
-                self.schedule_match_start(i, match)
+        for _, match in enumerate(matches):
+                await self.schedule_match_start(match)
                 
-    def schedule_match_start(self, index: int, match: 'LeagueFight') -> None:
+    async def schedule_match_start(self, match: 'LeagueFight') -> None:
         
         match_date = match.time_to_start
         start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
@@ -120,12 +118,25 @@ class CORE_LEAGUE:
         # start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
         # current_time = datetime.now()
         # start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
-        # start_time_fight = start_time_sender + timedelta(seconds=30)
+        # start_time_fight = start_time_sender + timedelta(seconds=20)
         
-
-        fight = ClubFight(match.first_club, match.second_club, start_time_fight, match.match_id)
-        user_sender = UserSender(match_id=fight.match_id)
-
+        fight = ClubMatch(
+            first_club_id  = match.first_club.id  ,
+            second_club_id = match.second_club.id ,
+            start_time     = start_time_fight,
+            match_id       = match.match_id,
+            group_id       = match.group_id
+        )
+        user_sender = UserSender(match_id=fight.clubs_in_match.match_id)
+        # from services.match_character_service import MatchCharacterService
+        # from services.character_service import CharacterService
+        
+        # character = await CharacterService.get_character_by_id(1)
+        # await MatchCharacterService.add_character_in_match(
+        #     fight.clubs_in_match,
+        #     character
+        # )
         self.scheduler_league.add_job(user_sender.send_messages_to_users, trigger=DateTrigger(start_time_sender))
-        self.scheduler_league.add_job(fight.start, trigger=DateTrigger(start_time_fight))
-
+        self.scheduler_league.add_job(fight.start_match, trigger=DateTrigger(start_time_fight))
+        # import asyncio
+        # asyncio.create_task(fight.start_match())

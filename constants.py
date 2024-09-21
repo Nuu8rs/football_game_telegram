@@ -28,46 +28,7 @@ class ItemCategory(PyEnum):
     GAITERS = "Gaiters"
     BOOTS = "Boots"
     
-t_shirt_const = Item(
-    name = "👕 Футболка",
-    category = ItemCategory.T_SHIRT,
-    level_required = 0,
-    price = 10,
-    stats = BASE_STATS_ITEMS
 
-)
-shorts_const = Item(
-    name = "🩳 Шорти",
-    category = ItemCategory.SHORTS,
-    level_required = 0,
-    price = 10,
-    stats = BASE_STATS_ITEMS
-
-)
-gaiterst_const = Item(
-    name = "🧦 Гетри",
-    category = ItemCategory.GAITERS,
-    level_required = 0,
-    price = 10,
-    stats = BASE_STATS_ITEMS
-
-)
-boots_const = Item(
-    name = "👢 Бутси",
-    category = ItemCategory.BOOTS,
-    level_required = 0,
-    price = 10,
-    stats = BASE_STATS_ITEMS
-
-)
-
-const_items = {
-    ItemCategory.T_SHIRT : t_shirt_const,
-    ItemCategory.SHORTS : shorts_const,
-    ItemCategory.GAITERS : gaiterst_const,
-    ItemCategory.BOOTS : boots_const,
-    
-}
 
 
 chance_add_point = {
@@ -107,6 +68,7 @@ photos = {
 }
 
 
+
 def get_photo_character(character: Character) -> FSInputFile:
     return FSInputFile(photos.get((character.gender_enum, character.position_enum), 'path/to/default_photo.jpg'))
 
@@ -121,7 +83,7 @@ HALL_FAME_PHOTO  = FSInputFile("src/hall_fame_photo.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 
-TIME_FIGHT = timedelta(hours=1)
+TIME_FIGHT = timedelta(minutes=7)
 TIME_RESET_ENERGY = CronTrigger(hour=22, minute=1)
 
 DELTA_TIME_EDUCATION_REWARD = timedelta(hours=12)

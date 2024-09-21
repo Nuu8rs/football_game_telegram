@@ -5,14 +5,16 @@ from aiogram.fsm.context import FSMContext
 from database.models.user_bot import UserBot
 
 from services.character_service import CharacterService
+from services.reminder_character_service import RemiderCharacterService
 from services.user_service import UserService
 
-from bot.keyboards.menu_keyboard import main_menu
+from bot.keyboards.menu_keyboard import menu_instruction, remove_keyboard
 from bot.keyboards.create_character_keyboard import set_gender_keyboard, select_role_character, create_character
 from bot.states.create_character_state import CreateCharacterState
 from bot.callbacks.character_callbacks import SelectGender, SelectPositionCharacter, CreateCharacter
 
 from constants import  get_photo_character
+from config import INSTRUCTION
 from const_character import CREATE_CHARACTER_CONST
 from utils.character_utils import get_character_text
 
@@ -83,12 +85,18 @@ async def create_character_handler(query: CallbackQuery, state: FSMContext, user
     character.current_energy = character.max_energy
     character.characters_user_id = user.user_id
     
-    await CharacterService.create_character(
+    character = await CharacterService.create_character(
         character
     )
+    await RemiderCharacterService.create_character_reminder(character_id=character.id)
     await state.clear()
     user = await UserService.get_user(user_id=user.user_id)
     await query.message.reply(
         text="<b>Вітаю вас із створенням персонажа!</b>",
-        reply_markup=main_menu(user=user)
+        reply_markup=remove_keyboard()
+    )
+    
+    await query.message.answer(
+        text = INSTRUCTION[0],
+        reply_markup=menu_instruction(index_instruction=1)
     )
