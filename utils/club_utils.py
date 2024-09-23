@@ -11,7 +11,7 @@ from loader import logger, bot
 
 async def get_club_text(club: Club, character: Character) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
-    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power}</b>] [<b>{character_leader.level} рів.</b>]"
+    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power:.2f}</b>] [<b>{character_leader.level} рів.</b>]"
     club = await ClubService.get_club(club_id=club.id)
     
     text = f"""
@@ -37,7 +37,7 @@ async def get_club_text(club: Club, character: Character) -> str:
 
 async def get_club_description(club: Club) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
-    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power}</b>] [<b>{character_leader.level} рів.</b>]"
+    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power:.2f}</b>] [<b>{character_leader.level} рів.</b>]"
     club = await ClubService.get_club(club_id=club.id)
 
     
@@ -84,13 +84,11 @@ def rating_club(club: Club, character: Character) -> str:
         else:
             return "🏅"
 
-    # Сортируем персонажей по убыванию силы
     sorted_characters = sorted(club.characters, key=lambda c: c.full_power, reverse=True)
     rank_texts = []
     
     for idx, char in enumerate(sorted_characters, start=1):
         medal = get_medal_emoji(idx)
-        # Формируем строку с добавлением силы и уровня персонажа
         if char.characters_user_id == character.characters_user_id:
             rank_texts.append(
                 f"{medal} {idx} місце - <b><a href='tg://user?id={char.characters_user_id}'>{char.name}</a>🩳 </b> "
@@ -102,7 +100,6 @@ def rating_club(club: Club, character: Character) -> str:
                 f"[<b>💪 {char.full_power}</b>] [<b>{char.level} рів.</b>]"
             )
     
-    # Объединяем строки для финального текста
     ranking_text = "\n".join(rank_texts)
     return ranking_text
 

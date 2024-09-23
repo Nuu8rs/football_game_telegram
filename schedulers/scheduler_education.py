@@ -44,7 +44,7 @@ class EducationRewardReminderScheduler():
             if character.reminder.education_reward_date > datetime.now():
                 await self.add_job_remind(
                     character=character,
-                    time_get_reward=character.education_reward_date
+                    time_get_reward=character.reminder.education_reward_date
                 )
             else:
                 await self._send_character_remind_reward_message(character.characters_user_id)

@@ -99,7 +99,8 @@ async def delete_my_club(query: CallbackQuery, character: Character):
     
     
     await ClubService.remove_all_characters_from_club(club)
-    await query.message.edit_text("Вы удалили свой клуб")
+    await query.message.delete()
+    await query.message.answer("Вы удалили свой клуб")
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,

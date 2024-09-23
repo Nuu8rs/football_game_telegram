@@ -135,7 +135,8 @@ class CharacterService:
                 except:
                     pass
                 character.club_id = club_id
-                character.reminder.time_to_join_club = datetime.now()
+                if not character.is_bot:
+                    character.reminder.time_to_join_club = datetime.now()
                 merged_obj = await session.merge(character)
                 await session.commit()
                 return merged_obj
@@ -202,7 +203,7 @@ class CharacterService:
                     session.add(character)
                 except:
                     pass
-                character.education_reward_date = datetime.now()+amount_add_time
+                character.reminder.education_reward_date = datetime.now()+amount_add_time
                 merged_obj = await session.merge(character)
                 await session.commit()
                 return merged_obj

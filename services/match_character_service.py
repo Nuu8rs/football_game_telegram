@@ -67,3 +67,16 @@ class MatchCharacterService:
                         )
                 result = await session.execute(stmt)
                 return result.scalars().all()
+            
+    
+    @classmethod
+    async def get_charaters_club_in_match(cls, match_id: str, club_id: int):
+        async for session in get_session():
+            async with session.begin():
+                stmt = (select(MatchCharacter)
+                        .where(MatchCharacter.match_id == match_id)
+                        .where(MatchCharacter.club_id == club_id)
+                        
+                        )
+                result = await session.execute(stmt)
+                return result.scalars().all()

@@ -25,7 +25,7 @@ async def start_functional():
     await reset_aplied_energy_club.start_reset_energy()
     await education_reward_reminder.start_reminder()
     await gym_reminder.cheking_job_gym()
-    # await core_league.setup_league()
+    await core_league.setup_league()
 
 
 async def init_db():

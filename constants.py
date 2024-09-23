@@ -83,12 +83,14 @@ HALL_FAME_PHOTO  = FSInputFile("src/hall_fame_photo.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 
-TIME_FIGHT = timedelta(minutes=7)
+TIME_FIGHT = timedelta(minutes=3)
 TIME_RESET_ENERGY = CronTrigger(hour=22, minute=1)
 
 DELTA_TIME_EDUCATION_REWARD = timedelta(hours=12)
 
 HOURS_END_TIME = 22
+
+KOEF_ENERGY_DONATE = 5
 
 
 def GET_RANDOM_NUMBER(LIMIT_1 = 1, LIMIT_2 = 5):

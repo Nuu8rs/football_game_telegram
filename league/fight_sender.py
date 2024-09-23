@@ -148,13 +148,22 @@ class ClubMatchSender:
         return self._format_message(self.TEMPLATE_END, {'winner_section': winner_section})
 
 
-    def get_text_goal_evenet(self, goal_event: str):
+    def get_text_goal_evenet(self, goal_event: str) -> str:
+        current_score = (
+            f"📊 Поточний рахунок: "
+            f"<b>{self.clubs_in_match.first_club.name_club}</b> {self.clubs_in_match.goals_first_club} - "
+            f"{self.clubs_in_match.goals_second_club} <b>{self.clubs_in_match.second_club.name_club}</b>"
+        )
+
         if goal_event == "goal":
-            return random.choice(goal_scored)
+            message = random.choice(goal_scored)
         elif goal_event == "no_goal":
-            return random.choice(no_goal)
+            message = random.choice(no_goal)
         else:
-            return random.choice(goal_conceded)
+            message = random.choice(goal_conceded)
+
+        return f"{message}\n\n{current_score}"
+
 
     def _determine_winner_loser(self) -> tuple[dict, dict]:
         if self.clubs_in_match.goals_first_club > self.clubs_in_match.goals_second_club:

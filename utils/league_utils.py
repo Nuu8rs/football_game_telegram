@@ -121,7 +121,6 @@ def get_text_rating(fights: list[ClubMatch]):
     club_goals_conceded = {}
 
     for fight in fights:
-        # Инициализация данных для клубов, если еще не существует
         if fight.first_club_id not in club_points:
             club_points[fight.first_club_id] = 0
             club_goals_scored[fight.first_club_id] = 0
@@ -131,9 +130,7 @@ def get_text_rating(fights: list[ClubMatch]):
             club_goals_scored[fight.second_club_id] = 0
             club_goals_conceded[fight.second_club_id] = 0
         
-        # Если время битвы еще не наступило, очки не добавляем
         if fight.time_to_start <= datetime.now():
-            # Подсчет очков, забитых и пропущенных голов
             club_points[fight.first_club_id] += fight.total_points_first_club
             club_goals_scored[fight.first_club_id] += fight.goal_first_club
             club_goals_conceded[fight.first_club_id] += fight.goal_second_club
@@ -142,7 +139,6 @@ def get_text_rating(fights: list[ClubMatch]):
             club_goals_scored[fight.second_club_id] += fight.goal_second_club
             club_goals_conceded[fight.second_club_id] += fight.goal_first_club
 
-    # Создание списка для сортировки
     rankings = []
     for club_id, points in club_points.items():
         club = next(fight.first_club if fight.first_club_id == club_id else fight.second_club
@@ -160,10 +156,8 @@ def get_text_rating(fights: list[ClubMatch]):
             'goal_difference': goal_difference
         })
 
-    # Сортировка по очкам и разнице голов
     sorted_rankings = sorted(rankings, key=lambda x: (-x['points'], -x['goal_difference'], -x['goals_scored']))
 
-    # Формирование таблицы рейтинга
     ranking_table = "🏆 <b>Таблиця Рейтингів</b>\n\n"
     medals = ["🥇", "🥈", "🥉"]
     for index, rank in enumerate(sorted_rankings, start=1):

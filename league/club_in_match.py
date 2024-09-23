@@ -8,6 +8,8 @@ from services.character_service import CharacterService
 
 from utils.randomaizer import check_chance
 
+from constants import KOEF_ENERGY_DONATE
+
 from typing import List
 
 
@@ -24,7 +26,9 @@ class ClubsInMatch:
     goals_first_club: int = 0
     goals_second_club: int = 0
 
-    
+    donate_energy_first_club = 0
+    donate_energy_second_club = 0
+
 
     async def init_clubs(self):
         self.first_club  = await ClubService.get_club(club_id=self.first_club_id)
@@ -70,11 +74,11 @@ class ClubsInMatch:
     
     @property
     def first_club_power(self) -> float:
-        return sum([character.full_power for character in self.first_club_characters])
+        return sum([character.full_power for character in self.first_club_characters]) + self.donate_energy_first_club//KOEF_ENERGY_DONATE
 
     @property
     def second_club_power(self) -> float:
-        return sum([character.full_power for character in self.second_club_characters])
+        return sum([character.full_power for character in self.second_club_characters]) + self.donate_energy_second_club//KOEF_ENERGY_DONATE
 
     @property
     def calculate_chances(self):

@@ -1,7 +1,7 @@
 from database.models.league_fight import LeagueFight
 from database.session import get_session
 from sqlalchemy import update
-from sqlalchemy import select, or_
+from sqlalchemy import select, or_, and_, func
 from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -180,3 +180,21 @@ class LeagueFightService:
                 result = await session.execute(stmt)
                 club = result.scalar_one_or_none()
                 return club
+            
+            
+    @classmethod
+    async def get_match_today(cls, club_id: int) -> LeagueFight:
+        current_date = datetime.now().date()
+        async for session in get_session():
+            async with session.begin():
+                stmt = select(LeagueFight).where(
+                    and_(
+                        func.date(LeagueFight.time_to_start) == current_date, 
+                        or_(
+                            LeagueFight.first_club_id == club_id,  
+                            LeagueFight.second_club_id == club_id 
+                        )
+                    )
+                )
+                result = await session.execute(stmt)
+                return result.scalar_one_or_none()
