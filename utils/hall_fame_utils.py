@@ -2,6 +2,9 @@ from database.models.character import Character
 from database.models.club import Club
 from database.models.match_character import MatchCharacter
 
+from collections import defaultdict
+
+
 from services.character_service import CharacterService
 
 def generate_rankings(entities, my_entity, entity_type, sorting_attribute, display_attribute, ranking_label):
@@ -57,20 +60,28 @@ def get_top_club_by_power(all_clubs: list[Club], my_club: Club) -> str:
 
 
 async def get_top_bomber_raiting(all_matches: list[MatchCharacter], my_character: Character):
-    sorted_charactets_match = sorted(all_matches, key=lambda entity: getattr(entity, "goals_count"), reverse=True)
-    rankings = []
-    for index, character_match in enumerate(sorted_charactets_match[:15]):
-        rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
-        character = await CharacterService.get_character_by_id(character_match.character_id)
-        
-        
-        rankings.append(f"{index + 1:>2}. {character.name:<15} - {character_match.goals_count} голів {rank_icon}")
-    top_15_header = f"Топ-15 найкращих бомбардирів за голами 💪\n\n"
-    top_15_text = top_15_header + "\n".join(rankings)
+    total_goals_by_character = defaultdict(int)
     
-    current_character = next((character_match for character_match in sorted_charactets_match if character_match.character_id == my_character.id),None)
-    if current_character:
-        position = sorted_charactets_match.index(current_character) + 1
-        top_15_text += f"\n\nТи посідаєш {position} місце 🏆"
+    for match in all_matches:
+        total_goals_by_character[match.character_id] += match.goals_count
+    
+    sorted_characters = sorted(total_goals_by_character.items(), key=lambda item: item[1], reverse=True)
+    rankings = []
+    for index, (character_id, total_goals) in enumerate(sorted_characters[:15]):
+        rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
+
+        character = await CharacterService.get_character_by_id(character_id)
+
+        rankings.append(f"{index + 1:>2}. <b>{character.name:<10}</b> - {total_goals:>5} забитих голів {rank_icon}")
         
+    top_15_header = f"Топ-15 бомбардирів за забитими голами ⚽\n\n"
+    top_15_text = top_15_header + "\n".join(rankings)
+
+    my_character_id = my_character.id
+    my_total_goals = total_goals_by_character.get(my_character_id, 0)
+    
+    if my_character_id in total_goals_by_character:
+        position = [i for i, (character_id, _) in enumerate(sorted_characters) if character_id == my_character_id][0] + 1
+        top_15_text += f"\n\nТи посідаєш {position} місце з {my_total_goals} голами 🏆"
+
     return top_15_text

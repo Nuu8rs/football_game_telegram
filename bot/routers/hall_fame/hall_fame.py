@@ -63,7 +63,7 @@ async def menu_hall_of_fame(message: Message, character: Character):
         )
     )
     
-@hall_fame_router.message(F.text == "🏃🏼 Рейтинг бомбардувальників")
+@hall_fame_router.message(F.text == "🏃🏼 Рейтинг бомбардирів")
 async def menu_hall_of_fame(message: Message, character: Character):
     group_id_mathces = await LeagueFightService.get_group_id_by_club(club_id=character.club_id)
     all_matches_charaters = await MatchCharacterService.get_characters_by_group_id(group_id_mathces)
