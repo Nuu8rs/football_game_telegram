@@ -29,6 +29,28 @@ def view_my_item_text(item: Item) -> str:
     
     """
     
+def text_info_items(items_in_category: dict) -> str:
+    
+    ITEM_TEMPLATE = (
+        "\n\n"
+        "<b>{name_item}</b>"
+        " (+{technique_item_stat} <b>техніка</b>)"
+        " (+{kicks_item_stat} <b>удари</b>)"
+        " (+{ball_selection_item_stat} <b>вибір м'яча</b>)"
+        " (+{speed_item_stat}) <b>швидкість</b>"
+        " (+{endurance_item_stat} <b>витривалість</b>)"
+    )
+    text = ""
+    for item in items_in_category:
+        text+= ITEM_TEMPLATE.format(
+            name_item = item['name'],
+            technique_item_stat = item['stats']['technique'],
+            kicks_item_stat =item['stats']['kicks'],
+            ball_selection_item_stat =item['stats']['ball_selection'],
+            speed_item_stat =item['stats']['speed'],
+            endurance_item_stat =item['stats']['endurance']
+        )
+    return text
     
 def check_if_item_equipped(character: Character, item: Item) -> bool:
     category_field_map = {

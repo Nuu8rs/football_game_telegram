@@ -138,10 +138,10 @@ class ClubMatch:
         current_time_fight = TIME_FIGHT - sleep_time 
         while datetime.now() - start_time_taimer < current_time_fight:
             await asyncio.sleep(TIME_FIGHT.total_seconds() / self.total_goals)
-            club_characters_score_gaol = await self._update_score()
-            await self.add_goal_to_character(club_characters_score_gaol)
+            club_characters_score_goal = await self._update_score()
+            await self.add_goal_to_character(club_characters_score_goal)
             
-        await asyncio.sleep(sleep_time)
+        await asyncio.sleep(sleep_time.total_seconds())
 
     async def winners_remuneration(self):
         winners_characters = self.clubs_in_match.determine_winner_users()    

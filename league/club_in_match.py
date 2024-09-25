@@ -45,9 +45,12 @@ class ClubsInMatch:
         await self.__add_character_in_match(characters_in_match)
         if self.first_club.is_fake_club:
             characater_bot = await CharacterService.get_character_by_id(character_id=self.first_club.characters[0].id)
+            await MatchCharacterService.add_character_in_match(club_in_match=self, character=characater_bot)
             self.first_club_characters.append(characater_bot)
+            
         if self.second_club.is_fake_club:
             characater_bot = await CharacterService.get_character_by_id(character_id=self.second_club.characters[0].id)
+            await MatchCharacterService.add_character_in_match(club_in_match=self, character=characater_bot)
             self.second_club_characters.append(characater_bot)
             
     

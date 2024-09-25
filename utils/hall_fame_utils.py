@@ -1,10 +1,8 @@
 from database.models.character import Character
 from database.models.club import Club
+from database.models.match_character import MatchCharacter
 
-
-from database.models.character import Character
-from database.models.club import Club
-
+from services.character_service import CharacterService
 
 def generate_rankings(entities, my_entity, entity_type, sorting_attribute, display_attribute, ranking_label):
     sorted_entities = sorted(entities, key=lambda entity: getattr(entity, sorting_attribute), reverse=True)
@@ -47,7 +45,7 @@ def generate_rankings(entities, my_entity, entity_type, sorting_attribute, displ
     return f"{top_15_text}"
 
 def get_top_characters_by_power(all_characters: list[Character], my_character: Character) -> str:
-    return generate_rankings(all_characters, my_character, 'character', 'full_power', 'full_power', 'бойовою силою')
+    return generate_rankings(all_characters, my_character, 'character', 'full_power', 'full_power', 'силою')
 
 
 def get_top_characters_by_level(all_characters: list[Character], my_character: Character) -> str:
@@ -55,4 +53,24 @@ def get_top_characters_by_level(all_characters: list[Character], my_character: C
 
 
 def get_top_club_by_power(all_clubs: list[Club], my_club: Club) -> str:
-    return generate_rankings(all_clubs, my_club, 'club', 'total_power', 'total_power', 'бойовою силою')
+    return generate_rankings(all_clubs, my_club, 'club', 'total_power', 'total_power', 'силою')
+
+
+async def get_top_bomber_raiting(all_matches: list[MatchCharacter], my_character: Character):
+    sorted_charactets_match = sorted(all_matches, key=lambda entity: getattr(entity, "goals_count"), reverse=True)
+    rankings = []
+    for index, character_match in enumerate(sorted_charactets_match[:15]):
+        rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
+        character = await CharacterService.get_character_by_id(character_match.character_id)
+        
+        
+        rankings.append(f"{index + 1:>2}. {character.name:<15} - {character_match.goals_count} голів {rank_icon}")
+    top_15_header = f"Топ-15 найкращих бомбардирів за голами 💪\n\n"
+    top_15_text = top_15_header + "\n".join(rankings)
+    
+    current_character = next((character_match for character_match in sorted_charactets_match if character_match.character_id == my_character.id),None)
+    if current_character:
+        position = sorted_charactets_match.index(current_character) + 1
+        top_15_text += f"\n\nТи посідаєш {position} місце 🏆"
+        
+    return top_15_text

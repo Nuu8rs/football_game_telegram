@@ -12,7 +12,8 @@ from bot.keyboards.magazine_keyboard import (select_type_items_keyboard,
                                              gradation_values_item, 
                                              select_items_for_buy)
 from bot.callbacks.magazine_callbacks import SelectTypeItems, SelectGradationLevelItem, ByItems
-from utils.item_utils import read_items
+from utils.item_utils import read_items, text_info_items
+
 
 import json
 
@@ -47,7 +48,8 @@ async def select_gradation_level(query: CallbackQuery, state: FSMContext, callba
         item for item in data['data_items'] 
         if item["category"] == callback_data.item_category and item["level_required"] == callback_data.min_level_item
     ]
-    await query.message.answer("Вибери яку річ яку хочеш купити", 
+    
+    await query.message.answer(text = ("📍 Вибери яку річ яку хочеш купити\n" + text_info_items(filtered_items)) , 
                                reply_markup=select_items_for_buy(filtered_items))
 
     

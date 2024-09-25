@@ -5,12 +5,15 @@ from database.models.character import Character
 
 from services.character_service import CharacterService
 from services.club_service import ClubService
+from services.league_service import LeagueFightService
+from services.match_character_service import MatchCharacterService
 
 from bot.keyboards.hall_fame_keyboard import menu_hall_fame
 
 from utils.hall_fame_utils import (get_top_characters_by_power,
                                    get_top_characters_by_level,
-                                   get_top_club_by_power
+                                   get_top_club_by_power,
+                                   get_top_bomber_raiting
                                    )
 from constants import HALL_FAME_PHOTO
 
@@ -57,5 +60,16 @@ async def menu_hall_of_fame(message: Message, character: Character):
         text=get_top_club_by_power(
             all_clubs=all_clubs,
             my_club=my_club
+        )
+    )
+    
+@hall_fame_router.message(F.text == "🏃🏼 Рейтинг бомбардувальників")
+async def menu_hall_of_fame(message: Message, character: Character):
+    group_id_mathces = await LeagueFightService.get_group_id_by_club(club_id=character.club_id)
+    all_matches_charaters = await MatchCharacterService.get_characters_by_group_id(group_id_mathces)
+    await message.answer(
+        text=await get_top_bomber_raiting(
+            all_matches=all_matches_charaters,
+            my_character=character
         )
     )

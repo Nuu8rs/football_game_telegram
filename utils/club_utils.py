@@ -92,12 +92,12 @@ def rating_club(club: Club, character: Character) -> str:
         if char.characters_user_id == character.characters_user_id:
             rank_texts.append(
                 f"{medal} {idx} місце - <b><a href='tg://user?id={char.characters_user_id}'>{char.name}</a>🩳 </b> "
-                f"[💪 <b>{char.full_power}</b>] [<b>{char.level} рів.</b>]"
+                f"[💪 <b>{char.full_power:.2f}</b>] [<b>{char.level} рів.</b>]"
             )
         else:
             rank_texts.append(
                 f"{medal} {idx} місце - <a href='tg://user?id={char.characters_user_id}'>{char.name}</a> "
-                f"[<b>💪 {char.full_power}</b>] [<b>{char.level} рів.</b>]"
+                f"[<b>💪 {char.full_power:.2f}</b>] [<b>{char.level} рів.</b>]"
             )
     
     ranking_text = "\n".join(rank_texts)

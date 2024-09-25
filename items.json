@@ -14,6 +14,21 @@
                 }
     }
     ,
+    {
+        "id": 1,
+        "name":"Футболка крутая",
+        "category":"T_SHIRT",
+        "level_required": 1,
+        "price": 3,
+        "stats":{
+                "technique": 1000,
+                "kicks": 1,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
 
     {
         "id": 2,
@@ -106,21 +121,6 @@
                 }
     }
     
-    ,
-    {
-        "id": 8,
-        "name":"Тренувальні шорти",
-        "category":"SHORTS",
-        "level_required": 2,
-        "price": 70,
-        "stats":{
-                "technique": 2,
-                "kicks": 2,
-                "ball_selection": 1,
-                "speed": 1,
-                "endurance": 1
-                }
-    }
     ,
     {
         "id": 9,

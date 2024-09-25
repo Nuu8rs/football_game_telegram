@@ -39,7 +39,7 @@ async def donate_energy_from_match(message: Message, character: Character, state
         return await message.answer("Зараз не час поповнювати енергію, можна буде поповнити її протягом матчу")
     
     await state.set_state(DonateEnergyInMatch.send_count_donate_energy)
-    await message.answer("Напишіть скільки ви хочете поповнити енергії в поточний матч")
+    await message.answer(f"Напишіть скільки ви хочете поповнити енергії в поточний матч\n5 енергії + 1 сила до команди в матчі\n\nПоточна енергія у тебе - {character.current_energy} 🔋")
     
     
     
