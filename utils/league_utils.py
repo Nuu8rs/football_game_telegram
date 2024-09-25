@@ -3,8 +3,13 @@ from database.models.league_fight import LeagueFight
 
 from league.club_fight import ClubMatchManager, ClubMatch
 from datetime import datetime
+
+from services.character_service import CharacterService
 from services.league_service import LeagueFightService
+from services.match_character_service import MatchCharacterService
 from services.club_service  import ClubService
+
+from league.club_in_match import ClubsInMatch
 
 
 def get_future_matches_by_club(club: Club) -> list[ClubMatch]: 
@@ -171,3 +176,24 @@ def get_text_rating(fights: list[ClubMatch]):
         )
     
     return ranking_table
+
+
+
+
+    
+async def count_energy_characters_in_match(match_id, my_club_id:str):
+    all_characters_in_match = await MatchCharacterService.get_characters_from_match(
+            match_id=match_id
+        )
+
+    power_character = 0
+    for character_in_match in all_characters_in_match:
+        
+        if character_in_match.club_id != my_club_id:
+            continue
+        
+        character = await CharacterService.get_character_by_id(character_in_match.character_id)
+        power_character += character.full_power
+        
+    return power_character
+    

@@ -1,8 +1,7 @@
 from aiogram import Router, Bot, F
 from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.context import FSMContext
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from database.models.user_bot import UserBot
 from database.models.character import Character
@@ -10,7 +9,7 @@ from database.models.character import Character
 from services.character_service import CharacterService
 from services.reminder_character_service import RemiderCharacterService
 
-from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, menu_gym
+from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, menu_gym, leave_from_gym_keyboard
 from bot.callbacks.gym_calbacks import SelectGymType, SelectTimeGym
 
 from constants import GYM_PHOTO, const_name_characteristics, const_energy_by_time
@@ -98,3 +97,10 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
         character_obj=character,
         energy_consumed=const_energy_by_time[callback_data.gym_time]
     )
+    
+
+@gym_router.callback_query(F.data == "get_out_of_gym")
+async def leave_from_gym(query: CallbackQuery, character: Character):
+    await RemiderCharacterService.toggle_character_training_status(character_id=character.id)
+    await RemiderCharacterService.update_training_info(character_id=character.id)
+    await query.message.answer("Ви вийшли з тренування")

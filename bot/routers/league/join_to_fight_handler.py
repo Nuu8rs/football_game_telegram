@@ -9,9 +9,10 @@ from services.character_service import CharacterService
 from services.match_character_service import MatchCharacterService
 
 from bot.callbacks.league_callbacks import  JoinToFight, ViewCharacterRegisteredInMatch
+from bot.keyboards.gym_keyboard import alert_leave_from_gym
 
-from league.club_in_match import ClubsInMatch
-from league.club_fight import ClubMatch, ClubMatchManager
+
+from league.club_fight import ClubMatchManager
 
 
 join_to_fight_router = Router()
@@ -21,8 +22,9 @@ join_to_fight_router = Router()
 @join_to_fight_router.callback_query(JoinToFight.filter())
 async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, character: Character):
     if character.reminder.character_in_training:
-        return await query.answer(
-            text = "Ваш персонаж на тренуванні, ви не можете взяти участь у матчі"
+        return await query.message.answer(
+            text = "Ваш персонаж на тренуванні, ви не можете взяти участь у матчі",
+            reply_markup = alert_leave_from_gym() 
         )
     
     
@@ -78,6 +80,6 @@ async def join_to_match(query: CallbackQuery, callback_data: ViewCharacterRegist
         text += f"👤 {character.name} <b>[{character.full_power:.2f}]</b>\n"
         total_power += character.full_power
         
-    text += f"\n💪 <b>Загальна сила команди</b> {total_power:.2f}"
+    text += f"\n💪 <b>Загальна сила персонажей</b> {total_power:.2f}"
     
     await query.message.answer(text)

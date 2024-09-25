@@ -27,4 +27,3 @@ def menu_league_zone():
            .as_markup(resize_keyboard = True)
            )
     
-    

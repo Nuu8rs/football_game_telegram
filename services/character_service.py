@@ -172,7 +172,8 @@ class CharacterService:
                     await session.rollback()
                     raise e
                 
-    async def update_money_character(character: Character, amount_money_adjustment: int):
+    @classmethod
+    async def update_money_character(cls, character: Character, amount_money_adjustment: int):
         async for session in get_session():
             async with session.begin():
                 try:
@@ -184,7 +185,8 @@ class CharacterService:
                 await session.commit()
                 return merged_obj
             
-    async def add_exp_character(character: Character, amount_exp_add: int):
+    @classmethod
+    async def add_exp_character(cls, character: Character, amount_exp_add: int):
         async for session in get_session():
             async with session.begin():
                 try:
@@ -196,7 +198,8 @@ class CharacterService:
                 await session.commit()
                 return merged_obj
             
-    async def update_character_education_time(character: Character, amount_add_time: timedelta):
+    @classmethod
+    async def update_character_education_time(cls, character: Character, amount_add_time: timedelta):
         async for session in get_session():
             async with session.begin():
                 try:
@@ -212,7 +215,7 @@ class CharacterService:
     @classmethod
     async def equip_item(cls, character_obj: Character, item_obj: Item) -> Character:
         category_field_map = {
-            'T-SHIRT': 't_shirt_id',
+            'T_SHIRT': 't_shirt_id',
             'SHORTS': 'shorts_id',
             'GAITERS': 'gaiters_id',
             'BOOTS': 'boots_id'
@@ -232,3 +235,4 @@ class CharacterService:
                 await session.commit()
                 
                 return merged_character
+            

@@ -28,6 +28,11 @@ class GymTaskScheduler:
                              type_characteristics: str
                             ):
         chance = check_chance(chance_add_point[time_job_gym])
+        character = await CharacterService.get_character_by_id(character_id=character.id)
+        if character.reminder.training_stats is None:
+            return
+        
+        
         if chance:
             await CharacterService.update_character_field(
                 character_obj=character,

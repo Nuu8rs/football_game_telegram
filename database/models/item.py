@@ -1,9 +1,7 @@
 from sqlalchemy import Column, BigInteger, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
-from enum import Enum as PyEnum
 
 from database.model_base import Base
-from database.models.character import Character
 
 import json
 
@@ -16,7 +14,9 @@ class Item(Base):
     level_required = Column(Integer, default=0)
     price = Column(Integer, default=0)
     stats = Column(String(255))
-    
+        
+    owner_character_id = Column(BigInteger)
+
     @property
     def all_stats(self):
         return json.loads(self.stats) if self.stats else {}

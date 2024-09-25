@@ -107,8 +107,8 @@ class CORE_LEAGUE:
 
     async def starting_matches(self, matches: List['LeagueFight']) -> None:
         for _, match in enumerate(matches):
-                if match.first_club_id == 1 or match.second_club_id == 1:
-                    await self.schedule_match_start(match)
+            await self.schedule_match_start(match)
+
                 
     async def schedule_match_start(self, match: 'LeagueFight') -> None:
         
@@ -119,7 +119,7 @@ class CORE_LEAGUE:
         # start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
         # current_time = datetime.now()
         # start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
-        # start_time_fight = start_time_sender + timedelta(seconds=20)
+        # start_time_fight = start_time_sender + timedelta(minutes=10)
         
         fight = ClubMatch(
             first_club_id  = match.first_club.id  ,

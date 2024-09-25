@@ -64,3 +64,18 @@ def menu_massage_room():
         keyboard.button(text = f"Купить [{count_energy}] 🔋", 
                         callback_data=SelectCountGetEnergy(count_energy=count_energy))
     return keyboard.adjust(1).as_markup()
+
+
+def alert_leave_from_gym():
+    return (
+        InlineKeyboardBuilder()
+        .button(text = "Вийти з тренування?", callback_data="get_out_of_gym")
+        .as_markup()
+    )
+    
+def leave_from_gym_keyboard():
+    return (
+        InlineKeyboardBuilder()
+        .button(text = "Точно вийти", callback_data="leave_gym")
+        .as_markup()
+    )

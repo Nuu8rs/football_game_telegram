@@ -103,7 +103,7 @@ class ClubMatch:
         update_current_time = TIME_FIGHT - timedelta(seconds=sleep_first_time)
 
         while datetime.now() - start_time_taimer < update_current_time:
-            await asyncio.sleep(TIME_FIGHT.total_seconds() / (self.total_goals + 1))
+            await asyncio.sleep(TIME_FIGHT.total_seconds() / (self.total_goals + 2))
 
             if previous_goals_first_club == self.clubs_in_match.goals_first_club and \
             previous_goals_second_club == self.clubs_in_match.goals_second_club:
@@ -121,10 +121,13 @@ class ClubMatch:
             previous_goals_first_club = self.clubs_in_match.goals_first_club
             
     async def _taimer_match(self, start_time_taimer):
-        while datetime.now() - start_time_taimer < TIME_FIGHT:
+        
+        sleep_time = TIME_FIGHT//10
+        current_time_fight = TIME_FIGHT - sleep_time 
+        while datetime.now() - start_time_taimer < current_time_fight:
             await asyncio.sleep(TIME_FIGHT.total_seconds() / self.total_goals)
             await self._update_score()
-
+        await asyncio.sleep(sleep_time)
 
     async def winners_remuneration(self):
         winners_characters = self.clubs_in_match.determine_winner_users()    
