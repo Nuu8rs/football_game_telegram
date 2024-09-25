@@ -83,7 +83,7 @@ HALL_FAME_PHOTO  = FSInputFile("src/hall_fame_photo.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 
-# TIME_FIGHT = timedelta(minutes=5)
+# TIME_FIGHT = timedelta(minutes=2)
 TIME_FIGHT = timedelta(hours=1)
 TIME_RESET_ENERGY = CronTrigger(hour=22, minute=1)
 

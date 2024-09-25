@@ -29,6 +29,7 @@ class ClubsInMatch:
     donate_energy_first_club = 0
     donate_energy_second_club = 0
 
+    how_to_increment_goal: Character | None = None
 
     async def init_clubs(self):
         self.first_club  = await ClubService.get_club(club_id=self.first_club_id)

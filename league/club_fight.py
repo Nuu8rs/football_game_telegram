@@ -76,6 +76,7 @@ class ClubMatch:
     async def add_goal_to_character(self, character_in_club: list[Character]):
         power_chance_characters = [character.full_power for character in character_in_club]
         character_score_goal = random.choices(character_in_club, weights=power_chance_characters, k=1)[0]
+        self.clubs_in_match.how_to_increment_goal = character_score_goal
         await MatchCharacterService.add_goal_to_character(match_id=self.clubs_in_match.match_id, character_id=character_score_goal.id)
                     
                     
