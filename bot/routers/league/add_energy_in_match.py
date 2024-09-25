@@ -35,7 +35,7 @@ async def donate_energy_from_match(message: Message, character: Character, state
     await state.update_data(current_match = current_match)
     
     current_datetime = datetime.now()
-    if (current_datetime < current_match.start_time) and (current_datetime > current_match.start_time + TIME_FIGHT):
+    if (current_datetime < current_match.start_time) or (current_datetime > current_match.start_time + TIME_FIGHT):
         return await message.answer("Зараз не час поповнювати енергію, можна буде поповнити її протягом матчу")
     
     await state.set_state(DonateEnergyInMatch.send_count_donate_energy)

@@ -119,7 +119,7 @@ class CORE_LEAGUE:
         # start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
         # current_time = datetime.now()
         # start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
-        # start_time_fight = start_time_sender + timedelta(minutes=10)
+        # start_time_fight = start_time_sender + timedelta(minutes=2)
         
         fight = ClubMatch(
             first_club_id  = match.first_club.id  ,
