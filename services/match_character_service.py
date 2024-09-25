@@ -80,3 +80,15 @@ class MatchCharacterService:
                         )
                 result = await session.execute(stmt)
                 return result.scalars().all()
+            
+            
+    @classmethod
+    async def add_goal_to_character(cls, match_id: str, character_id: int):
+        async for session in get_session():
+            async with session.begin():
+                match_character = await session.execute(
+                    select(cls).where(cls.match_id == match_id, cls.character_id == character_id)
+                )
+                match_character = match_character.scalar_one_or_none()
+                match_character.goals_count += 1
+                await session.commit()

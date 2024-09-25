@@ -60,6 +60,7 @@ class ClubsInMatch:
                 self.second_club_characters.append(character)
 
 
+
     def determine_winner_users(self) -> list[Character]:
         if self.goals_first_club > self.goals_second_club:
             return self.first_club_characters
@@ -67,6 +68,7 @@ class ClubsInMatch:
             return self.second_club_characters
         else:
             return self.second_club_characters + self.first_club_characters
+
 
     @property
     def clubs_is_have_no_characters(self) -> bool:

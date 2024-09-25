@@ -9,6 +9,8 @@ from database.models.character import Character
 
 from services.character_service import CharacterService
 from services.league_service import LeagueFightService
+from services.match_character_service import MatchCharacterService
+
 from .club_in_match import ClubsInMatch
 from .fight_sender import ClubMatchSender
 
@@ -69,20 +71,30 @@ class ClubMatch:
         await self.club_match_sender.send_messages_to_users(
             text=self.club_match_sender.get_text_winners(),
             characters=self.clubs_in_match.all_characters_in_match)
+    
+    
+    async def add_goal_to_character(self, character_in_club: list[Character]):
+        power_chance_characters = [character.full_power for character in character_in_club]
+        character_score_goal = random.choices(character_in_club, weights=power_chance_characters, k=1)[0]
+        await MatchCharacterService.add_goal_to_character(match_id=self.clubs_in_match.match_id, character_id=character_score_goal.id)
                     
-    async def _update_score(self):
+                    
+    async def _update_score(self) -> list[Character]:
         
         if self.clubs_in_match.check_chance_win():
             club_id = self.clubs_in_match.first_club_id
             self.clubs_in_match.goals_first_club += 1
+            chatacters_club = self.clubs_in_match.first_club_characters
         else:
             club_id = self.clubs_in_match.second_club_id
             self.clubs_in_match.goals_second_club += 1
+            chatacters_club = self.clubs_in_match.second_club_characters
             
         await LeagueFightService.increment_goal(
             match_id=self.clubs_in_match.match_id,
             club_id=club_id
             )
+        return chatacters_club
     
     #TAIMERS
     async def starting_taimer_match(self):
@@ -126,7 +138,9 @@ class ClubMatch:
         current_time_fight = TIME_FIGHT - sleep_time 
         while datetime.now() - start_time_taimer < current_time_fight:
             await asyncio.sleep(TIME_FIGHT.total_seconds() / self.total_goals)
-            await self._update_score()
+            club_characters_score_gaol = await self._update_score()
+            await self.add_goal_to_character(club_characters_score_gaol)
+            
         await asyncio.sleep(sleep_time)
 
     async def winners_remuneration(self):

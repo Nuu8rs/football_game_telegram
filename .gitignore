@@ -32,7 +32,6 @@ coverage.xml
 # Конфигурационные файлы
 *.ini
 *.cfg
-*.json
 
 # Папка с файлом базы данных SQLite
 db.sqlite3

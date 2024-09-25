@@ -1,0 +1,263 @@
+[
+    {
+        "id": 1,
+        "name":"Футболка початківця",
+        "category":"T_SHIRT",
+        "level_required": 1,
+        "price": 30,
+        "stats":{
+                "technique": 1,
+                "kicks": 1,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+
+    {
+        "id": 2,
+        "name":"Футболка Дзідана",
+        "category":"T_SHIRT",
+        "level_required": 1,
+        "price": 50,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+
+    {
+        "id": 3,
+        "name":"Базова футболка",
+        "category":"T_SHIRT",
+        "level_required": 2,
+        "price": 60,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 4,
+        "name":"Тренувальна футболка",
+        "category":"T_SHIRT",
+        "level_required": 2,
+        "price": 90,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 5,
+        "name":"Шорти початківця",
+        "category":"SHORTS",
+        "level_required": 1,
+        "price": 20,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 6,
+        "name":"Шорти Дзідана",
+        "category":"SHORTS",
+        "level_required": 1,
+        "price": 40,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 7,
+        "name":"Базові шорти",
+        "category":"SHORTS",
+        "level_required": 2,
+        "price": 50,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    
+    ,
+    {
+        "id": 8,
+        "name":"Тренувальні шорти",
+        "category":"SHORTS",
+        "level_required": 2,
+        "price": 70,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 9,
+        "name":"Тренувальні шорти",
+        "category":"SHORTS",
+        "level_required": 2,
+        "price": 70,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+        
+    ,
+    {
+        "id": 10,
+        "name":"Гетри початківця",
+        "category":"GAITERS",
+        "level_required": 1,
+        "price": 15,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 11,
+        "name":"Гетри Дзідана",
+        "category":"GAITERS",
+        "level_required": 1,
+        "price": 15,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }    
+    ,
+    {
+        "id": 12,
+        "name":"Базові Гетри",
+        "category":"GAITERS",
+        "level_required": 2,
+        "price": 15,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 13,
+        "name":"Трунувальні гетри",
+        "category":"GAITERS",
+        "level_required": 2,
+        "price": 45,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 14,
+        "name":"Бутси початківця",
+        "category":"BOOTS",
+        "level_required": 1,
+        "price": 30,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 15,
+        "name":"Бутси Дзідана",
+        "category":"BOOTS",
+        "level_required": 1,
+        "price": 50,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 16,
+        "name":"Базові сороконіжки",
+        "category":"BOOTS",
+        "level_required": 2,
+        "price": 70,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+    ,
+    {
+        "id": 17,
+        "name":"Тренувальні початківця",
+        "category":"BOOTS",
+        "level_required": 2,
+        "price": 140,
+        "stats":{
+                "technique": 2,
+                "kicks": 2,
+                "ball_selection": 1,
+                "speed": 1,
+                "endurance": 1
+                }
+    }
+
+
+
+]
