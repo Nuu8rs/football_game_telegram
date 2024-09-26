@@ -6,7 +6,7 @@ from database.models.user_bot import UserBot
 
 from .utils_keyboard import switch_buttons, menu_plosha
 from ..callbacks.switcher import SwitchClub
-from ..callbacks.club_callbacks import SelectClubToJoin, JoinToClub, TransferOwner
+from ..callbacks.club_callbacks import SelectClubToJoin, JoinToClub, TransferOwner, DeleteClub
 from constants import MAX_LEN_MEMBERS_CLUB
 
 
@@ -74,3 +74,10 @@ def transfer_club_owner_keyboard(club: Club):
                         callback_data=TransferOwner(user_id_new_owner =  character_club.characters_user_id))
     keyboard.adjust(3)
     return keyboard.as_markup()
+
+
+def definitely_delete_club_keyboard(club_id: int):
+    return (InlineKeyboardBuilder()
+            .button(text = "Точно видалити мій клуб", callback_data=DeleteClub(club_id=club_id))
+            .as_markup()
+            )

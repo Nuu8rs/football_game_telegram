@@ -21,7 +21,7 @@ CONST_ENERGY = 150
 
 EPOCH_ZERO = datetime(1970, 1, 1)
 
-ADMINS = [6790393255]
+ADMINS = [6790393255, 577395732]
 
 class DatabaseType(Enum):
     USER = 'bot'

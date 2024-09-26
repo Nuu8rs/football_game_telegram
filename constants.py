@@ -13,14 +13,6 @@ from config import PositionCharacter, Gender
 import random, json
 
 
-
-BASE_STATS_ITEMS = {
-    "technique": 1,
-    "kicks": 1,
-    "ball_selection": 1,
-    "speed": 1,
-    "endurance": 1,
-}
     
 class ItemCategory(PyEnum):
     T_SHIRT = "T-shirt"

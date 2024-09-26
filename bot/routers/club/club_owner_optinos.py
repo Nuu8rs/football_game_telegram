@@ -3,19 +3,16 @@ from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
 
 from database.models.character import Character
-from database.models.club import Club
 
 from services.club_service import ClubService
-from services.character_service import CharacterService
 
 from bot.states.club_states import SendMessageMembers
-from bot.callbacks.club_callbacks import TransferOwner
-from bot.keyboards.club_keyboard import transfer_club_owner_keyboard
+from bot.callbacks.club_callbacks import TransferOwner, DeleteClub
+from bot.keyboards.club_keyboard import transfer_club_owner_keyboard, definitely_delete_club_keyboard
 
-from constants import CLUB_PHOTO
 from utils.club_utils import send_message_characters_club
 
-from loader import logger, bot
+from loader import logger
 owner_option_club_router = Router()
 
 
@@ -97,12 +94,24 @@ async def delete_my_club(query: CallbackQuery, character: Character):
     if club.owner_id != character.characters_user_id:
         return await query.answer("❌ Ви не адмін клубу")
     
+    await query.message.answer("Ви точно хочете видалити клуб?",
+                               reply_markup=definitely_delete_club_keyboard(club.id))
+
     
-    await ClubService.remove_all_characters_from_club(club)
-    await query.message.delete()
-    await query.message.answer("Вы удалили свой клуб")
+@owner_option_club_router.callback_query(DeleteClub.filter())
+async def delete_my_club(query: CallbackQuery, character: Character, callback_data: DeleteClub):
+    if not character.club_id:
+        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+
+    club = await ClubService.get_club(club_id=callback_data.club_id)
+    if club.owner_id != character.characters_user_id:
+        return await query.answer("❌ Ви не адмін клубу")
+    
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
         text=f"😢 Клуб был удален"
     )
+    await ClubService.remove_all_characters_from_club(club)
+    await query.message.delete()
+    await query.message.answer("Ви видалили свій клуб")

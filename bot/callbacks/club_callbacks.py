@@ -11,3 +11,6 @@ class LeaveThisClub(CallbackData, prefix = "leave_club"):
     
 class TransferOwner(CallbackData, prefix="transfer_owner"):
     user_id_new_owner: int
+    
+class DeleteClub(CallbackData, prefix="delete_club"):
+    club_id: int

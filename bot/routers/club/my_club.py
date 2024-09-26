@@ -45,6 +45,8 @@ async def get_my_club_handler(message: Message, user: UserBot, character: Charac
     
 @my_club_router.callback_query(F.data == "change_club_chat")
 async def change_chat_link_clube(query: CallbackQuery, state: FSMContext, user: UserBot, character: Character):
+    if character.club_id is None:
+        return await query.answer("Ви зараз не в клубі")
     await query.message.answer("Надішліть посилання на чат клубу")
     await state.set_state(state=ChangeClubChatLink.send_chat_link)
     
