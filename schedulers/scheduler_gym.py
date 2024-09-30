@@ -39,19 +39,26 @@ class GymTaskScheduler:
                 param=type_characteristics,
                 add_point=1
             )
-            await bot.send_message(
-                chat_id=character.characters_user_id,
-                text="<b>Вітаю</b> параметр персонажа {type_characteristics} - було покращено на 1 очко!".format(
-                    type_characteristics = const_name_characteristics[type_characteristics]
+            try:
+                await bot.send_message(
+                    chat_id=character.characters_user_id,
+                    text="<b>Вітаю</b> параметр персонажа {type_characteristics} - було покращено на 1 очко!".format(
+                        type_characteristics = const_name_characteristics[type_characteristics]
+                    )
                 )
-            )
+            except Exception as E:
+                logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ {character.name}")
         else:
-            await bot.send_message(
-                chat_id=character.characters_user_id,
-                text="<b>На жаль</b>, ваш персонаж не зміг прокачати параметр {type_characteristics}, спробуйте ще раз!".format(
-                    type_characteristics = const_name_characteristics[type_characteristics]
+            try:
+                await bot.send_message(
+                    chat_id=character.characters_user_id,
+                    text="<b>На жаль</b>, ваш персонаж не зміг прокачати параметр {type_characteristics}, спробуйте ще раз!".format(
+                        type_characteristics = const_name_characteristics[type_characteristics]
+                    )
                 )
-            )            
+            except Exception as E:
+                logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ {character.name}")
+                            
         await RemiderCharacterService.toggle_character_training_status(character_id=character.id)
         await RemiderCharacterService.update_training_info(character_id=character.id)
     

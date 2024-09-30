@@ -20,6 +20,7 @@ def create_or_join_club():
     
 def menu_club():
     return (ReplyKeyboardBuilder()
+            # .button(text = "👓 Перегляд клубів")
             .attach(menu_plosha())
             .adjust(1)
             .as_markup(resize_keyboard=True)

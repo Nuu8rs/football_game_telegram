@@ -14,6 +14,8 @@ from services.match_character_service import MatchCharacterService
 from .club_in_match import ClubsInMatch
 from .fight_sender import ClubMatchSender
 
+from loader import logger
+
 class ClubMatchManager:
     all_fights: dict[str, "ClubMatch"] = {}
     
@@ -81,7 +83,9 @@ class ClubMatch:
                     
                     
     async def _update_score(self) -> list[Character]:
-        
+        if self.clubs_in_match.first_club_id in [1,2] or self.clubs_in_match.second_club_id == [1,2]:
+            logger.error(f"КЛУБ: {self.clubs_in_match.first_club.name_club} |СИЛА КЛУБА: {self.clubs_in_match.first_club_power}")
+            logger.error(f"КЛУБ: {self.clubs_in_match.second_club.name_club} |СИЛА КЛУБА: {self.clubs_in_match.second_club_power}")
         if self.clubs_in_match.check_chance_win():
             club_id = self.clubs_in_match.first_club_id
             self.clubs_in_match.goals_first_club += 1
@@ -141,6 +145,7 @@ class ClubMatch:
             await asyncio.sleep(TIME_FIGHT.total_seconds() / self.total_goals)
             club_characters_score_goal = await self._update_score()
             await self.add_goal_to_character(club_characters_score_goal)
+            
             
         await asyncio.sleep(sleep_time.total_seconds())
 

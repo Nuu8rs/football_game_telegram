@@ -80,7 +80,7 @@ class CORE_LEAGUE:
         self.scheduler_league.start()
 
     async def generate_and_schedule_new_fights(self, groups: List[List['Club']]) -> None:
-        start_date = datetime(2024, 9, 10) 
+        start_date = datetime.now() 
         for group in groups:
             group_id = random.randint(1,100000)
             matches = self.league_service.generate_round_robin_schedule(group) 
@@ -112,14 +112,14 @@ class CORE_LEAGUE:
                 
     async def schedule_match_start(self, match: 'LeagueFight') -> None:
         
-        match_date = match.time_to_start
-        start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
-        start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15)
+        # match_date = match.time_to_start
+        # start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
+        # start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15)
         
-        # start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
-        # current_time = datetime.now()
-        # start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
-        # start_time_fight = start_time_sender + timedelta(minutes=1)
+        start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
+        current_time = datetime.now()
+        start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(seconds=20)
+        start_time_fight = start_time_sender + timedelta(seconds=20)
         
         fight = ClubMatch(
             first_club_id  = match.first_club.id  ,

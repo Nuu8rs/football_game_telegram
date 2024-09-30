@@ -87,5 +87,7 @@ KOEF_ENERGY_DONATE = 5
 
 PROCENT_TO_SELL = 30
 
+TIME_TO_JOIN_TO_CLUB = timedelta(hours=1)
+
 def GET_RANDOM_NUMBER(LIMIT_1 = 1, LIMIT_2 = 5):
     return random.randint(LIMIT_1,LIMIT_2)

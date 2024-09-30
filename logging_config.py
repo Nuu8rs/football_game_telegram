@@ -27,10 +27,10 @@ class LoggerConfig:
         handler.setFormatter(formatter)
 
         # Общая настройка
-        logging.basicConfig(level=logging.DEBUG, handlers=[handler], force=True)
+        logging.basicConfig(level=logging.INFO, handlers=[handler], force=True)
 
         # Логгер SQLAlchemy
-        sqlalchemy_logger = logging.getLogger('sqlalchemy.engine')
+        sqlalchemy_logger = logging.getLogger('base')
         sqlalchemy_logger.setLevel(logging.WARNING)  # Уровень WARNING
         sqlalchemy_handler = logging.StreamHandler()
         sqlalchemy_handler.setFormatter(formatter)

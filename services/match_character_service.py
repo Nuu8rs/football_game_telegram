@@ -59,7 +59,7 @@ class MatchCharacterService:
                     await session.rollback() 
                 
     @classmethod
-    async def get_characters_from_match(cls, match_id: str):
+    async def get_characters_from_match(cls, match_id: str) -> list[MatchCharacter]:
         async for session in get_session():
             async with session.begin():
                 stmt = (select(MatchCharacter)
@@ -70,7 +70,7 @@ class MatchCharacterService:
             
     
     @classmethod
-    async def get_charaters_club_in_match(cls, match_id: str, club_id: int):
+    async def get_charaters_club_in_match(cls, match_id: str, club_id: int) -> list[MatchCharacter]:
         async for session in get_session():
             async with session.begin():
                 stmt = (select(MatchCharacter)

@@ -34,6 +34,7 @@ def text_info_items(items_in_category: dict) -> str:
     ITEM_TEMPLATE = (
         "\n\n"
         "<b>{name_item}</b>"
+        "  💸 ціна - {price_item} "
         " (+{technique_item_stat} <b>техніка</b>)"
         " (+{kicks_item_stat} <b>удари</b>)"
         " (+{ball_selection_item_stat} <b>вибір м'яча</b>)"
@@ -44,6 +45,7 @@ def text_info_items(items_in_category: dict) -> str:
     for item in items_in_category:
         text+= ITEM_TEMPLATE.format(
             name_item = item['name'],
+            price_item = item['price'],
             technique_item_stat = item['stats']['technique'],
             kicks_item_stat =item['stats']['kicks'],
             ball_selection_item_stat =item['stats']['ball_selection'],

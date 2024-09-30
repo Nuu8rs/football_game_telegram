@@ -89,7 +89,6 @@ class ClubsInMatch:
     @property
     def calculate_chances(self):
         total_power = self.first_club_power + self.second_club_power
-        
         return (self.first_club_power / total_power) * 100
   
     @property
