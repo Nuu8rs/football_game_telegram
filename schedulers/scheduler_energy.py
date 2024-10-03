@@ -5,7 +5,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from services.character_service import CharacterService
 from services.club_service import ClubService
 
-from constants import TIME_RESET_ENERGY
+from constants import TIME_RESET_ENERGY_CHARACTER, TIME_RESET_ENERGY_CLUB
 from logging_config import logger
 from datetime import timedelta
 import random
@@ -21,7 +21,7 @@ class EnergyResetScheduler:
         
         
     async def start_reset_energy(self):
-        self.scheduler.add_job(self.reset_energy_character, TIME_RESET_ENERGY)
+        self.scheduler.add_job(self.reset_energy_character, TIME_RESET_ENERGY_CHARACTER)
         self.scheduler.start()
 
         
@@ -35,5 +35,5 @@ class EnergyApliedClubResetScheduler:
         logger.info("Убрал усиление с клубов")
 
     async def start_reset_energy(self):
-        self.scheduler.add_job(self.reset_energy_aplied, TIME_RESET_ENERGY)
+        self.scheduler.add_job(self.reset_energy_aplied, TIME_RESET_ENERGY_CLUB)
         self.scheduler.start()

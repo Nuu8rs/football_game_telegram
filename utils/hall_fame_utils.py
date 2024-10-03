@@ -67,21 +67,28 @@ async def get_top_bomber_raiting(all_matches: list[MatchCharacter], my_character
     
     sorted_characters = sorted(total_goals_by_character.items(), key=lambda item: item[1], reverse=True)
     rankings = []
-    for index, (character_id, total_goals) in enumerate(sorted_characters[:15]):
-        rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
-
+    
+    all_real_characters = []
+    
+    index = 0
+    for character_id, total_goals in sorted_characters:
         character = await CharacterService.get_character_by_id(character_id)
-
+        if character.is_bot:
+            continue
+        rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
         rankings.append(f"{index + 1:>2}. <b>{character.name:<10}</b> - {total_goals:>5} забитих голів {rank_icon}")
         
+        all_real_characters.append(character)
+        index += 1
+        
     top_15_header = f"Топ-15 бомбардирів за забитими голами ⚽\n\n"
-    top_15_text = top_15_header + "\n".join(rankings)
+    top_15_text = top_15_header + "\n".join(rankings[:15])
 
     my_character_id = my_character.id
     my_total_goals = total_goals_by_character.get(my_character_id, 0)
     
     if my_character_id in total_goals_by_character:
-        position = [i for i, (character_id, _) in enumerate(sorted_characters) if character_id == my_character_id][0] + 1
+        position = [i for i, character in enumerate(all_real_characters) if character.id == my_character_id][0] + 1
         top_15_text += f"\n\nТи посідаєш {position} місце з {my_total_goals} голами 🏆"
 
     return top_15_text

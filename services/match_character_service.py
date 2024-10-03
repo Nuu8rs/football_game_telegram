@@ -2,7 +2,7 @@ from database.models.match_character import MatchCharacter
 from database.models.character import Character
 from league.club_in_match import ClubsInMatch
 
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
 
 from database.session import get_session
@@ -101,3 +101,15 @@ class MatchCharacterService:
                     select(MatchCharacter).where(MatchCharacter.group_id == group_id)
                 )
                 return matchs_character.scalars().all()
+            
+            
+    @classmethod
+    async def delete_character_from_match(cls, character_id: int, match_id: str):
+        async for session in get_session():
+            async with session.begin():
+                await session.execute(
+                    delete(MatchCharacter)
+                    .where(MatchCharacter.character_id == character_id)
+                    .where(MatchCharacter.match_id == match_id)
+                )
+                await session.commit()

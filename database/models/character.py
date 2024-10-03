@@ -8,10 +8,13 @@ from config import PositionCharacter, Gender, CONST_ENERGY, POSITION_DECLENSIONS
 from database.models.reminder_character import ReminderCharacter
 
 
+
 from database.model_base import Base
 
 
 class Character(Base):
+    # from database.models.club import Club
+    
     __tablename__ = 'characters'
     LEVEL_THRESHOLDS = [100, 300, 500, 900, 1500, 2500, 3900, 5500, 12000]
     

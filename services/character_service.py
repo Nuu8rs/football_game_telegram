@@ -155,7 +155,6 @@ class CharacterService:
                     await session.execute(stmt)
                     await session.commit()
                 except Exception as e:
-                    await session.rollback()
                     raise e
                 
     @classmethod

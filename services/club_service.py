@@ -7,6 +7,8 @@ from sqlalchemy import func, update
 from typing import Dict, List
 from constants import MAX_LEN_MEMBERS_CLUB
 
+from datetime import datetime
+
 class ClubService:
     @classmethod
     async def get_club(cls, club_id: int) -> Club:
@@ -91,6 +93,7 @@ class ClubService:
             async with session.begin():
                 result = await session.execute(select(Club).order_by(Club.league))
                 clubs = result.scalars().all()
+                clubs = sorted(clubs, key=lambda club: club.is_fake_club)
                 clubs_by_league = {}
                 for club in clubs:
                     if club.league not in clubs_by_league:
@@ -136,3 +139,16 @@ class ClubService:
                     .values(club_id=None)
                 )
                 await session.commit()
+    
+    @classmethod   
+    async def edit_schemas(cls, club: Club, new_schema: str):
+        async for session in get_session():
+            async with session.begin():
+                await session.execute(
+                    update(Club)
+                    .where(Club.id == club.id)
+                    .values(schema = new_schema)
+                    .values(time_edit_schema = datetime.now())
+                )
+                await session.commit()
+            

@@ -14,3 +14,6 @@ class TransferOwner(CallbackData, prefix="transfer_owner"):
     
 class DeleteClub(CallbackData, prefix="delete_club"):
     club_id: int
+    
+class SelectSchema(CallbackData, prefix="select_shema"):
+    select_schema: str

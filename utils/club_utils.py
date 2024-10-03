@@ -5,9 +5,22 @@ from database.models.club import Club
 
 from services.character_service import CharacterService
 from services.club_service import ClubService
+from config import PositionCharacter
+
+from utils.club_shemas import SchemaClub
 
 from datetime import datetime, timedelta
 from loader import logger, bot
+
+
+text_schemas = {
+        "sсhema_1" : "Перша схема",
+        "sсhema_2" : "Друга схема",
+        "sсhema_3": "Третя схема",
+        "sсhema_4": "Четверта схема",
+        "sсhema_5": "П'ята схема",
+        "sсhema_6": "Шоста схема"
+    }
 
 async def get_club_text(club: Club, character: Character) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
@@ -103,6 +116,33 @@ def rating_club(club: Club, character: Character) -> str:
     ranking_text = "\n".join(rank_texts)
     return ranking_text
 
+def get_text_schemas(club: Club):
+
+    
+    text = """
+Поточна схема: {my_schema}
+    
+⚽ Схема команди на матч ⚽
+Ваша команда готова до бою! Ось як розподіляються гравці на полі для майбутнього матчу:
+
+🧤 Воротар [GK]: {goalkeeper} гравець - він не пропустить жодного м'яча! Це останній рубіж оборони, який охороняє ворота.
+
+🛡 Захисники [DF]: {defenders} гравця - ваші герої оборони! Вони стоять стіною перед воротами, захищаючи команду від атак суперника.
+
+⚡ Нападники [MF]: {attackers} гравця - це ваші найкращі голеадори! Вони завжди готові завдати вирішального удару і забити гол.
+
+🎯 Півзахисники [FW]: {midfielder} гравця - головні майстри поля! Вони керують грою, роздають передачі і допомагають як у захисті, так і в атаці.
+    """
+    
+    current_chema = SchemaClub.__getattribute__(SchemaClub, club.schema)
+    return text.format(
+        my_schema  = text_schemas[club.schema],
+        defenders  = current_chema[PositionCharacter.DEFENDER],
+        midfielder = current_chema[PositionCharacter.MIDFIELDER],
+        attackers  = current_chema[PositionCharacter.ATTACKER],
+        goalkeeper = current_chema[PositionCharacter.GOALKEEPER]
+    )
+
 
 async def send_message_characters_club(characters_club: list[Character],
                                        my_character: Character, text: str):
@@ -112,4 +152,6 @@ async def send_message_characters_club(characters_club: list[Character],
         try:
             await bot.send_message(chat_id= character.characters_user_id, text = text)
         except Exception as E:
-            logger.error("НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ ПЕРСОНАЖУ {}")
+            logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ ПЕРСОНАЖУ {character.name}")
+            
+            

@@ -1,18 +1,24 @@
 from aiogram import Router, Bot, F
-from aiogram.types import Message, CallbackQuery, FSInputFile
+from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from database.models.character import Character
+from database.models.club import Club
 
 from services.club_service import ClubService
+from services.match_character_service import MatchCharacterService
+from services.league_service import LeagueFightService
 
 from bot.states.club_states import SendMessageMembers
-from bot.callbacks.club_callbacks import TransferOwner, DeleteClub
-from bot.keyboards.club_keyboard import transfer_club_owner_keyboard, definitely_delete_club_keyboard
+from bot.callbacks.club_callbacks import TransferOwner, DeleteClub, SelectSchema
+from bot.keyboards.club_keyboard import transfer_club_owner_keyboard, definitely_delete_club_keyboard, select_schema_keyboard
 
-from utils.club_utils import send_message_characters_club
+from utils.club_utils import send_message_characters_club, get_text_schemas, text_schemas
 
-from loader import logger
+from datetime import timedelta, datetime
+from config import EPOCH_ZERO
+from loader import bot,logger
+
 owner_option_club_router = Router()
 
 
@@ -115,3 +121,43 @@ async def delete_my_club(query: CallbackQuery, character: Character, callback_da
     await ClubService.remove_all_characters_from_club(club)
     await query.message.delete()
     await query.message.answer("Ви видалили свій клуб")
+    
+    
+@owner_option_club_router.callback_query(F.data == "change_schema_club")
+async def switch_schema_club(query: CallbackQuery, character: Character):
+    text_current_chema = get_text_schemas(character.club)
+    
+    await query.message.answer(text = text_current_chema,
+                               reply_markup=select_schema_keyboard())
+    
+@owner_option_club_router.callback_query(SelectSchema.filter())
+async def select_schema(query: CallbackQuery, character: Character, callback_data: SelectSchema):
+    if character.club.schema == callback_data.select_schema:
+        return await query.answer("У вас і так обрано цю схему", show_alert=True)
+
+    if character.club.time_edit_schema != EPOCH_ZERO and character.club.time_edit_schema + timedelta(days=3) < datetime.now():
+        return await query.answer("Для зміни схеми має минути 3 дні", show_alert=True)
+    
+    
+    await ClubService.edit_schemas(club= character.club, new_schema=callback_data.select_schema)
+    await query.message.answer(f"Ви встановили «{text_schemas[callback_data.select_schema]}»")
+    await query.message.answer("<b>Сповіщаю команду про те що ви змінили схему</b>, усім хто зареєструвався сьогодні на матч, <b>треба буде ще раз зайти в матч</b> за новою схемою")
+    await notification_switch_schema(
+        club_id=character.club_id,
+        my_character=character
+    )
+    
+async def notification_switch_schema(club_id: int, my_character: Character):
+    club = await ClubService.get_club(club_id)
+    current_match_today = await LeagueFightService.get_match_today(club_id=club.id)
+    await send_message_characters_club(
+        characters_club=club.characters,
+        my_character=my_character,
+        text="<b>Лідер клубу змінив схему</b>\n\n"+get_text_schemas(club)
+    )
+    for character in club.characters:
+            await MatchCharacterService.delete_character_from_match(
+                character_id=character.id,
+                match_id=current_match_today.match_id
+            )
+            

@@ -1,23 +1,22 @@
 from aiogram import Router
 from aiogram import Bot, F
-from aiogram.types import Message, FSInputFile
+from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import CommandStart
 
 from bot.keyboards.menu_keyboard import main_menu
 
-from database.models.club import Club
 from database.models.user_bot import UserBot
-from database.models.character import Character
+
 from constants import PLOSHA_PEREMOGU
 
 start_router = Router()
 
-
+from database.models.character import Character
 @start_router.message(CommandStart())
-async def start_command_handler(message: Message, state: FSMContext, user: UserBot):
+async def start_command_handler(message: Message, state: FSMContext, user: UserBot, character: Character):
     # ##############################
-    # await test()
+    # await test(character)
     # #############################
     await state.clear()
     bot_name = await message.bot.get_my_name()
@@ -43,12 +42,16 @@ async def plosha(message: Message, user: UserBot):
                                """,
                                reply_markup=main_menu(user))
 
-async def test():
-    from league.create_bots import BOTS
-    bot_menu = BOTS(
-        average_club_strength=100,
-        name_league="🟢 Ліга новачків"
-    )
-    await bot_menu.create_bot_clubs(
-        len_bots_club=18
-    )
+async def test(character: Character):
+    from utils.club_shemas import SchemaSerivce
+    from services.club_service import ClubService
+    from utils.club_utils import get_text_schemas
+    club = await ClubService.get_club(club_id=character.club_id)
+    text = get_text_schemas(club)
+    print(text)
+    # await SchemaSerivce.character_is_enough_room(
+    #     match_id="0aac6013-13fc-44cd-be92-ed67d4fb5671",
+    #     club = club,
+    #     my_character=character
+        
+    # )

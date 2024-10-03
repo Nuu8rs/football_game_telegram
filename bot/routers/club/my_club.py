@@ -16,7 +16,7 @@ from bot.keyboards.club_keyboard import create_or_join_club, club_menu_keyboard,
 from bot.states.club_states import ChangeClubChatLink
 
 
-from utils.club_utils import get_club_text, rating_club, send_message_characters_club
+from utils.club_utils import get_club_text, rating_club, send_message_characters_club, get_text_schemas
 
 from constants import CLUB_PHOTO
 
@@ -94,3 +94,11 @@ async def leave_club_handler(query: CallbackQuery, user: UserBot, character: Cha
         text=f"☹️ Персонаж <b>{character.name}</b> покинул ваш клуб"
     )
 
+@my_club_router.callback_query(F.data == "view_schema_club")
+async def view_schema_club(query: CallbackQuery, user: UserBot, character: Character):
+    if not character.club_id:
+        return await query.answer("❌ Ви й так не в клубі")
+    
+    await query.message.answer(
+        text=get_text_schemas(character.club)
+    )

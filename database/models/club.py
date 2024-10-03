@@ -1,4 +1,6 @@
-from sqlalchemy import Column, BigInteger, String, ForeignKey, Boolean, Integer
+from datetime import datetime
+
+from sqlalchemy import Column, BigInteger, String, DateTime, Boolean, ForeignKey, text, Integer
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, Mapped
 from database.models.character import Character
@@ -18,6 +20,9 @@ class Club(Base):
     link_to_chat   = Column(String(255), nullable=True)
     league         = Column(String(254), nullable=False, default=LEAGUES[0])
     is_fake_club   = Column(Boolean, default=False)
+    
+    schema         = Column(String(255), nullable=False, default="sсhema_1", server_default="sсhema_1")
+    time_edit_schema = Column(DateTime, default=datetime(1970, 1, 1), server_default=text('\'1970-01-01 00:00:00\''), nullable=False)
     
     energy_applied = Column(Integer, default=0, server_default='0')
     

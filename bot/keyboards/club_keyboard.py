@@ -1,13 +1,13 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
 from database.models.club import Club
-from database.models.character import Character
 from database.models.user_bot import UserBot
 
 from .utils_keyboard import switch_buttons, menu_plosha
 from ..callbacks.switcher import SwitchClub
-from ..callbacks.club_callbacks import SelectClubToJoin, JoinToClub, TransferOwner, DeleteClub
+from ..callbacks.club_callbacks import SelectClubToJoin, JoinToClub, TransferOwner, DeleteClub, SelectSchema
 from constants import MAX_LEN_MEMBERS_CLUB
+from utils.club_shemas import SchemaClub 
 
 
 def create_or_join_club():
@@ -33,10 +33,12 @@ def club_menu_keyboard(club: Club, user: UserBot):
             keyboard.button(text="⚙️ Додати посилання на чат клубу",  callback_data="change_club_chat")
         else:
             keyboard.button(text="⚙️ змінити посилання на чат клубу", callback_data="change_club_chat")
+        # keyboard.button(text = "🔄 Змінити схему команди", callback_data="change_schema_club")
         keyboard.button(text = "⌨️ Надіслати повідомлення всьому клубу", callback_data="send_message_all_member_club")
         keyboard.button(text = "🫂 Передати права на клуб", callback_data="transfer_rights")
         keyboard.button(text = "❌ Видалити мій клуб", callback_data="delete_my_club")
     else:
+        # keyboard.button(text = "🎮 Схема команди", callback_data="view_schema_club")
         keyboard.button(text = "⬅️ Вийти з клубу", callback_data="leave_club")
     keyboard.button(text="👥 Користувачі клубу",callback_data="view_all_members_club")
     
@@ -82,3 +84,16 @@ def definitely_delete_club_keyboard(club_id: int):
             .button(text = "Точно видалити мій клуб", callback_data=DeleteClub(club_id=club_id))
             .as_markup()
             )
+    
+def select_schema_keyboard():
+    keyboard = InlineKeyboardBuilder()
+    for num_schema in range(1,6):
+        
+        info_schema = SchemaClub.__getattribute__(SchemaClub, f"sсhema_{num_schema}")
+        text_shema = "-".join(map(str, list(info_schema.values())[:-1]))
+        keyboard.button(
+            text=f"Cхема [{text_shema}]",
+            callback_data=SelectSchema(select_schema = f"sсhema_{num_schema}")
+        )
+    keyboard.adjust(2)
+    return keyboard.as_markup()

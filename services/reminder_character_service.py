@@ -28,7 +28,7 @@ class RemiderCharacterService:
                 result = await session.execute(
                     select(Character)
                     .join(ReminderCharacter)
-                    .options(joinedload(Character.reminder))  # Загружаем связанные объекты
+                    .options(joinedload(Character.reminder)) 
                     .where(ReminderCharacter.character_in_training == True)
                 )
                 characters_in_training = result.scalars().all()
