@@ -10,9 +10,9 @@ from database.models.character import Character
 from services.character_service import CharacterService
 from services.user_service import UserService
 from services.club_service import ClubService
-from bot.callbacks.club_callbacks import LeaveThisClub
+from bot.callbacks.club_callbacks import ViewCharatcerClub
 
-from bot.keyboards.club_keyboard import create_or_join_club, club_menu_keyboard, menu_club
+from bot.keyboards.club_keyboard import club_menu_keyboard, main_menu_club
 from bot.states.club_states import ChangeClubChatLink
 
 
@@ -23,14 +23,16 @@ from constants import CLUB_PHOTO
 
 my_club_router = Router()
 
+@my_club_router.message(F.text == "🎪 Клуби")
+async def get_my_club_handler(message: Message, character: Character):
+    await message.answer("Вітаю в меню клуба",reply_markup=main_menu_club(character))
+    
 @my_club_router.message(F.text == "🎪 Мій клуб")
-async def get_my_club_handler(message: Message, user: UserBot, character: Character):
+async def my_club(message: Message, character: Character):
     if  not character.club_id:
         return await message.answer("На жаль, у вас немає клубу, ви можете створити свій клуб, або приєднатися до вже реалізованого клубу",
-                                    reply_markup=create_or_join_club())
+                                    reply_markup=main_menu_club(character))
         
-        
-    await message.answer("Вітаю у клубі",reply_markup=menu_club())
     
     club = await ClubService.get_club(club_id=character.club_id)
     await message.answer_photo(
@@ -39,9 +41,10 @@ async def get_my_club_handler(message: Message, user: UserBot, character: Charac
                               character=character),
         reply_markup=club_menu_keyboard(
             club=club,
-            user=user
+            character=character
         )
-    )
+    )    
+    
     
 @my_club_router.callback_query(F.data == "change_club_chat")
 async def change_chat_link_clube(query: CallbackQuery, state: FSMContext, user: UserBot, character: Character):
@@ -69,9 +72,9 @@ async def edit_chat_link_club(message: Message, state: FSMContext, character: Ch
     await message.answer(f"Ссылка на чат клуба была поменянна на - <a href={link}>Чат</a>")
     await state.clear()
     
-@my_club_router.callback_query(F.data == "view_all_members_club")
-async def change_chat_link_clube(query: CallbackQuery, state: FSMContext, user: UserBot, character: Character):
-    club = await ClubService.get_club(club_id=character.club_id)
+@my_club_router.callback_query(ViewCharatcerClub.filter())
+async def change_chat_link_clube(query: CallbackQuery, character: Character, callback_data: ViewCharatcerClub):
+    club = await ClubService.get_club(club_id=callback_data.club_id)
     rating_club_text = rating_club(
         club=club,
         character=character

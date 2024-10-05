@@ -23,25 +23,25 @@ from utils.club_utils import get_club_description, send_message_characters_club
 
 find_club_router = Router()
 
-@find_club_router.callback_query(F.data == "join_to_club")
-async def get_my_club_handler(query: CallbackQuery, state: FSMContext, character: Character):
+@find_club_router.message(F.text == "🎮 Приєднатися до клубу")
+async def get_my_club_handler(message: Message, state: FSMContext, character: Character):
     if character.club_id:
-        return await query.message.answer("Ви вже й так у клубі")
+        return await message.answer("Ви вже й так у клубі")
     
     all_clubs = await ClubService.get_all_clubs_to_join()
     await state.update_data(all_clubs = all_clubs)
     if not all_clubs:
-        return await query.message.reply("На даний момент немає клубів")
+        return await message.reply("На даний момент немає клубів")
         
     await state.set_state(FindClub.send_name_club)
-    await query.message.edit_text("Виберіть клуб зі списку, або введіть назву клубу самостійно",
+    await message.answer("Виберіть клуб зі списку, або введіть назву клубу самостійно",
                                reply_markup=find_club(
                                    all_clubs=all_clubs,
                                    current_index=0
                                ))
     
     
-@find_club_router.message(FindClub.send_name_club)
+@find_club_router.message(FindClub.send_name_club, F.text != "⛩ Створити свій клуб")
 async def find_clube_message(message: Message, state: FSMContext, character: Character):
     if  character.club_id:
         return await message.answer("Ви вже й так у клубі")

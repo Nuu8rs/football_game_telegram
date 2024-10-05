@@ -103,14 +103,15 @@ class LeagueFightService:
                 
     @classmethod
     async def get_the_monthly_matches_by_group(cls, group_id: str) -> list[LeagueFight] | None:
-        today = datetime.now().date().replace(day=1)
+        today = datetime.now().date()
         async for session in get_session():
             async with session.begin():
                 try:
                     league_fights = await session.execute(
                         select(LeagueFight)
                         .where(
-                            LeagueFight.time_to_start >= today,
+                            LeagueFight.time_to_start >= today
+                        ).where(    
                             LeagueFight.group_id == group_id
                         )
                         .order_by(LeagueFight.time_to_start.asc())
@@ -122,6 +123,10 @@ class LeagueFightService:
                 
     @classmethod
     async def get_group_id_by_club(cls, club_id: int) -> str | None:
+        now = datetime.now()
+        start_of_month = now.replace(day=1)
+        next_month = (start_of_month + timedelta(days=32)).replace(day=1)
+
         async for session in get_session():
             async with session.begin():
                 try:
@@ -131,7 +136,10 @@ class LeagueFightService:
                             or_(
                                 LeagueFight.first_club_id == club_id,
                                 LeagueFight.second_club_id == club_id
-                            )
+                            ),
+                            # Добавляем условие на дату
+                            LeagueFight.time_to_start >= start_of_month,
+                            LeagueFight.time_to_start < next_month
                         )
                         .limit(1)
                     )
@@ -140,7 +148,6 @@ class LeagueFightService:
                 except SQLAlchemyError as e:
                     print(f"Ошибка при получении group_id для клуба {club_id}: {e}")
                     return None
-                
                 
     @classmethod
     async def increment_goal(cls, match_id: str, club_id: int, add_goal: int = 1) -> LeagueFight:

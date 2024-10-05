@@ -2,7 +2,6 @@ import logging
 
 from aiogram import Bot
 from aiogram.types import Message, CallbackQuery, ErrorEvent, User
-from aiogram.fsm.context import FSMContext
 
 from typing import Any, Awaitable, Callable, Dict
 from services.user_service import UserService

@@ -77,14 +77,41 @@ class ClubsInMatch:
     @property
     def clubs_is_have_no_characters(self) -> bool:
         return not self.first_club_characters and not self.second_club_characters
+
+    @staticmethod
+    def percentage_club_stength_increase(count_characters_in_club: int) -> int:
+        if 0 <= count_characters_in_club <= 2:
+            return 0
+        elif 5 <= count_characters_in_club <= 6:
+            return 5
+        elif 7 <= count_characters_in_club <= 9:
+            return 7
+        elif 10 <= count_characters_in_club <= 11:
+            return 10
+        # if 0 <= count_characters_in_club <= 1:
+        #         return 0
+        # elif 2 <= count_characters_in_club <= 6:
+        #     return 5
+        # elif 7 <= count_characters_in_club <= 9:
+        #     return 7
+        # elif 10 <= count_characters_in_club <= 11:
+        #     return 10
+    
+    
     
     @property
     def first_club_power(self) -> float:
-        return sum([character.full_power for character in self.first_club_characters]) + self.donate_energy_first_club//KOEF_ENERGY_DONATE
+        all_power = sum([character.full_power for character in self.first_club_characters]) + (self.donate_energy_first_club//KOEF_ENERGY_DONATE)
+        koef_power_len_character = all_power * (self.percentage_club_stength_increase(len(self.first_club_characters))/100)
+        
+        return all_power+koef_power_len_character 
 
     @property
     def second_club_power(self) -> float:
-        return sum([character.full_power for character in self.second_club_characters]) + self.donate_energy_second_club//KOEF_ENERGY_DONATE
+        all_power = sum([character.full_power for character in self.second_club_characters]) + self.donate_energy_second_club//KOEF_ENERGY_DONATE
+        koef_power_len_character = all_power * (self.percentage_club_stength_increase(len(self.second_club_characters))/100)
+        
+        return all_power+koef_power_len_character 
 
     @property
     def calculate_chances(self):

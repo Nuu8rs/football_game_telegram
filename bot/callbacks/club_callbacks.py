@@ -3,6 +3,9 @@ from aiogram.filters.callback_data import CallbackData
 class SelectClubToJoin(CallbackData, prefix="select_club"):
     club_id: int
     
+class SelectClubToView(CallbackData, prefix="view_club"):
+    club_id: int
+    
 class JoinToClub(CallbackData, prefix = "join_to_club"):
     club_id: int
     
@@ -17,3 +20,6 @@ class DeleteClub(CallbackData, prefix="delete_club"):
     
 class SelectSchema(CallbackData, prefix="select_shema"):
     select_schema: str
+    
+class ViewCharatcerClub(CallbackData, prefix= "view_character_club"):
+    club_id: int

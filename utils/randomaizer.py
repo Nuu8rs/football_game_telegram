@@ -6,3 +6,4 @@ def check_chance(chance: int) -> bool:
         return True
     else:
         return False
+    

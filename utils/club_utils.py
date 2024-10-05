@@ -24,7 +24,13 @@ text_schemas = {
 
 async def get_club_text(club: Club, character: Character) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
-    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power:.2f}</b>] [<b>{character_leader.level} рів.</b>]"
+    text_leader = (
+        f"{character_leader.name}"
+        f"[{character_leader.owner.link_to_user}]"
+        f"[💪 <b>{character_leader.full_power:.2f}</b>]"
+        f"[<b>{character_leader.level} рів.</b>]"
+        f"[<b>{character_leader.acronym_position}</b>]"
+    )
     club = await ClubService.get_club(club_id=club.id)
     
     text = f"""
@@ -50,7 +56,7 @@ async def get_club_text(club: Club, character: Character) -> str:
 
 async def get_club_description(club: Club) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
-    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power:.2f}</b>] [<b>{character_leader.level} рів.</b>]"
+    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power:.2f}</b>] [<b>{character_leader.level} рів.</b>][<b>{character_leader.acronym_position}</b>]"
     club = await ClubService.get_club(club_id=club.id)
 
     
@@ -106,11 +112,14 @@ def rating_club(club: Club, character: Character) -> str:
             rank_texts.append(
                 f"{medal} {idx} місце - <b><a href='tg://user?id={char.characters_user_id}'>{char.name}</a>🩳 </b> "
                 f"[💪 <b>{char.full_power:.2f}</b>] [<b>{char.level} рів.</b>]"
+                f"[<b>{char.acronym_position}</b>]"
             )
         else:
             rank_texts.append(
                 f"{medal} {idx} місце - <a href='tg://user?id={char.characters_user_id}'>{char.name}</a> "
                 f"[<b>💪 {char.full_power:.2f}</b>] [<b>{char.level} рів.</b>]"
+                f"[<b>{char.acronym_position}</b>]"
+
             )
     
     ranking_text = "\n".join(rank_texts)
@@ -129,9 +138,9 @@ def get_text_schemas(club: Club):
 
 🛡 Захисники [DF]: {defenders} гравця - ваші герої оборони! Вони стоять стіною перед воротами, захищаючи команду від атак суперника.
 
-⚡ Нападники [MF]: {attackers} гравця - це ваші найкращі голеадори! Вони завжди готові завдати вирішального удару і забити гол.
+⚡ Нападники [FW]: {attackers} гравця - це ваші найкращі голеадори! Вони завжди готові завдати вирішального удару і забити гол.
 
-🎯 Півзахисники [FW]: {midfielder} гравця - головні майстри поля! Вони керують грою, роздають передачі і допомагають як у захисті, так і в атаці.
+🎯 Півзахисники [MF]: {midfielder} гравця - головні майстри поля! Вони керують грою, роздають передачі і допомагають як у захисті, так і в атаці.
     """
     
     current_chema = SchemaClub.__getattribute__(SchemaClub, club.schema)

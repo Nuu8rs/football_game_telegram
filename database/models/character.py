@@ -84,7 +84,16 @@ class Character(Base):
     def position_enum(self, value):
         if isinstance(value, PositionCharacter):
             self.position = value.value
-
+       
+    @property
+    def acronym_position(self):
+        acc_arr = {
+         "Нападник"    : "FW",
+         "Захисник"    : "DF",
+         "Воротар"     : "GK",
+         "Півзахисник" : "MF",    
+        }
+        return acc_arr[self.position]
     @hybrid_property
     def level(self):
         for level, threshold in enumerate(self.LEVEL_THRESHOLDS, start=1):

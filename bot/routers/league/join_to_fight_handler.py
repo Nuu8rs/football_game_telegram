@@ -5,8 +5,11 @@ from datetime import datetime
 
 from database.models.character import Character
 
+from services.club_service import ClubService
 from services.character_service import CharacterService
 from services.match_character_service import MatchCharacterService
+from services.club_shemas_service import SchemaSerivce
+
 
 from bot.callbacks.league_callbacks import  JoinToFight, ViewCharacterRegisteredInMatch
 from bot.keyboards.gym_keyboard import alert_leave_from_gym
@@ -32,6 +35,8 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
         match_id=callback_data.match_id
     )
     
+    
+    
     current_time = datetime.now()
     if current_time > fight_instance.start_time:
         await query.answer(
@@ -48,9 +53,16 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
         character=character,
         club_in_match=fight_instance.clubs_in_match
     )
+    
+    character_is_join_schema = await SchemaSerivce.character_is_enough_room(
+        club=character.club,
+        match_id=fight_instance.clubs_in_match.match_id,
+        my_character=character
+    )
+    if not character_is_join_schema:
+        return await query.answer("Для вас уже немає місця за схемою", show_alert=True)
+    
     if character_in_match is None:
-        
-        
         
         await MatchCharacterService.add_character_in_match(
             club_in_match = fight_instance.clubs_in_match,
@@ -77,7 +89,7 @@ async def join_to_match(query: CallbackQuery, callback_data: ViewCharacterRegist
     text = "🏆 <b>На матч зареєструвались</b>:\n\n"
     for match_character in character_club_in_match:
         character = await CharacterService.get_character_by_id(match_character.character_id)
-        text += f"👤 {character.name} <b>[{character.full_power:.2f}]</b>\n"
+        text += f"👤 {character.name} <b>[{character.full_power:.2f}]</b> [<b>{character.acronym_position}</b>]\n"
         total_power += character.full_power
         
     text += f"\n💪 <b>Загальна сила персонажей</b> {total_power:.2f}"

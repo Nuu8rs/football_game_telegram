@@ -1,5 +1,4 @@
 from aiogram.filters.callback_data import CallbackData
-from datetime import timedelta
 
 class ViewMyItem(CallbackData, prefix="view_my_item"):
     item_id: int

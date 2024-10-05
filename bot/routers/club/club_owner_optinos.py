@@ -3,7 +3,6 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from database.models.character import Character
-from database.models.club import Club
 
 from services.club_service import ClubService
 from services.match_character_service import MatchCharacterService
@@ -135,7 +134,7 @@ async def select_schema(query: CallbackQuery, character: Character, callback_dat
     if character.club.schema == callback_data.select_schema:
         return await query.answer("У вас і так обрано цю схему", show_alert=True)
 
-    if character.club.time_edit_schema != EPOCH_ZERO and character.club.time_edit_schema + timedelta(days=3) < datetime.now():
+    if character.club.time_edit_schema != EPOCH_ZERO and character.club.time_edit_schema + timedelta(days=3) > datetime.now():
         return await query.answer("Для зміни схеми має минути 3 дні", show_alert=True)
     
     

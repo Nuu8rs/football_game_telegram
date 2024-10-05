@@ -30,7 +30,7 @@ async def menu_hall_of_fame(message: Message):
     
 @hall_fame_router.message(F.text == "💪Рейтинг за силою гравця")
 async def menu_hall_of_fame(message: Message, character: Character):
-    all_characters = await CharacterService.get_all_characters()
+    all_characters = await CharacterService.get_all_users_not_bot()
     await message.answer(
         text=get_top_characters_by_power(
             all_characters=all_characters,
@@ -41,7 +41,7 @@ async def menu_hall_of_fame(message: Message, character: Character):
 
 @hall_fame_router.message(F.text == "📊 Рейтинг за рівнем гравця")
 async def menu_hall_of_fame(message: Message, character: Character):
-    all_characters = await CharacterService.get_all_characters()
+    all_characters = await CharacterService.get_all_users_not_bot()
     await message.answer(
         text=get_top_characters_by_level(
             all_characters=all_characters,
