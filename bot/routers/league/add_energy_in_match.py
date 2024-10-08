@@ -10,7 +10,10 @@ from services.character_service import CharacterService
 from services.league_service import LeagueFightService
 
 from bot.states.league_match_state import DonateEnergyInMatch
+
 from utils.league_utils import count_energy_characters_in_match
+from utils.club_utils import send_message_characters_club
+
 
 from league.club_fight import ClubMatch, ClubMatchManager
 from constants import TIME_FIGHT, KOEF_ENERGY_DONATE
@@ -71,10 +74,34 @@ async def select_coint_donate_energy_in_match(message: Message, character: Chara
 
     character = await CharacterService.get_character(character_user_id=character.characters_user_id)
     await CharacterService.consume_energy(character_obj=character, energy_consumed=count_energy)
-    await state.clear()
+    
+    await send_message_members_match_to_donate_energy(
+        current_match = current_match,
+        my_character=character,
+        count_energy=count_energy
+        )
+    
     
     text = f"""❤️‍🔥 Ви підтримали свою команду, тим самим підвищивши її силу на <b>{(count_energy//KOEF_ENERGY_DONATE)}</b>
 
 💪🏻 Поточна сила твоєї команди - {total_power:.2f}"""
     
     await message.answer(text)
+    await state.clear()
+    
+    
+
+async def send_message_members_match_to_donate_energy(current_match: ClubMatch, my_character: Character, count_energy: int):
+    text = (f"👑Учасник <b>{my_character.name}</b> задонатив <b>{count_energy}</b> одиниць енергії🔋, "
+        f"зміцнив свій клуб <b>{my_character.club.name_club}</b>, "
+        f"додавши <b>{count_energy/KOEF_ENERGY_DONATE}</b> до його сили💪")
+
+    
+    all_members_match = current_match.clubs_in_match.first_club.characters + current_match.clubs_in_match.second_club.characters
+    await send_message_characters_club(
+        characters_club=all_members_match,
+        my_character=my_character,
+        text=text
+    )
+    
+    

@@ -88,6 +88,7 @@ class ClubsInMatch:
             return 7
         elif 10 <= count_characters_in_club <= 11:
             return 10
+        return 0
         # if 0 <= count_characters_in_club <= 1:
         #         return 0
         # elif 2 <= count_characters_in_club <= 6:

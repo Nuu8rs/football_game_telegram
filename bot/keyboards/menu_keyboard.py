@@ -16,7 +16,7 @@ def main_menu(user: UserBot):
         keyboard.button(text = "🗄 Тренувальна база")
         keyboard.button(text = "🏬 Магазин")
         keyboard.button(text = "🏆 Зал слави")
-
+        keyboard.button(text = "👨‍❤️‍💋‍👨 Дуелі")
     
     return keyboard.adjust(2).as_markup(resize_keyboard = True)
 

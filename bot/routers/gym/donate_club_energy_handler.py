@@ -1,16 +1,12 @@
-from aiogram import Router, Bot, F
+from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from datetime import datetime, timedelta
-
-from database.models.club import Club
-from database.models.user_bot import UserBot
 from database.models.character import Character
+from database.models.league_fight import LeagueFight
 
 from services.character_service import CharacterService
 from services.club_service import ClubService
-
 
 from bot.keyboards.gym_keyboard import select_donate_energy_keyboard
 from bot.callbacks.gym_calbacks import SelectCountDonateEnergy
@@ -56,13 +52,15 @@ async def select_count_donate_energy_callback_handler(query: CallbackQuery, stat
                                               max_energy_donate = int(500 - club.energy_applied)
                                           ))
     
+
+    
     await ClubService.donate_energy(club=club, count_energy=callback_data.count_energy)
     await CharacterService.consume_energy(character_obj=character,
                                           energy_consumed=callback_data.count_energy)
     await query.message.answer(f"Вітаю ви поповнили енергію у свій клуб на {callback_data.count_energy} 🔋")
     await state.clear()
     
-    
+
 @donate_club_energy_router.message((F.text.func(str.isdigit)),
                                     SelectCountDonateEnergyState.select_count_energy,
                                     CheckTimeFilterMessage())
@@ -78,9 +76,7 @@ async def select_count_donate_energy_message_handler(message: Message, state: FS
     if club.energy_applied + count_energy > 500:
         return await message.answer("Вашим поповненням ви перевищите ліміт максимального пожертвування клубу\n"\
                                           "Ви можете поповнити на енергію на {max_energy_donate}".format(
-                                              max_energy_donate = int(500 - club.energy_applied)
-                                          ))
-        
+                                              max_energy_donate = int(500 - club.energy_applied)))
         
     await ClubService.donate_energy(club=club, count_energy=count_energy)
     await CharacterService.consume_energy(character_obj=character,

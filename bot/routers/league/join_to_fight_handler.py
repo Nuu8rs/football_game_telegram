@@ -30,12 +30,9 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
             reply_markup = alert_leave_from_gym() 
         )
     
-    
     fight_instance = ClubMatchManager.get_fight_by_id(
         match_id=callback_data.match_id
     )
-    
-    
     
     current_time = datetime.now()
     if current_time > fight_instance.start_time:
@@ -48,11 +45,13 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
         return await query.message.answer("❌ У данного персонажа нету клуба")
     
     
-
     character_in_match = await MatchCharacterService.get_character_in_match(
         character=character,
         club_in_match=fight_instance.clubs_in_match
     )
+    
+    if character_in_match:
+        return  await query.answer("❌ Ваш персонаж уже й так бере участь у цьому матчі")
     
     character_is_join_schema = await SchemaSerivce.character_is_enough_room(
         club=character.club,
@@ -62,17 +61,17 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
     if not character_is_join_schema:
         return await query.answer("Для вас уже немає місця за схемою", show_alert=True)
     
-    if character_in_match is None:
+
         
-        await MatchCharacterService.add_character_in_match(
-            club_in_match = fight_instance.clubs_in_match,
-            character=character
-        )
-        await query.message.answer(text = "✅ <b>Ваш персонаж був доданий на матч</b>")
-        await query.message.edit_reply_markup(reply_markup=None)
-    
-    else:
-        await query.answer("❌ Ваш персонаж уже й так бере участь у цьому матчі")
+    await MatchCharacterService.add_character_in_match(
+        club_in_match = fight_instance.clubs_in_match,
+        character=character
+    )
+    await query.message.answer(text = "✅ <b>Ваш персонаж був доданий на матч</b>")
+    await query.message.edit_reply_markup(reply_markup=None)
+
+
+       
         
 
 @join_to_fight_router.callback_query(ViewCharacterRegisteredInMatch.filter())

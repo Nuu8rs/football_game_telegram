@@ -103,7 +103,7 @@ class LeagueFightService:
                 
     @classmethod
     async def get_the_monthly_matches_by_group(cls, group_id: str) -> list[LeagueFight] | None:
-        today = datetime.now().date()
+        today = datetime.now().date().replace(day=1)
         async for session in get_session():
             async with session.begin():
                 try:
