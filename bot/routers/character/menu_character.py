@@ -15,7 +15,7 @@ from bot.callbacks.items_callbacks import ViewMyItem, PutOnItem, SellMyItem
 from utils.item_utils import view_my_item_text, check_if_item_equipped
 
 from constants import get_photo_character, PROCENT_TO_SELL
-from utils.character_utils import get_character_text
+from utils.character_utils import get_character_text, get_referal_text
 
 
 
@@ -23,6 +23,11 @@ menu_character_router = Router()
 
 @menu_character_router.message(F.text == "⚽️ Мій персонаж")
 async def get_my_character(message: Message, state: FSMContext, user: UserBot, character: Character):
+    await CharacterService.add_exp_character(
+        character=character,
+        amount_exp_add=20
+    )
+    
     await state.clear()
     await message.answer_photo(
         photo=get_photo_character(character),
@@ -90,3 +95,10 @@ async def sell_my_item(query: CallbackQuery, character: Character, callback_data
     await CharacterService.update_money_character(character=character, amount_money_adjustment=price_for_salle)
     await ItemService.delete_item(callback_data.item_id)
     await query.message.edit_text(f"Ви продали <b>{item.name}</b> за {price_for_salle} монет")
+    
+    
+@menu_character_router.callback_query(F.data == "referal_system")
+async def character_referal_handler(query: CallbackQuery, character: Character):
+    await query.message.answer(
+        text = await get_referal_text(my_character=character)
+    )

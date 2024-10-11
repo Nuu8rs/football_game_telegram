@@ -61,12 +61,11 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
     
     if character.current_energy <= const_energy_by_time[callback_data.gym_time]:
         try:
-            return await query.message.edit_caption(
-                caption="<b>У персонажа не вистачає енергії щоб піти на тренування, вибери інший час, aбо віднови енергію у массажному салону</b>",
-                reply_markup=query.message.reply_markup
+            return await query.message.answer(
+                text="<b>У персонажа не вистачає енергії щоб піти на тренування, вибери інший час, aбо віднови енергію у массажному салону</b>",
             )
         except:
-            pass
+            return
     
     await query.message.edit_caption(caption="Починаю тренування характеристики - {type_gym}\n\n"\
                                      "До завершення тренування - {end_time} хв.\n"\

@@ -84,13 +84,15 @@ async def create_character_handler(query: CallbackQuery, state: FSMContext, user
     character.position = callback_data.position
     character.current_energy = character.max_energy
     character.characters_user_id = user.user_id
-    
+    character.referal_user_id = user.referal_user_id
     character = await CharacterService.create_character(
         character
     )
     await RemiderCharacterService.create_character_reminder(character_id=character.id)
     await state.clear()
     user = await UserService.get_user(user_id=user.user_id)
+        
+    
     await query.message.reply(
         text="<b>Вітаю вас із створенням персонажа!</b>",
         reply_markup=remove_keyboard()

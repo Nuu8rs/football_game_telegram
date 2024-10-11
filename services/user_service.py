@@ -1,6 +1,6 @@
 from database.models.user_bot import UserBot
 from database.session import get_session
-from sqlalchemy.future import select
+from sqlalchemy import select, update
 from config import DatabaseType
 
 class UserService:
@@ -29,3 +29,19 @@ class UserService:
                 stmt = select(UserBot)
                 result = await session.execute(stmt)
                 return result.scalars().all()
+            
+    @classmethod
+    async def add_referal_user_id(cls, my_user_id: int, referal_user_id: int):
+        async for session in get_session():
+            async with session.begin(): 
+                try:
+                    stmt = (
+                        update(UserBot)
+                        .where(UserBot.user_id == my_user_id)
+                        .values(referal_user_id = referal_user_id)
+                    )
+                    await session.execute(stmt)
+                    await session.commit()
+                except Exception as e:
+                    raise e
+        

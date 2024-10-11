@@ -9,6 +9,8 @@ from .utils_keyboard import switch_buttons
 def character_keyboard():
     return (InlineKeyboardBuilder()
             .button(text = "📦 Мій інвентар", callback_data="my_inventory")
+            .button(text = "🫂 Реферальна система", callback_data="referal_system")
+            .adjust(1)
             .as_markup()
             )
     

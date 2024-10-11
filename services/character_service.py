@@ -158,6 +158,22 @@ class CharacterService:
                     raise e
                 
     @classmethod
+    async def get_character_how_update_energy(cls) -> list[Character]:
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    result = await session.execute(
+                        select(Character)
+                        .where(Character.is_bot == False)
+                        .where(Character.current_energy <= CONST_ENERGY) 
+                    )
+                    all_characters_not_bot = result.scalars().all()
+                    return all_characters_not_bot
+                except Exception as e:
+                    raise e
+                
+                
+    @classmethod
     async def leave_club(cls, character: Character):
         async for session in get_session():
             async with session.begin():
@@ -235,3 +251,28 @@ class CharacterService:
                 
                 return merged_character
             
+
+    @classmethod
+    async def edit_status_reward_by_referal(cls, character_user_id: int):
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Character)
+                    .where(Character.characters_user_id == character_user_id)
+                    .values(referral_award_is_received=True)
+                )
+                await session.execute(stmt)
+                await session.commit()
+                
+    @classmethod
+    async def get_my_referals(cls, character_user_id: int):
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    result = await session.execute(
+                        select(Character)
+                        .where(Character.referal_user_id == character_user_id))
+                    all_characters_not_bot = result.scalars().all()
+                    return all_characters_not_bot
+                except Exception as e:
+                    raise e

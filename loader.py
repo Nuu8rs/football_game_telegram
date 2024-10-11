@@ -6,9 +6,8 @@ from aiogram.types.bot_command_scope_chat import BotCommandScopeChat
 
 from database.session import engine
 from database.model_base import Base
-
-from config import BOT_TOKEN, ADMINS
 from logging_config import logger
+from config import BOT_TOKEN, ADMINS
 
 async def init_bot_command():
     commands = [

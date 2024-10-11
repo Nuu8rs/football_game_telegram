@@ -2,19 +2,25 @@ from aiogram import Router
 from aiogram import Bot, F
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 
 from bot.keyboards.menu_keyboard import main_menu
 
 from database.models.user_bot import UserBot
+from services.user_service import UserService
+from loader import bot
 
 from constants import PLOSHA_PEREMOGU
 
 start_router = Router()
 
 from database.models.character import Character
+
+
 @start_router.message(CommandStart())
-async def start_command_handler(message: Message, state: FSMContext, user: UserBot, character: Character):
+async def start_command_handler(message: Message, state: FSMContext, user: UserBot, command: Command):
+    if command.args:
+        await register_referal(user=user, referal=command.args)
     # ##############################
     # await test(character)
     # #############################
@@ -25,8 +31,21 @@ async def start_command_handler(message: Message, state: FSMContext, user: UserB
                          "Розвивайте свої навички, прокачуйте персонажа, приєднуйся до команд та інших граців, беріть участь у великих турнірах і ведіть свою команду до перемоги."\
                          "Ваші рішення на полі та за його межами визначать долю вашої кар'єри. Готові стати новою зіркою футболу? Час почати свою подорож до футбольної величі!",
                          reply_markup=main_menu(user))
-    
- 
+
+async def register_referal(user: UserBot, referal: str):
+    if not "ref_" in referal:
+        return
+    referal_user_id = referal.split("ref_")[1]
+    await UserService.add_referal_user_id(
+        my_user_id=user.user_id,
+        referal_user_id= referal_user_id
+    )
+    try:
+        await bot.send_message(
+            chat_id=referal_user_id,
+            text=f"🎉 <b>У вас з'явився новий реферал!</b>\n\n{user.link_to_user}")
+    except:
+        pass
 @start_router.message(F.text == "⬅️ Головна площа")
 async def plosha(message: Message, user: UserBot):
     await message.answer_photo(photo = PLOSHA_PEREMOGU, 

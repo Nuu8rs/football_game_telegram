@@ -1,4 +1,4 @@
-from aiogram import Bot
+import asyncio
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -7,8 +7,8 @@ from services.club_service import ClubService
 
 from constants import TIME_RESET_ENERGY_CHARACTER, TIME_RESET_ENERGY_CLUB
 from logging_config import logger
-from datetime import timedelta
-import random
+from loader import bot
+
 
 class EnergyResetScheduler:
     def __init__(self):
@@ -16,7 +16,19 @@ class EnergyResetScheduler:
 
 
     async def reset_energy_character(self):
-        await CharacterService.update_energy_for_non_bots() 
+        all_characters = await CharacterService.get_character_how_update_energy()
+        await CharacterService.update_energy_for_non_bots()
+        for character in all_characters:
+            try:
+                await asyncio.sleep(0.5)
+                await bot.send_message(
+                    chat_id=character.characters_user_id,
+                    text="<b>Ваша енергія ⚡️ повністю відновлена 🔋</b>"
+                )
+            except:
+                logger.error(f"Не смог отправить сообщение {character.name}")
+        
+            
         logger.info("Обновил енергию для пользователей")
         
         

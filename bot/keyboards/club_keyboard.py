@@ -19,7 +19,7 @@ def main_menu_club(character: Character):
         keybaord.button(text = "🧿 Переглянути інші клуби")
         
     keybaord.attach(menu_plosha())
-    return keybaord.adjust(1).as_markup()
+    return keybaord.adjust(1).as_markup(resize_keyboard = True)
         
     
 def club_menu_keyboard(club: Club, character: Character):
