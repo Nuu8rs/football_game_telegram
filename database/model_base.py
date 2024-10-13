@@ -9,5 +9,6 @@ from database.models.league_fight import LeagueFight
 from database.models.item import Item
 from database.models.reminder_character import ReminderCharacter
 from database.models.match_character import MatchCharacter
+from database.models.duel import Duel
 from database import events    
 

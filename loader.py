@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -29,6 +31,7 @@ async def start_functional():
 
     await education_reward_reminder.start_reminder()
     await gym_reminder.cheking_job_gym()
+    asyncio.create_task(core_duel._waiting_users())
     await core_league.setup_league()
 
 
@@ -48,6 +51,7 @@ from league.core_leauge import CORE_LEAGUE, LeagueService
 from schedulers.scheduler_energy import EnergyResetScheduler, EnergyApliedClubResetScheduler
 from schedulers.scheduler_education import EducationRewardReminderScheduler
 from schedulers.scheduler_gym import GymTaskScheduler
+from pvp_duels.duel_core import CoreDuel
 
 reset_energy_characters   = EnergyResetScheduler()
 reset_aplied_energy_club  = EnergyApliedClubResetScheduler()
@@ -55,4 +59,6 @@ education_reward_reminder = EducationRewardReminderScheduler()
 gym_reminder              = GymTaskScheduler()
 
 league_service = LeagueService()
+
+core_duel    = CoreDuel()
 core_league  = CORE_LEAGUE(league_service)

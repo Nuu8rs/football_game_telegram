@@ -1,6 +1,6 @@
 from database.models.reminder_character import ReminderCharacter
 from database.models.character import Character
-from sqlalchemy.future import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import joinedload
 
 from database.session import get_session
@@ -71,3 +71,15 @@ class RemiderCharacterService:
 
                 await session.commit()
                 return reminder_character
+            
+            
+    @classmethod
+    async def edit_status_duel_character(cls, character_id: int, status: bool):
+        async for session in get_session():
+            async with session.begin():
+                await session.execute(
+                    update(ReminderCharacter)
+                    .where(ReminderCharacter.character_id == character_id)
+                    .values(character_in_duel=status)
+                )
+                await session.commit()

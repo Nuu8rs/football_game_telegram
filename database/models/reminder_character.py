@@ -14,6 +14,8 @@ class ReminderCharacter(Base):
     character_id = Column(BigInteger, ForeignKey('characters.id', ondelete="CASCADE"), unique=True)
 
     character_in_training = Column(Boolean, default=False)
+    character_in_duel     = Column(Boolean, default=False, server_default="0")
+    
     training_stats        = Column(String(255), nullable=True)
     time_start_training   = Column(DateTime, nullable=True)
     time_training_seconds = Column(BigInteger, nullable=True)  

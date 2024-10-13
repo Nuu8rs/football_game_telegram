@@ -168,4 +168,4 @@ class Character(Base):
             self.effective_speed +
             self.effective_endurance
         )
-        return total_stats * self.koef_club_power
+        return float(total_stats * self.koef_club_power)

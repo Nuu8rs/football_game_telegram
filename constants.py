@@ -72,6 +72,8 @@ LEAGUE_PHOTO     = FSInputFile("src/league_photo.jpg")
 PLOSHA_PEREMOGU  = FSInputFile("src/plosha_peremogu.jpg") 
 EDUCATION_CENTER = FSInputFile("src/education_center_photo.jpg")
 HALL_FAME_PHOTO  = FSInputFile("src/hall_fame_photo.jpg")
+DUEL_PHOTO       = FSInputFile("src/duel_photo.jpg")
+
 
 MAX_LEN_MEMBERS_CLUB = 11
 
@@ -91,6 +93,8 @@ KOEF_ENERGY_DONATE = 5
 PROCENT_TO_SELL = 30
 
 REFERAL_EXP = 20
+ALL_COUNT_ENERGY_BIT = [30,50,100,150]
+
 
 TIME_TO_JOIN_TO_CLUB = timedelta(hours=1)
 

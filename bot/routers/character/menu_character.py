@@ -23,11 +23,7 @@ menu_character_router = Router()
 
 @menu_character_router.message(F.text == "⚽️ Мій персонаж")
 async def get_my_character(message: Message, state: FSMContext, user: UserBot, character: Character):
-    await CharacterService.add_exp_character(
-        character=character,
-        amount_exp_add=20
-    )
-    
+
     await state.clear()
     await message.answer_photo(
         photo=get_photo_character(character),
@@ -38,6 +34,7 @@ async def get_my_character(message: Message, state: FSMContext, user: UserBot, c
 @menu_character_router.callback_query(F.data == "my_inventory")
 async def select_view_my_items(query: CallbackQuery, character: Character):
     my_items = await ItemService.get_items_from_character(character_id=character.id)
+
     
     if not my_items:
         return await query.answer(text = "У вас немає речей", show_alert=True)
