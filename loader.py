@@ -32,7 +32,7 @@ async def start_functional():
     await education_reward_reminder.start_reminder()
     await gym_reminder.cheking_job_gym()
     asyncio.create_task(core_duel._waiting_users())
-    await core_league.setup_league()
+    # await core_league.setup_league()
 
 
 async def init_db():

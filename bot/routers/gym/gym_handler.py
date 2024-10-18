@@ -59,7 +59,7 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
     if character.reminder.character_in_training:
         return await query.message.reply("<b>Ваш персонаж і так уже тренується</b>")
     
-    if character.current_energy <= const_energy_by_time[callback_data.gym_time]:
+    if character.current_energy < const_energy_by_time[callback_data.gym_time]:
         try:
             return await query.message.answer(
                 text="<b>У персонажа не вистачає енергії щоб піти на тренування, вибери інший час, aбо віднови енергію у массажному салону</b>",

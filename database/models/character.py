@@ -169,3 +169,7 @@ class Character(Base):
             self.effective_endurance
         )
         return float(total_stats * self.koef_club_power)
+    
+    @property
+    def items_ids(self) -> list[int]:
+        return [self.t_shirt_id, self.boots_id, self.gaiters_id, self.shorts_id]

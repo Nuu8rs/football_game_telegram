@@ -244,7 +244,7 @@ class DuelSender:
             )  
             await bot.send_message(
                             chat_id=self.duel_users.user_2.characters_user_id,
-                            text=TEXT_DUEL.draw_message.value.format(bid_user = self.duel_users.bid_user_1)
+                            text=TEXT_DUEL.draw_message.value.format(bid_user = self.duel_users.bid_user_2)
                         )   
         else:
             bid_winner_user = self.duel_users.bid_user_1 if winner.id == self.duel_users.user_1 else self.duel_users.bid_user_2
