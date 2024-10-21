@@ -23,8 +23,8 @@ class SchemaClub:
     }
     
     sсhema_3 = {
-        PositionCharacter.MIDFIELDER : 5,
         PositionCharacter.DEFENDER : 3,
+        PositionCharacter.MIDFIELDER : 5,
         PositionCharacter.ATTACKER : 2,
         PositionCharacter.GOALKEEPER : 1,
     }

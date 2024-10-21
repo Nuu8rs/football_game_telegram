@@ -16,6 +16,12 @@ DB_LOGIN    = quote(os.getenv("DB_LOGIN"))
 DB_NAME     = quote(os.getenv("DB_NAME"))
 DB_PORT     = quote(os.getenv("DB_PORT"))
 
+TOKEN_MONOBANK = os.getenv("TOKEN_MONOBANK")
+CALLBACK_URL_WEBHOOK = os.getenv("CALLBACK_URL_WEBHOOK")
+
+WEBAPP_HOST = os.getenv("WEBAPP_HOST")
+WEBAPP_PORT = os.getenv("WEBAPP_PORT")
+
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 CONST_ENERGY = 150
 

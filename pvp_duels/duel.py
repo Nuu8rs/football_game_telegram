@@ -17,7 +17,7 @@ from pvp_duels.contstans import (
 from database.models.character import Character
 from services.reminder_character_service import RemiderCharacterService
 from services.character_service import CharacterService
-
+from services.duel_service import DuelService
 
 
 class Duel:    
@@ -42,7 +42,17 @@ class Duel:
         
         winner_duel = self.get_winner_duel()
         await self._end_duel(winner_duel)
+        await DuelService.create_duel(
+            duel_id      = self.user_duel.duel_id,
+            user_1_id    = self.user_duel.user_1.id,
+            user_2_id    = self.user_duel.user_2.id,
+            point_user_1 = self.user_duel.points_user_1,
+            point_user_2 = self.user_duel.points_user_2,
+            bit_user_1   = self.user_duel.bid_user_1,
+            bit_user_2   = self.user_duel.bid_user_2,
+        )
         await self.duel_sender.send_message_end_duel(winner=winner_duel)
+        
     
     async def _end_duel(self, winner_duel: Character | list[Character]):
         if isinstance(winner_duel, list):

@@ -1,14 +1,21 @@
-from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from .utils_keyboard import menu_plosha
 
+from datetime import datetime
+
+from constants import DUEL_START_DAY_SEASON, DUEL_END_DAY_SEASON
+
 def menu_hall_fame():
-    return (
-        ReplyKeyboardBuilder()
-        .button(text = "💪Рейтинг за силою гравця")
-        .button(text = "📊 Рейтинг за рівнем гравця")
-        .button(text = "🏆 Рейтинг команд за силою")
-        .button(text = "🏃🏼 Рейтинг бомбардирів")
-        .attach(menu_plosha())
-        .adjust(1,2,1)
-        .as_markup(resize_keyboard = True)
-    )
+    keyboard = ReplyKeyboardBuilder()
+    keyboard.button(text = "💪Рейтинг за силою гравця")
+    keyboard.button(text = "📊 Рейтинг за рівнем гравця")
+    keyboard.button(text = "🏆 Рейтинг команд за силою")
+    keyboard.button(text = "🏃🏼 Рейтинг бомбардирів")
+    
+    if (datetime.now().day >= DUEL_START_DAY_SEASON) and (datetime.now().day <= DUEL_END_DAY_SEASON):
+        keyboard.button(text = "👥 Рейтинг дуелів") 
+    
+    keyboard.attach(menu_plosha())    
+    keyboard.adjust(2,2,1,1)
+    return keyboard.as_markup(resize_keyboard = True)
+    

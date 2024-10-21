@@ -7,15 +7,20 @@ from services.character_service import CharacterService
 from services.club_service import ClubService
 from services.league_service import LeagueFightService
 from services.match_character_service import MatchCharacterService
+from services.duel_service import DuelService
+
 
 from bot.keyboards.hall_fame_keyboard import menu_hall_fame
 
 from utils.hall_fame_utils import (get_top_characters_by_power,
                                    get_top_characters_by_level,
                                    get_top_club_by_power,
-                                   get_top_bomber_raiting
+                                   get_top_bomber_raiting,
+                                   get_top_duelists_ranking
                                    )
-from constants import HALL_FAME_PHOTO
+from constants import HALL_FAME_PHOTO, DUEL_END_DAY_SEASON, DUEL_START_DAY_SEASON
+
+from datetime import datetime
 
 hall_fame_router = Router()
 
@@ -72,4 +77,19 @@ async def menu_hall_of_fame(message: Message, character: Character):
             all_matches=all_matches_charaters,
             my_character=character
         )
+    )
+
+@hall_fame_router.message(F.text == "👥 Рейтинг дуелів")
+async def menu_hall_of_fame(message: Message, character: Character):
+    if not (datetime.now().day >= DUEL_START_DAY_SEASON) and not (datetime.now().day <= DUEL_END_DAY_SEASON):
+        return message.answer("Еще нету дуелей")
+    
+    all_duels = await DuelService.get_season_duels()
+    await message.answer(
+        text = get_top_duelists_ranking(
+            all_duels,
+            my_character=character
+        )
+        
+        
     )

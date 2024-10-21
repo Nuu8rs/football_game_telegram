@@ -1,9 +1,9 @@
 from database.models.character import Character
 from database.models.club import Club
 from database.models.match_character import MatchCharacter
+from database.models.duel import Duel
 
 from collections import defaultdict
-
 
 from services.character_service import CharacterService
 
@@ -90,5 +90,54 @@ async def get_top_bomber_raiting(all_matches: list[MatchCharacter], my_character
     if my_character_id in total_goals_by_character:
         position = [i for i, character in enumerate(all_real_characters) if character.id == my_character_id][0] + 1
         top_15_text += f"\n\nТи посідаєш {position} місце з {my_total_goals} голами 🏆"
+
+    return top_15_text
+
+def get_top_duelists_ranking(all_duels: list[Duel], my_character: Character):
+    total_points_by_character = defaultdict(int)
+    characters_dict = {}
+
+    # Подсчет очков за каждый дуэль и сбор информации о персонажах
+    for duel in all_duels:
+        characters_dict[duel.user_1.id] = duel.user_1.name
+        characters_dict[duel.user_2.id] = duel.user_2.name
+        
+        if duel.get_winner_duel == [duel.user_1, duel.user_2]:
+            # Ничья, каждому игроку по 1 очку
+            total_points_by_character[duel.user_1.id] += 1
+            total_points_by_character[duel.user_2.id] += 1
+        else:
+            # Победитель получает 3 очка
+            winner = duel.get_winner_duel
+            loser = duel.user_1 if winner == duel.user_2 else duel.user_2
+            total_points_by_character[winner.id] += 3
+            total_points_by_character[loser.id] += 0  # проигравший не получает очков
+
+    # Преобразование словаря в список кортежей (id персонажа, очки)
+    sorted_characters = sorted(total_points_by_character.items(), key=lambda item: item[1], reverse=True)
+
+    rankings = []
+
+    index = 0
+    for character_id, total_points in sorted_characters[:15]:
+        # Используем имя персонажа из дуэлей
+        character_name = characters_dict.get(character_id, "Unknown")
+        rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
+        rankings.append(f"{index + 1:>2}. <b>{character_name:<10}</b> - {total_points:>5} очков {rank_icon}")
+        index += 1
+    
+    top_15_header = f"Топ-15 дуэлянтов за очками ⚔️\n\n"
+    top_15_text = top_15_header + "\n".join(rankings)
+
+    # Проверяем, есть ли персонаж среди тех, чьи очки были учтены
+    my_character_id = my_character.id
+    my_total_points = total_points_by_character.get(my_character_id, 0)
+    
+    if my_character_id in total_points_by_character:
+        # Определение позиции пользователя на основе его ID
+        position = [i for i, (char_id, _) in enumerate(sorted_characters) if char_id == my_character_id][0] + 1
+        top_15_text += f"\n\nТы занимаешь {position} место с {my_total_points} очками 🏆"
+    else:
+        top_15_text += f"\n\nТы не вошёл в топ-15, но у тебя {my_total_points} очков 🏅"
 
     return top_15_text

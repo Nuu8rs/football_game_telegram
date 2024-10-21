@@ -98,5 +98,21 @@ ALL_COUNT_ENERGY_BIT = [30,50,100,150]
 
 TIME_TO_JOIN_TO_CLUB = timedelta(hours=1)
 
-def GET_RANDOM_NUMBER(LIMIT_1 = 1, LIMIT_2 = 5):
+#KEY - COUNT ENERGY | VALUE - PRICE UAH
+count_energys = [5,10,20,50,70]
+CONST_PRICE_ENERGY = {
+    100  : 100,
+    150  : 150,
+    300  : 270,
+    600  : 490,
+    900  : 670
+}
+
+
+DUEL_START_DAY_SEASON = 21
+DUEL_END_DAY_SEASON   = 28
+
+
+
+def GET_RANDOM_NUMBER(LIMIT_1 = 1, LIMIT_2 = 5:
     return random.randint(LIMIT_1,LIMIT_2)

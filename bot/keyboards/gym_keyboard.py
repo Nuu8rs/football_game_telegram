@@ -1,9 +1,12 @@
+from datetime import timedelta
+
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from ..callbacks.gym_calbacks import SelectGymType, SelectTimeGym, SelectCountDonateEnergy
 from ..callbacks.massage_room_callbacks import SelectCountGetEnergy
 
-from datetime import timedelta
 from .utils_keyboard import menu_plosha
+
+from constants import CONST_PRICE_ENERGY
 
 
 count_energys = [5,10,20,50,70]
@@ -60,11 +63,16 @@ def menu_education_cernter():
     
 def menu_massage_room():
     keyboard = InlineKeyboardBuilder()
-    for count_energy in count_energys:
+    for count_energy,_ in CONST_PRICE_ENERGY.items():
         keyboard.button(text = f"Купить [{count_energy}] 🔋", 
                         callback_data=SelectCountGetEnergy(count_energy=count_energy))
     return keyboard.adjust(1).as_markup()
 
+def send_payment_keyboard(payment_url: str):
+    return (InlineKeyboardBuilder()
+            .button(text = "Сплатити 💵", url=payment_url)
+            .as_markup()
+            )
 
 def alert_leave_from_gym():
     return (
