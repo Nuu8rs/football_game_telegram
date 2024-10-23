@@ -9,6 +9,7 @@ from config import PositionCharacter
 
 from utils.club_shemas import SchemaClub
 
+
 from datetime import datetime, timedelta
 from loader import logger, bot
 
@@ -82,6 +83,8 @@ def get_text_education_center_reward(exp: int, coins: int, delta_time_education_
     current_time = datetime.now()
     next_reward_time = current_time + delta_time_education_reward
     next_reward_time_formatted = next_reward_time.strftime("%d-%m-%Y %H:%M:%S")
+    
+    
     message = f"""
 🎓 <b>Після навчального центру ваш персонаж отримав:</b>
 ✨ {exp} <b>досвіду</b>  

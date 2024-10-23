@@ -1,8 +1,3 @@
-# def _assign_roles_randomly(self):
-#     if random.choice([True, False]):
-#         return self.player1, self.player2
-#     else:
-#         return self.player2, self.player1
 import random
 
 from pvp_duels.types import PositionAngle, RoleDuel

@@ -177,11 +177,12 @@ class ClubMatch:
             await send_goal_event("no_goal", self.clubs_in_match.all_characters_in_match)
         
     async def winners_remuneration(self):
+        
         winners_characters = self.clubs_in_match.determine_winner_users()    
         for winner_character in winners_characters:
             if not winner_character.is_bot:
                 exp,coins = GET_RANDOM_NUMBER(),GET_RANDOM_NUMBER()
-                
+
                 await CharacterService.add_exp_character(
                     character=winner_character,
                     amount_exp_add=exp

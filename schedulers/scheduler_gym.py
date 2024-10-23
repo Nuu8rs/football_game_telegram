@@ -10,6 +10,8 @@ from services.reminder_character_service import RemiderCharacterService
 from datetime import datetime, timedelta
 
 from constants import chance_add_point, const_name_characteristics
+from constants import X2_REWARD_WEEKEND_START_DAY, X2_REWARD_WEEKEND_END_DAY
+
 from logging_config import logger
 from utils.randomaizer import check_chance
 from datetime import datetime
@@ -17,6 +19,7 @@ from datetime import datetime
 from loader import bot
 
 class GymTaskScheduler:
+
     
     def __init__(self) -> None:
         self.scheduler = AsyncIOScheduler()
@@ -34,16 +37,22 @@ class GymTaskScheduler:
         
         
         if chance:
+            add_points = 1 
+            if datetime.now().day >= X2_REWARD_WEEKEND_START_DAY and datetime.now().day <= X2_REWARD_WEEKEND_END_DAY:
+                add_points = add_points * 2
+            
             await CharacterService.update_character_field(
                 character_obj=character,
                 param=type_characteristics,
-                add_point=1
+                add_point=add_points
             )
             try:
                 await bot.send_message(
                     chat_id=character.characters_user_id,
-                    text="<b>Вітаю</b> параметр персонажа {type_characteristics} - було покращено на 1 очко!".format(
-                        type_characteristics = const_name_characteristics[type_characteristics]
+                    text="<b>Вітаю</b> параметр персонажа {type_characteristics} - було покращено на {add_points} поінта!".format(
+                        type_characteristics = const_name_characteristics[type_characteristics],
+                        add_points = add_points
+                        
                     )
                 )
             except Exception as E:

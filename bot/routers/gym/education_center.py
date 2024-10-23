@@ -11,6 +11,9 @@ from services.character_service import CharacterService
 from bot.keyboards.gym_keyboard import menu_education_cernter
 from schedulers.scheduler_education import EducationRewardReminderScheduler
 from constants import GET_RANDOM_NUMBER, DELTA_TIME_EDUCATION_REWARD, EDUCATION_CENTER
+from constants import X2_REWARD_WEEKEND_START_DAY, X2_REWARD_WEEKEND_END_DAY
+
+
 from utils.club_utils import get_text_education_center_reward
 
 
@@ -33,6 +36,10 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
     
     
     exp, coins = GET_RANDOM_NUMBER(1,3), GET_RANDOM_NUMBER(5,10)
+    if datetime.now().day >= X2_REWARD_WEEKEND_START_DAY and datetime.now().day <= X2_REWARD_WEEKEND_END_DAY:
+        exp = exp * 2
+        coins = coins * 2
+    
     await CharacterService.add_exp_character(
         character=character,
         amount_exp_add=exp

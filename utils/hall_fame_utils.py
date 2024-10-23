@@ -126,7 +126,7 @@ def get_top_duelists_ranking(all_duels: list[Duel], my_character: Character):
         rankings.append(f"{index + 1:>2}. <b>{character_name:<10}</b> - {total_points:>5} очков {rank_icon}")
         index += 1
     
-    top_15_header = f"Топ-15 дуэлянтов за очками ⚔️\n\n"
+    top_15_header = f"Топ-15 дуелянтів за очками ⚔️\n\n"
     top_15_text = top_15_header + "\n".join(rankings)
 
     # Проверяем, есть ли персонаж среди тех, чьи очки были учтены
@@ -136,8 +136,8 @@ def get_top_duelists_ranking(all_duels: list[Duel], my_character: Character):
     if my_character_id in total_points_by_character:
         # Определение позиции пользователя на основе его ID
         position = [i for i, (char_id, _) in enumerate(sorted_characters) if char_id == my_character_id][0] + 1
-        top_15_text += f"\n\nТы занимаешь {position} место с {my_total_points} очками 🏆"
+        top_15_text += f"\n\nТи займаєш {position} місце з {my_total_points} очками 🏆"
     else:
-        top_15_text += f"\n\nТы не вошёл в топ-15, но у тебя {my_total_points} очков 🏅"
+        top_15_text += f"\n\nТи не увійшов у топ-15, але у тебе {my_total_points} очок 🏅"
 
     return top_15_text
