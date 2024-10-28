@@ -46,7 +46,7 @@ async def register_character_to_match(message: Message, character: Character):
     )
     if next_match is None:
         return await message.answer(
-            text="❌ <b>На даний момент немає матчів</b>, дочекайтеся наступної ліги"
+            text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 24"
         )
 
     await message.answer_photo(
@@ -62,6 +62,14 @@ async def get_calendar_matches(message: Message, character: Character):
     if not character.club_id:
         return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
     
+    next_match = await LeagueFightService.get_next_league_fight_by_club(
+        club_id=character.club_id
+    )
+    if next_match is None:
+        return await message.answer(
+            text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 24"
+        )
+
     all_matches = await LeagueFightService.get_the_monthly_matches_by_club(club_id=character.club_id)
     await message.answer(
         text=get_text_calendar_matches(matches=all_matches, club_id=character.club_id)
@@ -72,6 +80,15 @@ async def get_result_matches(message: Message, character: Character):
     if not character.club_id:
         return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
     
+    next_match = await LeagueFightService.get_next_league_fight_by_club(
+        club_id=character.club_id
+    )
+    if next_match is None:
+        return await message.answer(
+            text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 24"
+        )
+
+    
     all_matches = await LeagueFightService.get_the_monthly_matches_by_club(club_id=character.club_id)
     await message.answer(
         text=get_text_result(fights=all_matches, club_id=character.club_id)
@@ -81,7 +98,15 @@ async def get_result_matches(message: Message, character: Character):
 async def get_table_rait(message: Message, character: Character):
     if not character.club_id:
         return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
-    
+
+    next_match = await LeagueFightService.get_next_league_fight_by_club(
+        club_id=character.club_id
+    )
+    if next_match is None:
+        return await message.answer(
+            text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 24"
+        )
+
     
     group_id_mathces = await LeagueFightService.get_group_id_by_club(club_id=character.club_id)
     all_mathes_by_group = await LeagueFightService.get_the_monthly_matches_by_group(group_id=group_id_mathces)

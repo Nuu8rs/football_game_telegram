@@ -1,6 +1,6 @@
 from aiogram import Router
 from aiogram import Bot, F
-from aiogram.types import Message
+from aiogram.types import Message, FSInputFile
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import CommandStart, Command
 
@@ -11,6 +11,7 @@ from services.user_service import UserService
 from loader import bot
 
 from constants import PLOSHA_PEREMOGU
+from config import VIDEO_ID
 
 start_router = Router()
 
@@ -21,16 +22,31 @@ from database.models.character import Character
 async def start_command_handler(message: Message, state: FSMContext, user: UserBot, command: Command):
     if command.args:
         await register_referal(user=user, referal=command.args)
-    # ##############################
-    # await test(character)
-    # #############################
+
+    video_start = FSInputFile("src\start_video.MP4",filename="video_start") if not VIDEO_ID else VIDEO_ID
+
     await state.clear()
     bot_name = await message.bot.get_my_name()
-    await message.answer(f"Вітаємо у «{bot_name.name}»– найкращому симуляторі кар'єри футболіста!"\
-                         "Тут ви зможете пройти шлях від молодого таланта до легенди світового футболу."\
-                         "Розвивайте свої навички, прокачуйте персонажа, приєднуйся до команд та інших граців, беріть участь у великих турнірах і ведіть свою команду до перемоги."\
-                         "Ваші рішення на полі та за його межами визначать долю вашої кар'єри. Готові стати новою зіркою футболу? Час почати свою подорож до футбольної величі!",
-                         reply_markup=main_menu(user))
+    text = f"""
+<b>Вітаємо у «{bot_name.name} — життя футболіста онлайн-гра!»</b> ⚽️✨
+Найкращий симулятор кар'єри футболіста! Тут ви зможете пройти шлях від молодого таланта до легенди світового футболу.
+
+<b>Розвивайте свої навички 🏋️‍♂️</b>
+Прокачуйте персонажа, приєднуйтесь до команд та інших гравців. Беріть участь у великих турнірах і ведіть свою команду до перемоги 🏆!
+
+<b>Ваші рішення на полі та за його межами</b> 🏅
+Вони визначать долю вашої кар'єри. Кожен вибір, кожен матч — це крок до футбольної величі.
+
+<b>Готові стати новою зіркою футболу? 🌟</b>
+Час почати свою подорож до слави!
+    """
+    
+    message = await message.answer_video(
+        video=video_start,
+        caption=text,
+        reply_markup=main_menu(user)
+    )
+    print(message.video.file_id)
 
 async def register_referal(user: UserBot, referal: str):
     if not "ref_" in referal:

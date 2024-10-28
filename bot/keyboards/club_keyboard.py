@@ -5,7 +5,16 @@ from database.models.character import Character
 
 from .utils_keyboard import switch_buttons, menu_plosha
 from ..callbacks.switcher import SwitchClub
-from ..callbacks.club_callbacks import SelectClubToJoin, JoinToClub, TransferOwner, DeleteClub, SelectSchema, SelectClubToView, ViewCharatcerClub
+from ..callbacks.club_callbacks import (
+    SelectClubToJoin, 
+    JoinToClub, 
+    TransferOwner, 
+    DeleteClub, 
+    SelectSchema, 
+    SelectClubToView, 
+    ViewCharatcerClub,
+    KickMember
+    )
 from constants import MAX_LEN_MEMBERS_CLUB
 from utils.club_shemas import SchemaClub 
 
@@ -33,6 +42,7 @@ def club_menu_keyboard(club: Club, character: Character):
         keyboard.button(text = "⌨️ Надіслати повідомлення всьому клубу", callback_data="send_message_all_member_club")
         keyboard.button(text = "🫂 Передати права на клуб", callback_data="transfer_rights")
         keyboard.button(text = "❌ Видалити мій клуб", callback_data="delete_my_club")
+        keyboard.button(text = "🦶👤 Вигнати користувача", callback_data="kick_user")
     else:
         keyboard.button(text = "🎮 Схема команди", callback_data="view_schema_club")
         keyboard.button(text = "⬅️ Вийти з клубу", callback_data="leave_club")
@@ -117,3 +127,13 @@ def select_schema_keyboard():
         )
     keyboard.adjust(2)
     return keyboard.as_markup()
+
+def select_user_kick(members_club: list[Character]):
+    keyboard = InlineKeyboardBuilder()
+    for member in members_club:
+        keyboard.button(text = f"Вигнати {member.name}", 
+                        callback_data=KickMember(
+                            character_id=member.id
+                        ))
+        
+    return keyboard.adjust(1).as_markup()

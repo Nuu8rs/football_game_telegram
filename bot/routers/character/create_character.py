@@ -98,7 +98,8 @@ async def create_character_handler(query: CallbackQuery, state: FSMContext, user
         reply_markup=remove_keyboard()
     )
     
-    await query.message.answer(
-        text = INSTRUCTION[0],
-        reply_markup=menu_instruction(index_instruction=1)
+    await query.message.answer_photo(
+        photo        = FSInputFile(path="src/learning/image_0.jpg"),
+        caption      = INSTRUCTION[0],
+        reply_markup = menu_instruction(index_instruction=1)
     )

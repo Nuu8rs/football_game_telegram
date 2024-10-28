@@ -23,3 +23,6 @@ class SelectSchema(CallbackData, prefix="select_shema"):
     
 class ViewCharatcerClub(CallbackData, prefix= "view_character_club"):
     club_id: int
+    
+class KickMember(CallbackData, prefix = "kick_member"):
+    character_id: int

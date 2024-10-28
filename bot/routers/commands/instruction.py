@@ -1,8 +1,6 @@
 from aiogram import Router
 from aiogram import Bot, F
-from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.context import FSMContext
-from aiogram.filters import CommandStart
+from aiogram.types import CallbackQuery, FSInputFile
 
 from bot.keyboards.menu_keyboard import main_menu, menu_instruction
 from bot.callbacks.menu_callbacks import NextInstruction
@@ -22,5 +20,7 @@ async def send_instruction(query: CallbackQuery, callback_data: NextInstruction,
     else:
         keyboard = menu_instruction(index_instruction=callback_data.index_instruction+1)
     
-    await query.message.answer(INSTRUCTION[callback_data.index_instruction],
-                               reply_markup=keyboard)
+    await query.message.answer_photo(
+        photo        = FSInputFile(path=f"src/learning/image_{callback_data.index_instruction}.jpg"),
+        caption      = INSTRUCTION[callback_data.index_instruction],
+        reply_markup = keyboard)

@@ -5,12 +5,17 @@ from aiogram.fsm.context import FSMContext
 from database.models.character import Character
 
 from services.club_service import ClubService
+from services.character_service import CharacterService
 from services.match_character_service import MatchCharacterService
 from services.league_service import LeagueFightService
 
 from bot.states.club_states import SendMessageMembers
-from bot.callbacks.club_callbacks import TransferOwner, DeleteClub, SelectSchema
-from bot.keyboards.club_keyboard import transfer_club_owner_keyboard, definitely_delete_club_keyboard, select_schema_keyboard
+from bot.callbacks.club_callbacks import TransferOwner, DeleteClub, SelectSchema, KickMember
+from bot.keyboards.club_keyboard import (
+    transfer_club_owner_keyboard, 
+    definitely_delete_club_keyboard, 
+    select_schema_keyboard, 
+    select_user_kick)
 
 from utils.club_utils import send_message_characters_club, get_text_schemas, text_schemas
 
@@ -146,6 +151,7 @@ async def select_schema(query: CallbackQuery, character: Character, callback_dat
         my_character=character
     )
     
+    
 async def notification_switch_schema(club_id: int, my_character: Character):
     club = await ClubService.get_club(club_id)
     current_match_today = await LeagueFightService.get_match_today(club_id=club.id)
@@ -159,4 +165,42 @@ async def notification_switch_schema(club_id: int, my_character: Character):
                 character_id=character.id,
                 match_id=current_match_today.match_id
             )
+
+    
+@owner_option_club_router.callback_query(F.data == "kick_user")
+async def kick_user_handler(query: CallbackQuery, character: Character):
+    if not character.club_id:
+        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+
+    club = await ClubService.get_club(club_id=character.club_id)
+    if club.owner_id != character.characters_user_id:
+        return await query.answer("❌ Ви не адмін клубу")
+    
+    members_club = [member_character for member_character in club.characters if member_character.id != character.id] 
+    await query.message.answer("Виберіть користувача якого хочете вигнати",
+                               reply_markup=select_user_kick(members_club))
+    
+    
+    
             
+@owner_option_club_router.callback_query(KickMember.filter())
+async def select_user_from_kick_handler(query: CallbackQuery, character: Character, callback_data: KickMember):
+    if not character.club_id:
+        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+
+    club = await ClubService.get_club(club_id=character.club_id)
+    if club.owner_id != character.characters_user_id:
+        return await query.answer("❌ Ви не адмін клубу")
+    
+    if callback_data.character_id not in [character.id for character in club.characters]:
+        return await query.answer("❌ Цього користувача немає в клубі")
+    
+    await ClubService.remove_character_from_club(
+        character_id=callback_data.character_id
+    )
+    character_kick = await CharacterService.get_character_by_id(
+        character_id=callback_data.character_id
+    )
+    await query.message.answer(f"Ви вигнали користувача - {character_kick.name}")
+    await query.bot.send_message(chat_id=character_kick.characters_user_id,
+                                 text=f"Капітан прийняв рішення, ви більше не в клубі [{club.name_club}]")

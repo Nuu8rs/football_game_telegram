@@ -139,6 +139,22 @@ class ClubService:
                     .values(club_id=None)
                 )
                 await session.commit()
+                
+    @classmethod
+    async def remove_character_from_club(cls, character_id: int):
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    stmt = (
+                        update(Character)
+                        .where(Character.id == character_id)
+                        .where()
+                        .values(club_id = None)    
+                            )
+                    await session.execute(stmt)
+                    await session.commit()
+                except Exception as E:
+                    print(E)
     
     @classmethod   
     async def edit_schemas(cls, club: Club, new_schema: str):

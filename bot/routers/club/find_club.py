@@ -29,7 +29,6 @@ async def get_my_club_handler(message: Message, state: FSMContext, character: Ch
         return await message.answer("Ви вже й так у клубі")
     
     all_clubs = await ClubService.get_all_clubs_to_join()
-    all_clubs = await ClubService.get_all_clubs()
     await state.update_data(all_clubs = all_clubs)
     if not all_clubs:
         return await message.reply("На даний момент немає клубів")
