@@ -55,24 +55,19 @@ async def find_clube_message(message: Message, state: FSMContext, character: Cha
     await message.answer(f"Усі знайдені клуби за назвою - {message.text}",
                                             reply_markup=find_club(
                                                 all_clubs=matching_clubs,
-                                                current_index=0
+                                                page=0
                                                 )
                                                 )
     
 @find_club_router.callback_query(SwitchClub.filter())
 async def switcher_select_club(query: CallbackQuery, callback_data: SwitchClub, state: FSMContext):
-    if callback_data.side == "right":
-        callback_data.current_index += 1
-    if callback_data.side == "left":
-        callback_data.current_index -= 1
-
     data = await state.get_data()
     if not data.get("all_clubs", False):
         return
     return await query.message.edit_reply_markup(
         reply_markup= find_club(
             all_clubs=data['all_clubs'],
-            current_index=callback_data.current_index
+            page=callback_data.page
         )
     )
 

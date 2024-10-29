@@ -3,7 +3,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from database.models.club import Club
 from database.models.character import Character
 
-from .utils_keyboard import switch_buttons, menu_plosha
+from .utils_keyboard import pagination_keyboard, menu_plosha
 from ..callbacks.switcher import SwitchClub
 from ..callbacks.club_callbacks import (
     SelectClubToJoin, 
@@ -15,7 +15,7 @@ from ..callbacks.club_callbacks import (
     ViewCharatcerClub,
     KickMember
     )
-from constants import MAX_LEN_MEMBERS_CLUB
+from constants import MAX_LEN_MEMBERS_CLUB, ITEM_PER_PAGE
 from utils.club_shemas import SchemaClub 
 
 def main_menu_club(character: Character):
@@ -51,12 +51,20 @@ def club_menu_keyboard(club: Club, character: Character):
     return keyboard.adjust(2, repeat=True).as_markup()
 
 
-def find_club(all_clubs: list[Club], current_index: int, items_per_page: int = 10):
+def find_club(all_clubs: list[Club], page: int = 0 ):
     keyboard = InlineKeyboardBuilder()
-    start_index = current_index
-    end_index = min(start_index + items_per_page, len(all_clubs))    
-    keyboard.attach(switch_buttons(total_items=len(all_clubs), current_index=current_index, switch_type=SwitchClub, items_per_page=items_per_page))
-    for club in all_clubs[start_index:end_index]:
+    
+    start = page * ITEM_PER_PAGE
+    end = start + ITEM_PER_PAGE
+    
+    
+    keyboard.attach(pagination_keyboard(
+        total_items  = len(all_clubs), 
+        current_page = page, 
+        switcher     = SwitchClub))
+    
+    
+    for club in all_clubs[start:end]:
         text_club = "⚽ {name_club} [{current_len_members}/{all_len_members}]".format(
             name_club = club.name_club,
             current_len_members = len(club.characters),
@@ -68,12 +76,21 @@ def find_club(all_clubs: list[Club], current_index: int, items_per_page: int = 1
     return keyboard.as_markup()
 
 
-def view_club(all_clubs: list[Club], current_index: int, items_per_page: int = 10):
+def view_club(all_clubs: list[Club], page: int):
     keyboard = InlineKeyboardBuilder()
-    start_index = current_index
-    end_index = min(start_index + items_per_page, len(all_clubs))    
-    keyboard.attach(switch_buttons(total_items=len(all_clubs), current_index=current_index, switch_type=SwitchClub, items_per_page=items_per_page))
-    for club in all_clubs[start_index:end_index]:
+    
+    start = page * ITEM_PER_PAGE
+    end = start + ITEM_PER_PAGE
+     
+    keyboard.attach(pagination_keyboard(
+        total_items  = len(all_clubs), 
+        current_page = page, 
+        switcher     = SwitchClub
+                                        )
+                    )
+    
+    
+    for club in all_clubs[start:end]:
         text_club = "⚽ {name_club} [{current_len_members}/{all_len_members}]".format(
             name_club = club.name_club,
             current_len_members = len(club.characters),

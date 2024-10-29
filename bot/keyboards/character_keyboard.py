@@ -5,7 +5,9 @@ from database.models.character import Character
 from bot.callbacks.items_callbacks import ViewMyItem, PutOnItem, SellMyItem, UnEquipItem
 from bot.callbacks.switcher import SwitchMyItem
 
-from .utils_keyboard import switch_buttons
+from constants import ITEM_PER_PAGE
+
+from .utils_keyboard import pagination_keyboard
 
 emj_item = {
     "BOOTS" : "👞",
@@ -23,25 +25,24 @@ def character_keyboard():
             )
     
     
-def my_inventory_keyboard(items: list[Item], current_index: int, character: Character):
-    items_per_page = 5
-    
-    start_index = current_index
-    end_index = min(start_index + items_per_page, len(items))    
+def my_inventory_keyboard(items: list[Item], character: Character, page: int = 0 ):
+
+    start = page * ITEM_PER_PAGE
+    end = start + ITEM_PER_PAGE 
 
     keyboard = InlineKeyboardBuilder()
-    keyboard.attach(switch_buttons(
+    keyboard.attach(pagination_keyboard(
         total_items=len(items),
-        current_index=current_index,
-        switch_type=SwitchMyItem,
-        items_per_page=items_per_page
-    ))
+        current_page = page,
+        switcher=SwitchMyItem,
+        
+        ))
     
-    for item in items[start_index:end_index]:
+    for item in items[start:end]:
         text_item = emj_item[item.category] + (" ✅ " if item.id in character.items_ids else " ❌ ") + item.name
         keyboard.button(text = text_item, callback_data=ViewMyItem(item_id=item.id))
         
-    keyboard.adjust(3, *[1]*items_per_page)
+    keyboard.adjust(3, *[1]*ITEM_PER_PAGE)
     return keyboard.as_markup()
 
 

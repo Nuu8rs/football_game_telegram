@@ -1,24 +1,38 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
-def switch_buttons(total_items: int, current_index: int, switch_type, items_per_page):
-    def arrow_button(statement, new_index, side):
-        if statement:
+from bot.callbacks.switcher import Switcher
+
+ITEM_PER_PAGE = 9
+
+def pagination_keyboard(current_page: int, total_items: int, switcher: Switcher):
+    total_pages = (total_items + ITEM_PER_PAGE - 1) // ITEM_PER_PAGE 
+    
+    def arrow_button(statement: bool, new_page: int, side: str):
+        if statement:    
             return InlineKeyboardBuilder().button(
                 text="➡️" if side == "right" else "⬅️", 
-                callback_data=switch_type(current_index=new_index, total_items=total_items, side=side)
+                callback_data=switcher(
+                    page = new_page,
+                    side = side
+                )
             )
-        return InlineKeyboardBuilder().button(text="🟥", callback_data="stop")
-    
-    total_pages = (total_items + items_per_page - 1) // items_per_page
-    current_page = current_index // items_per_page
+        return InlineKeyboardBuilder().button(text="🟥", callback_data="ignore")
     
     keyboard = InlineKeyboardBuilder()
-    keyboard.attach(arrow_button(current_page > 0, current_index - items_per_page, 'left'))
-    keyboard.button(text=f"{current_page + 1}/{total_pages}", callback_data="stop")
-    keyboard.attach(arrow_button(current_page < total_pages - 1, current_index + items_per_page, 'right'))
+    keyboard.attach(arrow_button(
+                statement = (current_page>0), 
+                new_page  = (current_page-1),
+                side      = "left"
+                                 ))
+    
+    keyboard.button(text=f"{current_page + 1}/{total_pages}", callback_data="ignore")
+    
+    keyboard.attach(arrow_button(
+                statement = (current_page < total_pages-1), 
+                new_page  = (current_page+1),
+                side      = "right"
+                                 ))
     return keyboard
-
-
 def menu_plosha():
     keyboard = ReplyKeyboardBuilder()
     keyboard.button(text = "⬅️ Головна площа")

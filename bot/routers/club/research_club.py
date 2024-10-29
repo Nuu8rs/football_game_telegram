@@ -17,7 +17,7 @@ research_club_router = Router()
 async def research_club_handler(message: Message, character: Character, state: FSMContext):    
     all_clubs = await ClubService.get_all_clubs_to_join()
     all_clubs_not_my_club = [club for club in all_clubs if club.id != character.club_id]
-    
+    await state.update_data(all_clubs = all_clubs_not_my_club)
     if not all_clubs_not_my_club:
         return await message.answer("Немає клубів для перегляду")
     
@@ -26,7 +26,7 @@ async def research_club_handler(message: Message, character: Character, state: F
     await message.answer("Виберіть клуб зі списку, або введіть назву клубу самостійно",
                                reply_markup=view_club(
                                    all_clubs=all_clubs_not_my_club,
-                                   current_index=0
+                                   page = 0
                                )) 
     
 @research_club_router.callback_query(SelectClubToView.filter())

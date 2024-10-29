@@ -33,7 +33,7 @@ async def select_view_my_items(query: CallbackQuery, character: Character):
                                reply_markup=my_inventory_keyboard(
                                    items=my_items,
                                    character=character,
-                                   current_index=0
+                                   page=0
                                ))
     
     
@@ -102,17 +102,12 @@ async def sell_my_item(query: CallbackQuery, character: Character, callback_data
     
 @items_character_router.callback_query(SwitchMyItem.filter())
 async def switcher_items(query: CallbackQuery, character: Character, callback_data: SwitchMyItem):
-    if callback_data.side == "right":
-        callback_data.current_index += 1
-    if callback_data.side == "left":
-        callback_data.current_index -= 1
-
     my_items = await ItemService.get_items_from_character(character_id=character.id)
     
     return await query.message.edit_reply_markup(
         reply_markup = my_inventory_keyboard(
                 items=my_items,
                 character=character,
-                current_index=callback_data.current_index
+                page=callback_data.page
                                )
     )
