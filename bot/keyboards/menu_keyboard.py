@@ -11,7 +11,7 @@ def main_menu(user: UserBot):
         keyboard.button(text = "🏟 Стадіон")
         keyboard.button(text = "🗄 Тренувальна база")
         keyboard.button(text ="⚽️ Мій футболіст")
-        keyboard.button(text ="🫂 Команда")
+        keyboard.button(text ="👥 Команда")
         keyboard.button(text = "🏬 Магазин")
         keyboard.button(text = "🏆 Зал слави")
         keyboard.button(text = "🥅 ПВП-пенальті")
