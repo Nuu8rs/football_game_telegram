@@ -80,7 +80,8 @@ def find_club(all_clubs: list[Club], page: int = 0 ):
 
 def view_club(all_clubs: list[Club], page: int):
     keyboard = InlineKeyboardBuilder()
-    
+    all_clubs = sorted(all_clubs, key=lambda club: club.total_power, reverse=True)
+
     start = page * ITEM_PER_PAGE
     end = start + ITEM_PER_PAGE
      
@@ -93,14 +94,15 @@ def view_club(all_clubs: list[Club], page: int):
     
     
     for club in all_clubs[start:end]:
-        text_club = "⚽ {name_club} [{current_len_members}/{all_len_members}]".format(
+        text_club = "⚽ {name_club} [{current_len_members}/{all_len_members}][Сила {power_club}]".format(
             name_club = club.name_club,
             current_len_members = len(club.characters),
-            all_len_members = MAX_LEN_MEMBERS_CLUB
+            all_len_members = MAX_LEN_MEMBERS_CLUB,
+            power_club = int(club.total_power)
         )
         
         keyboard.button(text=text_club, callback_data=SelectClubToView(club_id=club.id))
-    keyboard.adjust(3,2,2,2,2,2)
+    keyboard.adjust(3,*([1]*10))
     return keyboard.as_markup()
     
 def view_character_club(club_id: int):
