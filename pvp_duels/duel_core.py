@@ -14,12 +14,13 @@ from pvp_duels.duel_manager import DuelManager
 class CoreDuel:
     count_users_duel = 2
     queue_users_duel = asyncio.Queue()
-    temp_users = set()
+
     
 
     @classmethod
     async def add_user_to_pool(cls, character: Character):
         await cls.queue_users_duel.put(character)
+        cls.temp_user_ids.add(character.characters_user_id)
         
     @classmethod
     async def remove_user_from_pool(cls, character: Character):

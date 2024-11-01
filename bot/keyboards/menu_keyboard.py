@@ -9,14 +9,12 @@ def main_menu(user: UserBot):
         keyboard.button(text="⚽️ Створити персонажа")
     else:
         keyboard.button(text = "🏟 Стадіон")
-        keyboard.button(text ="🖲 Тренажерний зал")
-        keyboard.button(text ="⚽️ Мій персонаж")
-        keyboard.button(text ="🎪 Клуби")
-        keyboard.button(text = "🏫 Навчальний центр")
         keyboard.button(text = "🗄 Тренувальна база")
+        keyboard.button(text ="⚽️ Мій футболіст")
+        keyboard.button(text ="🫂 Команди")
         keyboard.button(text = "🏬 Магазин")
         keyboard.button(text = "🏆 Зал слави")
-        keyboard.button(text = "⚔️ Дуелі")
+        keyboard.button(text = "🥅 ПВП-пенальті")
         keyboard.button(text = "🗣 Cпілкування")
     
     return keyboard.adjust(2).as_markup(resize_keyboard = True)

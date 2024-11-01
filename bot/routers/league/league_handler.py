@@ -25,7 +25,7 @@ league_router = Router()
 async def get_my_character(message: Message, character: Character):
     
     if not character.club_id:
-        return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
+        return await message.answer(f"Ви не перебуваєте в команді, тому ви не можете користуватися [{message.text}]")
     
     club = await ClubService.get_club(club_id=character.club_id)
     await message.answer_photo(
@@ -38,7 +38,7 @@ async def get_my_character(message: Message, character: Character):
 @league_router.message(F.text == "📝 Зареєструватися в матч")
 async def register_character_to_match(message: Message, character: Character):
     if not character.club_id:
-        return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
+        return await message.answer(f"Ви не перебуваєте в команді, тому ви не можете користуватися [{message.text}]")
         
     club = await ClubService.get_club(club_id=character.club_id)
     next_match = await LeagueFightService.get_next_league_fight_by_club(
@@ -60,7 +60,7 @@ async def register_character_to_match(message: Message, character: Character):
 @league_router.message(F.text == "📅 Календар ігор")
 async def get_calendar_matches(message: Message, character: Character):
     if not character.club_id:
-        return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
+        return await message.answer(f"Ви не перебуваєте в команді, тому ви не можете користуватися [{message.text}]")
     
     next_match = await LeagueFightService.get_next_league_fight_by_club(
         club_id=character.club_id
@@ -78,7 +78,7 @@ async def get_calendar_matches(message: Message, character: Character):
 @league_router.message(F.text == "📊 Результати")
 async def get_result_matches(message: Message, character: Character):
     if not character.club_id:
-        return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
+        return await message.answer(f"Ви не перебуваєте в команді, тому ви не можете користуватися [{message.text}]")
     
     next_match = await LeagueFightService.get_next_league_fight_by_club(
         club_id=character.club_id
@@ -97,7 +97,7 @@ async def get_result_matches(message: Message, character: Character):
 @league_router.message(F.text == "📋 Таблиця")
 async def get_table_rait(message: Message, character: Character):
     if not character.club_id:
-        return await message.answer(f"Ви не перебуваєте в клубі, тому ви не можете користуватися [{message.text}]")
+        return await message.answer(f"Ви не перебуваєте в команді, тому ви не можете користуватися [{message.text}]")
 
     next_match = await LeagueFightService.get_next_league_fight_by_club(
         club_id=character.club_id

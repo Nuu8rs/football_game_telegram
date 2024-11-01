@@ -21,11 +21,11 @@ from utils.club_shemas import SchemaClub
 def main_menu_club(character: Character):
     keybaord = ReplyKeyboardBuilder()
     if not character.club_id:
-        keybaord.button(text = "⛩ Створити свій клуб")
-        keybaord.button(text = "🎮 Приєднатися до клубу")
+        keybaord.button(text = "⛩ Створити свою команду")
+        keybaord.button(text = "🎮 Приєднатися до команди")
     else:
-        keybaord.button(text = "🎪 Мій клуб")
-        keybaord.button(text = "🧿 Переглянути інші клуби")
+        keybaord.button(text = "👥 Моя команда")
+        keybaord.button(text = "🧿 Переглянути інші команди")
         
     keybaord.attach(menu_plosha())
     return keybaord.adjust(1).as_markup(resize_keyboard = True)
@@ -35,18 +35,18 @@ def club_menu_keyboard(club: Club, character: Character):
     keyboard = InlineKeyboardBuilder()
     if club.owner_id == character.characters_user_id:
         if not club.link_to_chat:
-            keyboard.button(text="⚙️ Додати посилання на чат клубу",  callback_data="change_club_chat")
+            keyboard.button(text="⚙️ Додати посилання на чат команди",  callback_data="change_club_chat")
         else:
-            keyboard.button(text="⚙️ змінити посилання на чат клубу", callback_data="change_club_chat")
+            keyboard.button(text="⚙️ змінити посилання на чат команди", callback_data="change_club_chat")
         keyboard.button(text = "🔄 Змінити схему команди", callback_data="change_schema_club")
-        keyboard.button(text = "⌨️ Надіслати повідомлення всьому клубу", callback_data="send_message_all_member_club")
-        keyboard.button(text = "🫂 Передати права на клуб", callback_data="transfer_rights")
-        keyboard.button(text = "❌ Видалити мій клуб", callback_data="delete_my_club")
+        keyboard.button(text = "⌨️ Надіслати повідомлення всьому команди", callback_data="send_message_all_member_club")
+        keyboard.button(text = "🫂 Передати права на команду", callback_data="transfer_rights")
+        keyboard.button(text = "❌ Видалити мій команду", callback_data="delete_my_club")
         keyboard.button(text = "🦶👤 Вигнати користувача", callback_data="kick_user")
     else:
         keyboard.button(text = "🎮 Схема команди", callback_data="view_schema_club")
-        keyboard.button(text = "⬅️ Вийти з клубу", callback_data="leave_club")
-    keyboard.button(text="👥 Користувачі клубу",callback_data=ViewCharatcerClub(club_id=club.id))
+        keyboard.button(text = "⬅️ Вийти з команди", callback_data="leave_club")
+    keyboard.button(text="👥 Користувачі команди",callback_data=ViewCharatcerClub(club_id=club.id))
     
     return keyboard.adjust(2, repeat=True).as_markup()
 
@@ -57,7 +57,8 @@ def find_club(all_clubs: list[Club], page: int = 0 ):
     start = page * ITEM_PER_PAGE
     end = start + ITEM_PER_PAGE
     
-    
+    all_clubs = sorted(all_clubs, key=lambda club: club.total_power, reverse=True)
+
     keyboard.attach(pagination_keyboard(
         total_items  = len(all_clubs), 
         current_page = page, 
@@ -65,14 +66,15 @@ def find_club(all_clubs: list[Club], page: int = 0 ):
     
     
     for club in all_clubs[start:end]:
-        text_club = "⚽ {name_club} [{current_len_members}/{all_len_members}]".format(
+        text_club = "⚽ {name_club} [{current_len_members}/{all_len_members}][Сила {power_club}]".format(
             name_club = club.name_club,
             current_len_members = len(club.characters),
-            all_len_members = MAX_LEN_MEMBERS_CLUB
+            all_len_members = MAX_LEN_MEMBERS_CLUB,
+            power_club = int(club.total_power)
         )
         
         keyboard.button(text=text_club, callback_data=SelectClubToJoin(club_id=club.id))
-    keyboard.adjust(3,2,2,2,2,2)
+    keyboard.adjust(3,*([1]*10))
     return keyboard.as_markup()
 
 
@@ -103,7 +105,7 @@ def view_club(all_clubs: list[Club], page: int):
     
 def view_character_club(club_id: int):
     return (InlineKeyboardBuilder()
-            .button(text="👥 Користувачі клубу",callback_data=ViewCharatcerClub(club_id=club_id))
+            .button(text="👥 Користувачі команди",callback_data=ViewCharatcerClub(club_id=club_id))
             .adjust(1)
             .as_markup()
             )
@@ -111,7 +113,7 @@ def view_character_club(club_id: int):
 
 def join_to_club_keyboard(club_id: int):
     return (InlineKeyboardBuilder()
-            .button(text = "➕ Приєднатися до клубу", callback_data=JoinToClub(club_id=club_id))
+            .button(text = "➕ Приєднатися до команди", callback_data=JoinToClub(club_id=club_id))
             .as_markup())
     
 def transfer_club_owner_keyboard(club: Club):
@@ -128,7 +130,7 @@ def transfer_club_owner_keyboard(club: Club):
 
 def definitely_delete_club_keyboard(club_id: int):
     return (InlineKeyboardBuilder()
-            .button(text = "Точно видалити мій клуб", callback_data=DeleteClub(club_id=club_id))
+            .button(text = "Точно видалити моб команду?", callback_data=DeleteClub(club_id=club_id))
             .as_markup()
             )
     

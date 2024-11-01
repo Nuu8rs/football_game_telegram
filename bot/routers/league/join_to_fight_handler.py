@@ -42,7 +42,7 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
         return await query.message.delete()
     
     if not character.club_id:
-        return await query.message.answer("❌ У данного персонажа нету клуба")
+        return await query.message.answer("❌ У цього персонажа немає команди")
     
     
     character_in_match = await MatchCharacterService.get_character_in_match(
@@ -82,7 +82,7 @@ async def join_to_match(query: CallbackQuery, callback_data: ViewCharacterRegist
     )
     
     if not character_club_in_match:
-        return await query.message.answer("На даний матч <b>ніхто з клубу ще не зареєструвався</b>")
+        return await query.message.answer("На даний матч <b>ніхто з команди ще не зареєструвався</b>")
     
     total_power = 0
     text = "🏆 <b>На матч зареєструвались</b>:\n\n"

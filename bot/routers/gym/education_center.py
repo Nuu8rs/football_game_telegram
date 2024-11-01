@@ -26,7 +26,19 @@ async def go_to_gym(message: Message):
         )
     
 @education_center_router.callback_query(F.data == "get_rewards_education_center")
-async def get_rewards_education_cernter(query: CallbackQuery, character: Character):
+async def get_rewards_education_cernter(query: CallbackQuery, character: Character, user):
+    
+    from bot.routers.commands.instruction import send_instruction
+    from bot.callbacks.menu_callbacks import NextInstruction
+
+    # return await send_instruction(
+    #     query = query,
+    #     user  = user,
+    #     callback_data = NextInstruction(
+    #         index_instruction=0
+    #     )
+    # )
+    
     if not datetime.now() > character.reminder.education_reward_date:
         time_to_get_reward = character.reminder.education_reward_date - datetime.now()
         hours, remainder = divmod(time_to_get_reward.seconds, 3600)

@@ -37,20 +37,20 @@ async def get_club_text(club: Club, character: Character) -> str:
     text = f"""
 ⚽ Гравець: {character.name}
 
-🏆 Клуб: {club.name_club}
+🏆 Команда: {club.name_club}
 👑 Лідер: {text_leader}
 🏅 Дивізіон: {club.league}
 
-📊 Моє місце в рейтингу клубу: {calculate_character_rank(
+📊 Моє місце в рейтингу команді: {calculate_character_rank(
         my_character=character,
         characters_list=club.characters
     )}
 
-💪 Загальна сила клубу: {club.total_power:.2f}
-👥 Кількість членів у клубі: {len(club.characters)}
+💪 Загальна сила команди: {club.total_power:.2f}
+👥 Кількість членів у команді: {len(club.characters)}
     """
     if club.link_to_chat:
-        text += f'\n💬 Чат клубу: <a href="{club.link_to_chat}">Чат</a>'
+        text += f'\n💬 Чат команди: <a href="{club.link_to_chat}">Чат</a>'
     
     return text
 
@@ -62,12 +62,12 @@ async def get_club_description(club: Club) -> str:
 
     
     text = f"""
-⚽ Клуб: {club.name_club}
+⚽ Команда: {club.name_club}
 
 👑 Лідер: {text_leader}
 🏅 Дивізіон: {club.league}
-💪 Загальна сила клубу: {club.total_power:.2f}
-👥 Кількість членів у клубі: {len(club.characters)}
+💪 Загальна сила команди: {club.total_power:.2f}
+👥 Кількість членів у команді: {len(club.characters)}
     """
     return text
 

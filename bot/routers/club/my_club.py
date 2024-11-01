@@ -23,14 +23,14 @@ from constants import CLUB_PHOTO
 
 my_club_router = Router()
 
-@my_club_router.message(F.text == "🎪 Клуби")
+@my_club_router.message(F.text == "🫂 Команди")
 async def get_my_club_handler(message: Message, character: Character):
-    await message.answer("Вітаю в меню клуба",reply_markup=main_menu_club(character))
+    await message.answer("Вітаю в меню команди",reply_markup=main_menu_club(character))
     
-@my_club_router.message(F.text == "🎪 Мій клуб")
+@my_club_router.message(F.text == "👥 Моя команда")
 async def my_club(message: Message, character: Character):
     if  not character.club_id:
-        return await message.answer("На жаль, у вас немає клубу, ви можете створити свій клуб, або приєднатися до вже реалізованого клубу",
+        return await message.answer("На жаль, у вас немає команди, ви можете створити свою команду, або приєднатися до вже реалізованої команди",
                                     reply_markup=main_menu_club(character))
         
     
@@ -49,8 +49,8 @@ async def my_club(message: Message, character: Character):
 @my_club_router.callback_query(F.data == "change_club_chat")
 async def change_chat_link_clube(query: CallbackQuery, state: FSMContext, user: UserBot, character: Character):
     if character.club_id is None:
-        return await query.answer("Ви зараз не в клубі")
-    await query.message.answer("Надішліть посилання на чат клубу")
+        return await query.answer("Ви зараз не в команді")
+    await query.message.answer("Надішліть посилання на чат команди")
     await state.set_state(state=ChangeClubChatLink.send_chat_link)
     
     
@@ -69,7 +69,7 @@ async def edit_chat_link_club(message: Message, state: FSMContext, character: Ch
     link = message.text
     club = await ClubService.get_club(club_id=character.club_id)
     await ClubService.update_link_to_chat(club=club, new_link=link)
-    await message.answer(f"Ссылка на чат клуба была поменянна на - <a href={link}>Чат</a>")
+    await message.answer(f"Ссылка на чат команди была поменянна на - <a href={link}>Чат</a>")
     await state.clear()
     
 @my_club_router.callback_query(ViewCharatcerClub.filter())
@@ -85,22 +85,27 @@ async def change_chat_link_clube(query: CallbackQuery, character: Character, cal
 @my_club_router.callback_query(F.data == "leave_club")
 async def leave_club_handler(query: CallbackQuery, user: UserBot, character: Character):
     if not character.club_id:
-        return await query.answer("❌ Ви й так не в клубі")
+        return await query.answer("❌ Ви й так не в команді")
     
     club = await ClubService.get_club(club_id=character.club_id)
     await CharacterService.leave_club(character)
     await query.message.edit_reply_markup(reply_markup=None)
-    await query.message.reply(f"<b>Ви вийшли з клубу</b> - {club.name_club}")
+    
+    character = await CharacterService.get_character_by_id(character.id)
+    await query.message.reply(f"<b>Ви вийшли з команди</b> - {club.name_club}", 
+                               reply_markup=main_menu_club(character))
+    
+    
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
-        text=f"☹️ Персонаж <b>{character.name}</b> покинул ваш клуб"
+        text=f"☹️ Персонаж <b>{character.name}</b> покинул вашу команду"
     )
 
 @my_club_router.callback_query(F.data == "view_schema_club")
 async def view_schema_club(query: CallbackQuery, user: UserBot, character: Character):
     if not character.club_id:
-        return await query.answer("❌ Ви й так не в клубі")
+        return await query.answer("❌ Ви й так не в команді")
     
     await query.message.answer(
         text=get_text_schemas(character.club)

@@ -8,13 +8,19 @@ from bot.keyboards.pvp_duels_keyboard import find_oponent_user_duel, leave_pool_
 
 from bot.filters.check_duel_filter import CheckDuelStatus
 from pvp_duels.duel_core import CoreDuel
-
+from pvp_duels.duel_manager import DuelManager
 find_user_duel_router = Router()
 
-@find_user_duel_router.message(F.text == "⚔️ Дуелі", CheckDuelStatus())
+@find_user_duel_router.message(F.text == "🥅 ПВП-пенальті")
 async def find_user_duel_handler(message: Message, character: Character):
     if character.reminder.character_in_duel:
-        return message.answer("Ви вже в процессі дуелі")
+        if not DuelManager.character_in_duel(character):
+            await RemiderCharacterService.edit_status_duel_character(
+                character_id=character.id,
+                status=False
+            )
+        else:
+            return message.answer("Ви вже в процессі ПВП-пеналті")
     
     await message.answer(
         text = """

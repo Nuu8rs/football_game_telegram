@@ -32,7 +32,7 @@ def generate_rankings(entities, my_entity, entity_type, sorting_attribute, displ
     if entity_type == 'character':
         entity_type_label = "персонажів"
     else:
-        entity_type_label = "клубів"
+        entity_type_label = "команд"
 
     top_15_header = f"Топ-15 найкращих {entity_type_label} за {ranking_label} 💪\n\n"
     top_15_text = top_15_header + "\n".join(rankings)

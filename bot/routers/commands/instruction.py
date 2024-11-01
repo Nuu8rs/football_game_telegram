@@ -20,7 +20,24 @@ async def send_instruction(query: CallbackQuery, callback_data: NextInstruction,
     else:
         keyboard = menu_instruction(index_instruction=callback_data.index_instruction+1)
     
+    text = INSTRUCTION[callback_data.index_instruction]
+    
+    if callback_data.index_instruction in [1,2,4]:
+        
+        video_etap = FSInputFile(f"src\\learning\\video_{callback_data.index_instruction}.MP4",filename=f"video_etap_{callback_data.index_instruction}")
+        
+        message = await query.message.answer_video(
+            width=1080,
+            height=1920,
+            video=video_etap,
+            caption=text,
+            reply_markup = keyboard,
+            
+        )
+        print(message.video.file_id)
+        return
+    
     await query.message.answer_photo(
         photo        = FSInputFile(path=f"src/learning/image_{callback_data.index_instruction}.jpg"),
-        caption      = INSTRUCTION[callback_data.index_instruction],
+        caption      = text,
         reply_markup = keyboard)

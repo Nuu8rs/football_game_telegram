@@ -18,11 +18,7 @@ from schedulers.scheduler_gym import GymTaskScheduler
 
 gym_router = Router()
 
-@gym_router.message(F.text == "🖲 Тренажерний зал")
-async def go_to_gym(message: Message):
-    await message.answer("Вітаємо тебе у тренажерному залі! Піти на тренування та покращити навички? Відновити енергію у масажному залі? Обирати тобі!", reply_markup=menu_gym())
-    
-@gym_router.message(F.text == "🧤 Піти на тренування")
+@gym_router.message(F.text == "🖲 Тренування")
 async def go_to_gym(message: Message):
     await message.answer_photo(
         photo=GYM_PHOTO,

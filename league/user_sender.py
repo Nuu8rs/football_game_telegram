@@ -12,7 +12,7 @@ import asyncio
 
 class UserSender:
     TEMPLATE_JOIN_TO_FIGHT = """
-    ⚽️ Матч між клубами <b>{name_first_club}</b> та <b>{name_second_club}</b>! 
+    ⚽️ Матч між командами <b>{name_first_club}</b> та <b>{name_second_club}</b>! 
     
     """
     

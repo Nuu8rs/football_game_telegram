@@ -10,6 +10,6 @@ class CheckDuelStatus(BaseFilter):
         
     async def __call__(self, event: Message, character: Character) -> Any:
         if character.reminder.character_in_duel:
-            await event.answer("❌ <b>Ви вже процессі дуелі</b>")
+            await event.answer("❌ <b>Ви вже процессі ПВП-пеналті</b>")
             return False
         return True

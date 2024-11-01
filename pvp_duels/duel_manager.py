@@ -1,8 +1,15 @@
 from pvp_duels.types import DuelUser
-
+from database.models.character import Character
 
 class DuelManager:
     active_duels: dict[str,'DuelUser'] = {}
+
+    @classmethod
+    def character_in_duel(cls, character: Character) -> bool:
+        return any(
+            duel_user.user_1.id == character.id or duel_user.user_2.id == character.id
+            for duel_user in cls.active_duels.values()
+        )
 
     @classmethod
     def add_pool_duel(cls, duel_id:str, duel_obj: 'DuelUser'):

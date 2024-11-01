@@ -29,24 +29,24 @@ owner_option_club_router = Router()
 @owner_option_club_router.callback_query(F.data == "send_message_all_member_club")
 async def get_message_to_member_club(query: CallbackQuery, state: FSMContext, character: Character):
     if not character.club_id:
-        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+        return await query.answer("❌ Ви не перебуваєте в команді на даний момент")
     
     club = await ClubService.get_club(club_id=character.club_id)
     if club.owner_id != character.characters_user_id:
-        return await query.answer("❌ Ви не адмін клубу, ви не можете надіслати повідомлення")
+        return await query.answer("❌ Ви не адмін команди, ви не можете надіслати повідомлення")
         
-    await query.message.answer("<b>Надішліть будь-яке повідомлення</b>, і воно буде доставлене всім учасникам вашого клубу")
+    await query.message.answer("<b>Надішліть будь-яке повідомлення</b>, і воно буде доставлене всім учасникам вашой команди")
     await state.set_state(SendMessageMembers.send_message_members)
     
 
 @owner_option_club_router.message(SendMessageMembers.send_message_members)
 async def send_message_all_member_club(message: Message, state: FSMContext, character: Character):
     if not character.club_id:
-        return await message.answer("❌ Ви не перебуваєте в клубі на даний момент")
+        return await message.answer("❌ Ви не перебуваєте в команді на даний момент")
 
     club = await ClubService.get_club(club_id=character.club_id)
     if club.owner_id != character.characters_user_id:
-        return await message.answer("❌ Ви не адмін клубу, ви не можете надіслати повідомлення")
+        return await message.answer("❌ Ви не адмін команди, ви не можете надіслати повідомлення")
     
     for character_club in club.characters:
         if character.characters_user_id == character_club.characters_user_id:
@@ -62,26 +62,26 @@ async def send_message_all_member_club(message: Message, state: FSMContext, char
 @owner_option_club_router.callback_query(F.data == "transfer_rights")
 async def transfer_rights_club(query: CallbackQuery, character: Character):
     if not character.club_id:
-        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+        return await query.answer("❌ Ви не перебуваєте в команді на даний момент")
 
     club = await ClubService.get_club(club_id=character.club_id)
     if club.owner_id != character.characters_user_id:
-        return await query.answer("❌ Ви не адмін клубу")
+        return await query.answer("❌ Ви не адмін команди")
     
     if len(club.characters) == 1:
-        return await query.message.answer("У вас у клубі немає того, кому можна передати лідера")
+        return await query.message.answer("У вас у команді немає того, кому можна передати лідера")
     
-    await query.message.answer("Виберіть персонажа, якому ви передасте права на ваш клуб",
+    await query.message.answer("Виберіть персонажа, якому ви передасте права на вашу команду",
                                reply_markup=transfer_club_owner_keyboard(club))
     
 @owner_option_club_router.callback_query(TransferOwner.filter())
 async def transfer_owner_club(query: CallbackQuery, character: Character, callback_data: TransferOwner):
     if not character.club_id:
-        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+        return await query.answer("❌ Ви не перебуваєте в команді на даний момент")
 
     club = await ClubService.get_club(club_id=character.club_id)
     if club.owner_id != character.characters_user_id:
-        return await query.answer("❌ Ви не адмін клубу")
+        return await query.answer("❌ Ви не адмін команди")
     
     await ClubService.transfer_club_owner(
         club=club,
@@ -92,39 +92,39 @@ async def transfer_owner_club(query: CallbackQuery, character: Character, callba
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
-        text=f"👤 <b>Лідер клубу змінився з {character.name} -> {character_owner.name}</b>"
+        text=f"👤 <b>Лідер команди змінився з {character.name} -> {character_owner.name}</b>"
     )
     
 @owner_option_club_router.callback_query(F.data == "delete_my_club")
 async def delete_my_club(query: CallbackQuery, character: Character):
     if not character.club_id:
-        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+        return await query.answer("❌ Ви не перебуваєте в команді на даний момент")
 
     club = await ClubService.get_club(club_id=character.club_id)
     if club.owner_id != character.characters_user_id:
-        return await query.answer("❌ Ви не адмін клубу")
+        return await query.answer("❌ Ви не адмін команди")
     
-    await query.message.answer("Ви точно хочете видалити клуб?",
+    await query.message.answer("Ви точно хочете видалити команду?",
                                reply_markup=definitely_delete_club_keyboard(club.id))
 
     
 @owner_option_club_router.callback_query(DeleteClub.filter())
 async def delete_my_club(query: CallbackQuery, character: Character, callback_data: DeleteClub):
     if not character.club_id:
-        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+        return await query.answer("❌ Ви не перебуваєте в команді на даний момент")
 
     club = await ClubService.get_club(club_id=callback_data.club_id)
     if club.owner_id != character.characters_user_id:
-        return await query.answer("❌ Ви не адмін клубу")
+        return await query.answer("❌ Ви не адмін команди")
     
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
-        text=f"😢 Клуб был удален"
+        text=f"😢 Команда была удалена"
     )
     await ClubService.remove_all_characters_from_club(club)
     await query.message.delete()
-    await query.message.answer("Ви видалили свій клуб")
+    await query.message.answer("Ви видалили свою команду")
     
     
 @owner_option_club_router.callback_query(F.data == "change_schema_club")
@@ -158,7 +158,7 @@ async def notification_switch_schema(club_id: int, my_character: Character):
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=my_character,
-        text="<b>Лідер клубу змінив схему</b>\n\n"+get_text_schemas(club)
+        text="<b>Лідер команди змінив схему</b>\n\n"+get_text_schemas(club)
     )
     for character in club.characters:
             await MatchCharacterService.delete_character_from_match(
@@ -170,11 +170,11 @@ async def notification_switch_schema(club_id: int, my_character: Character):
 @owner_option_club_router.callback_query(F.data == "kick_user")
 async def kick_user_handler(query: CallbackQuery, character: Character):
     if not character.club_id:
-        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+        return await query.answer("❌ Ви не перебуваєте в команді на даний момент")
 
     club = await ClubService.get_club(club_id=character.club_id)
     if club.owner_id != character.characters_user_id:
-        return await query.answer("❌ Ви не адмін клубу")
+        return await query.answer("❌ Ви не адмін команди")
     
     members_club = [member_character for member_character in club.characters if member_character.id != character.id] 
     await query.message.answer("Виберіть користувача якого хочете вигнати",
@@ -186,14 +186,14 @@ async def kick_user_handler(query: CallbackQuery, character: Character):
 @owner_option_club_router.callback_query(KickMember.filter())
 async def select_user_from_kick_handler(query: CallbackQuery, character: Character, callback_data: KickMember):
     if not character.club_id:
-        return await query.answer("❌ Ви не перебуваєте в клубі на даний момент")
+        return await query.answer("❌ Ви не перебуваєте в команді на даний момент")
 
     club = await ClubService.get_club(club_id=character.club_id)
     if club.owner_id != character.characters_user_id:
-        return await query.answer("❌ Ви не адмін клубу")
+        return await query.answer("❌ Ви не адмін команди")
     
     if callback_data.character_id not in [character.id for character in club.characters]:
-        return await query.answer("❌ Цього користувача немає в клубі")
+        return await query.answer("❌ Цього користувача немає в команді")
     
     await ClubService.remove_character_from_club(
         character_id=callback_data.character_id
@@ -203,4 +203,4 @@ async def select_user_from_kick_handler(query: CallbackQuery, character: Charact
     )
     await query.message.answer(f"Ви вигнали користувача - {character_kick.name}")
     await query.bot.send_message(chat_id=character_kick.characters_user_id,
-                                 text=f"Капітан прийняв рішення, ви більше не в клубі [{club.name_club}]")
+                                 text=f"Капітан прийняв рішення, ви більше не в команді [{club.name_club}]")

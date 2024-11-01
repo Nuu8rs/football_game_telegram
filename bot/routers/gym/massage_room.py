@@ -13,9 +13,9 @@ from services.payment_service import PaymentServise
 
 massage_room_router = Router()
 
-@massage_room_router.message(F.text == "💆‍♂️ Масажний зал")
+@massage_room_router.message(F.text == "🏪🔋 Крамниця енергії")
 async def massage_room_handler(message: Message):
-    await message.answer("Вітаю у массажному залі", reply_markup=menu_massage_room())
+    await message.answer("Вітаю у крамниці енергії", reply_markup=menu_massage_room())
     
     
 @massage_room_router.callback_query(SelectCountGetEnergy.filter())

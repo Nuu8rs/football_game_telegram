@@ -14,8 +14,8 @@ count_energys = [5,10,20,50,70]
 
 def menu_gym():
     return (ReplyKeyboardBuilder()
-            .button(text = "🧤 Піти на тренування")
-            .button(text = "💆‍♂️ Масажний зал")
+            .button(text = "🖲 Тренування")
+            
             .attach(menu_plosha())
             .adjust(2,1)
             .as_markup(resize_keyboard=True)

@@ -75,7 +75,7 @@ class LeagueFightService:
                     result = next_fight.scalars().first()
                     return result
                 except SQLAlchemyError as e:
-                    print(f"Ошибка при получении следующего матча для клуба {club_id}: {e}")
+                    print(f"Ошибка при получении следующего матча для команди {club_id}: {e}")
                     return None
                 
                 
@@ -98,7 +98,7 @@ class LeagueFightService:
                     )
                     return league_fights.scalars().all()
                 except SQLAlchemyError as e:
-                    print(f"Ошибка при получении следующего матча для клуба {club_id}: {e}")
+                    print(f"Ошибка при получении следующего матча для команди {club_id}: {e}")
                     return None
                 
     @classmethod
@@ -146,7 +146,7 @@ class LeagueFightService:
                     group_id = league_fight.scalar()
                     return group_id
                 except SQLAlchemyError as e:
-                    print(f"Ошибка при получении group_id для клуба {club_id}: {e}")
+                    print(f"Ошибка при получении group_id для команди {club_id}: {e}")
                     return None
                 
     @classmethod
@@ -168,7 +168,7 @@ class LeagueFightService:
                     elif league_fight_obj.second_club_id == club_id:
                         league_fight_obj.goal_second_club += add_goal
                     else:
-                        print(f"Клуб с ID {club_id} не участвует в матче с ID {match_id}.")
+                        print(f"Команда с ID {club_id} не участвует в матче с ID {match_id}.")
                         return None
 
                     session.add(league_fight_obj)

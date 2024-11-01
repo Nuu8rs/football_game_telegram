@@ -20,6 +20,7 @@ from database.models.character import Character
 
 @start_router.message(CommandStart())
 async def start_command_handler(message: Message, state: FSMContext, user: UserBot, command: Command):
+
     if command.args:
         await register_referal(user=user, referal=command.args)
 
@@ -39,6 +40,8 @@ async def start_command_handler(message: Message, state: FSMContext, user: UserB
 
 <b>Готові стати новою зіркою футболу? 🌟</b>
 Час почати свою подорож до слави!
+
+🔽<b>НАТИСКАЙ КНОПКУ СТВОРИТИ ПЕРСОНАЖА</b>🔽
     """
     
     message = await message.answer_video(

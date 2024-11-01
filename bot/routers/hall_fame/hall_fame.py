@@ -79,7 +79,7 @@ async def menu_hall_of_fame(message: Message, character: Character):
         )
     )
 
-@hall_fame_router.message(F.text == "👥 Рейтинг дуелів")
+@hall_fame_router.message(F.text == "👥 Рейтинг ПВП-пеналті")
 async def menu_hall_of_fame(message: Message, character: Character):
     if not (datetime.now().day >= DUEL_START_DAY_SEASON) and not (datetime.now().day <= DUEL_END_DAY_SEASON):
         return message.answer("Еще нету дуелей")

@@ -10,7 +10,7 @@ from services.club_service import ClubService
 from services.character_service import CharacterService
 
 from bot.states.club_states import FindClub
-from bot.keyboards.club_keyboard import find_club, join_to_club_keyboard
+from bot.keyboards.club_keyboard import find_club, join_to_club_keyboard, main_menu_club
 from bot.callbacks.club_callbacks import SelectClubToJoin, JoinToClub
 from bot.callbacks.switcher import SwitchClub
 
@@ -23,36 +23,36 @@ from utils.club_utils import get_club_description, send_message_characters_club
 
 find_club_router = Router()
 
-@find_club_router.message(F.text == "🎮 Приєднатися до клубу")
+@find_club_router.message(F.text == "🎮 Приєднатися до команди")
 async def get_my_club_handler(message: Message, state: FSMContext, character: Character):
     if character.club_id:
-        return await message.answer("Ви вже й так у клубі")
+        return await message.answer("Ви вже й так у команді")
     
     all_clubs = await ClubService.get_all_clubs_to_join()
     await state.update_data(all_clubs = all_clubs)
     if not all_clubs:
-        return await message.reply("На даний момент немає клубів")
+        return await message.reply("На даний момент немає команд")
         
     await state.set_state(FindClub.send_name_club)
-    await message.answer("Виберіть клуб зі списку, або введіть назву клубу самостійно",
+    await message.answer("Виберіть команду зі списку, або введіть назву команди самостійно",
                                reply_markup=find_club(
                                    all_clubs=all_clubs,
-                                   current_index=0
+                                   page=0
                                ))
     
     
-@find_club_router.message(FindClub.send_name_club, F.text != "⛩ Створити свій клуб")
+@find_club_router.message(FindClub.send_name_club, F.text != "⛩ Створити свою команду")
 async def find_clube_message(message: Message, state: FSMContext, character: Character):
     if  character.club_id:
-        return await message.answer("Ви вже й так у клубі")
+        return await message.answer("Ви вже й так у команді")
     data = await state.get_data()
     all_clubs: list[Club] = data['all_clubs']
     matching_clubs = [club for club in all_clubs if message.text.lower() in club.name_club.lower()]
     await state.update_data(all_clubs = matching_clubs)
     if not matching_clubs:
-        return await message.answer(f"Клубів за назвою - {message.text}, не знайдено")
+        return await message.answer(f"Команд за назвою - {message.text}, не знайдено")
     
-    await message.answer(f"Усі знайдені клуби за назвою - {message.text}",
+    await message.answer(f"Усі знайдені команди за назвою - {message.text}",
                                             reply_markup=find_club(
                                                 all_clubs=matching_clubs,
                                                 page=0
@@ -84,10 +84,16 @@ async def view_club(query: CallbackQuery, callback_data: SelectClubToJoin):
 @find_club_router.callback_query(JoinToClub.filter())
 async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: JoinToClub, character: Character):
     if character.reminder.time_to_join_club  + TIME_TO_JOIN_TO_CLUB > datetime.now():
-        return await query.answer("Ви не можете приєднатися до клубу, не минув 1 день після вступу до іншого клубу", show_alert=True)
+        remaining_time = (character.reminder.time_to_join_club + TIME_TO_JOIN_TO_CLUB) - datetime.now()
+        hours, remainder = divmod(remaining_time.seconds, 3600)
+        minutes, _ = divmod(remainder, 60)
+        return await query.answer(
+            f"Ви не можете приєднатися до команди, залишилось {hours} годин та {minutes} хвилин до моменту, коли можна приєднатися.",
+            show_alert=True
+        )
     
     if character.club_id:
-        return await query.message.answer("Ви вже й так у клубі")
+        return await query.message.answer("Ви вже й так у команді")
     
     await state.clear()
     await CharacterService.update_character_club_id(
@@ -98,7 +104,9 @@ async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: J
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
-        text=f"🎟 Вітаємо у вашому клубі поповнення, приєднався новий учасник <b>{character.name}</b>"
+        text=f"🎟 Вітаємо у вашій команді поповнення, приєднався новий учасник <b>{character.name}</b>"
     )
-    await query.message.answer("🎉 Вітаю ви приєдналися до клубу")
+    character = await CharacterService.get_character_by_id(character.id)
+    await query.message.answer("🎉 Вітаю ви приєдналися до команди", 
+                               reply_markup=main_menu_club(character))
     

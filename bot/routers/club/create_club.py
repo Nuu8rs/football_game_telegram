@@ -16,15 +16,15 @@ from utils.club_utils import get_club_text
 
 create_club_router = Router()
 
-@create_club_router.message(F.text == "⛩ Створити свій клуб")
+@create_club_router.message(F.text == "⛩ Створити свою команду")
 async def get_my_club_handler(message: Message, state: FSMContext, character: Character):
     if character.club_id:
         return await message.answer("Не-а")
-    await message.answer("Введите имя клуба")
+    await message.answer("Введите имя команди")
     await state.set_state(CreateClub.send_name)
     
     
-@create_club_router.message(CreateClub.send_name, F.text != "🎮 Приєднатися до клубу")
+@create_club_router.message(CreateClub.send_name, F.text != "🎮 Приєднатися до команди")
 async def get_name_club(message: Message, state: FSMContext, character: Character):
     if character.club_id:
         return
@@ -47,5 +47,5 @@ async def get_name_club(message: Message, state: FSMContext, character: Characte
             character=character
         )
     )
-    await message.answer("Вітаю зі створенням клубу", reply_markup=main_menu_club(character))
+    await message.answer("Вітаю зі створенням команди", reply_markup=main_menu_club(character))
     await state.clear()

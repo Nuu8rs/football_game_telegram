@@ -13,17 +13,17 @@ from utils.club_utils import get_club_description, send_message_characters_club
 
 research_club_router = Router()
 
-@research_club_router.message(F.text == "🧿 Переглянути інші клуби")
+@research_club_router.message(F.text == "🧿 Переглянути інші команди")
 async def research_club_handler(message: Message, character: Character, state: FSMContext):    
     all_clubs = await ClubService.get_all_clubs_to_join()
     all_clubs_not_my_club = [club for club in all_clubs if club.id != character.club_id]
     await state.update_data(all_clubs = all_clubs_not_my_club)
     if not all_clubs_not_my_club:
-        return await message.answer("Немає клубів для перегляду")
+        return await message.answer("Немає команд для перегляду")
     
     await state.update_data(all_clubs_not_my_club = all_clubs_not_my_club)
         
-    await message.answer("Виберіть клуб зі списку, або введіть назву клубу самостійно",
+    await message.answer("Виберіть команду зі списку, або введіть назву команди самостійно",
                                reply_markup=view_club(
                                    all_clubs=all_clubs_not_my_club,
                                    page = 0

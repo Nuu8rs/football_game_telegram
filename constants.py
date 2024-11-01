@@ -96,7 +96,7 @@ REFERAL_EXP = 20
 ALL_COUNT_ENERGY_BIT = [30,50,100,150]
 
 
-TIME_TO_JOIN_TO_CLUB = timedelta(hours=1)
+TIME_TO_JOIN_TO_CLUB = timedelta(minutes=2)
 
 #KEY - COUNT ENERGY | VALUE - PRICE UAH
 count_energys = [5,10,20,50,70]

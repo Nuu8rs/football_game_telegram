@@ -10,10 +10,10 @@ def get_text_training_facilities(club: Club) -> str:
     )
 
     if club.koef_energy == 1.0:
-        boost_status = "Ваша клубна енергія не підвищена."
+        boost_status = "Ваша команда енергія не підвищена."
     else:
         boost_percentage_value = int((club.koef_energy - 1) * 100)
-        boost_status = f"Поточне посилення клубу: {boost_percentage_value}%"
+        boost_status = f"Поточне посилення команди: {boost_percentage_value}%"
 
     total_energy_collected = club.energy_applied
 
@@ -33,7 +33,7 @@ def get_text_training_facilities(club: Club) -> str:
     progress_text = f"🟢 Зібрано енергії: {int(total_energy_collected)}/{max_energy}"
 
     text = f"""
-💪 Виберіть, скільки енергії хочете пожертвувати своєму клубу
+💪 Виберіть, скільки енергії хочете пожертвувати своїй команді
 
 АБО
 
@@ -45,7 +45,7 @@ def get_text_training_facilities(club: Club) -> str:
 
 {progress_text}
 
-Ваша пожертва допоможе вашому клубу стати сильнішим! 💥
+Ваша пожертва допоможе вашій команді стати сильнішим! 💥
     """
     
     return text

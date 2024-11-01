@@ -44,7 +44,7 @@ class EnergyApliedClubResetScheduler:
         
     async def reset_energy_aplied(self):
         await ClubService.reset_energy_aplied_not_bot_clubs()
-        logger.info("Убрал усиление с клубов")
+        logger.info("Убрал усиление с команд")
 
     async def start_reset_energy(self):
         self.scheduler.add_job(self.reset_energy_aplied, TIME_RESET_ENERGY_CLUB)

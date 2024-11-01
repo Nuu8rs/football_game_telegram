@@ -24,7 +24,7 @@ add_energy_in_match_router = Router()
 @add_energy_in_match_router.message(F.text == "🔋 Задонатити в матч")
 async def donate_energy_from_match(message: Message, character: Character, state: FSMContext):
     if character.club_id is None:
-        return await message.answer("Ви не перебуваєте в клубі")
+        return await message.answer("Ви не перебуваєте в команді")
     
 
     current_match_db = await LeagueFightService.get_match_today(
@@ -53,7 +53,7 @@ async def select_coint_donate_energy_in_match(message: Message, character: Chara
         return await message.answer("Мінімально можна підтримати на 5 енергії")
     
     if character.club_id is None:
-        return await message.answer("Ви не перебуваєте в клубі")
+        return await message.answer("Ви не перебуваєте в команді")
     
     if count_energy > character.current_energy:
         await state.clear()
@@ -93,7 +93,7 @@ async def select_coint_donate_energy_in_match(message: Message, character: Chara
 
 async def send_message_members_match_to_donate_energy(current_match: ClubMatch, my_character: Character, count_energy: int):
     text = (f"👑Учасник <b>{my_character.name}</b> задонатив <b>{count_energy}</b> одиниць енергії🔋, "
-        f"зміцнив свій клуб <b>{my_character.club.name_club}</b>, "
+        f"зміцнив свою команду <b>{my_character.club.name_club}</b>, "
         f"додавши <b>{count_energy/KOEF_ENERGY_DONATE}</b> до його сили💪")
 
     

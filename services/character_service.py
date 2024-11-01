@@ -276,3 +276,4 @@ class CharacterService:
                     return all_characters_not_bot
                 except Exception as e:
                     raise e
+                
