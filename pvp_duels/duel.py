@@ -67,6 +67,7 @@ class Duel:
             await CharacterService.edit_character_energy(character_obj=user_winner, amount_energy_adjustment=bid_winner_user*2)
         
         for user in self.user_duel.all_users_duel:
+            
             await RemiderCharacterService.edit_status_duel_character(
                 character_id=user.id,
                 status=False

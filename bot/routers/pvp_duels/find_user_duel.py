@@ -36,6 +36,9 @@ async def find_user_duel_handler(message: Message, character: Character):
     
 @find_user_duel_router.callback_query(F.data == "find_enemy_duel")
 async def add_to_pool_finder_enemy_duel_handler(query: CallbackQuery, character: Character):
+    if await CoreDuel.is_in_queue(character):
+        return await query.message.edit_text("❌ <b>Ви вже в пошуку дуелі !</b>", 
+                                          reply_markup = leave_pool_find_oponent())
     await CoreDuel.add_user_to_pool(character)
     await RemiderCharacterService.edit_status_duel_character(
         character_id=character.id, 
