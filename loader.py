@@ -23,6 +23,7 @@ async def start_functional():
     await init_bot_command()
     await init_db()
     await reset_energy_characters.start_reset_energy()
+
     await reset_aplied_energy_club.start_reset_energy()
     await education_reward_reminder.start_reminder()
     await gym_reminder.cheking_job_gym()

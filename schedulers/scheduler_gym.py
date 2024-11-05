@@ -6,7 +6,7 @@ from apscheduler.jobstores.base import JobLookupError
 
 from database.models.character import Character
 from services.character_service import CharacterService
-from services.reminder_character_service import RemiderCharacterService
+from services.reminder_character_service import RemniderCharacterService
 from datetime import datetime, timedelta
 
 from constants import chance_add_point, const_name_characteristics
@@ -68,23 +68,29 @@ class GymTaskScheduler:
             except Exception as E:
                 logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ {character.name}")
                             
-        await RemiderCharacterService.toggle_character_training_status(character_id=character.id)
-        await RemiderCharacterService.update_training_info(character_id=character.id)
+        await RemniderCharacterService.toggle_character_training_status(character_id=character.id)
+        await RemniderCharacterService.update_training_info(character_id=character.id)
     
     async def add_job_gym(self, character: Character, time_job_gym: timedelta, type_characteristics: str):
         self.scheduler.add_job(
             self.gym_spread_character, 
             trigger='date', 
             run_date=datetime.now() + time_job_gym,
-            args=[character, time_job_gym, type_characteristics]
+            args=[character, time_job_gym, type_characteristics],
+            misfire_grace_time = 10
+
         )
 
         self.scheduler.start()
 
 
     async def cheking_job_gym(self):
-        all_character_in_gym = await RemiderCharacterService.get_characters_in_training()
+        all_character_in_gym = await RemniderCharacterService.get_characters_in_training()
         for character in all_character_in_gym:
+            if not hasattr(character.reminder,"time_training"):
+                await RemniderCharacterService.toggle_character_training_status(character_id=character.id)
+                continue
+            
             if character.reminder.end_time_training < datetime.now():
                 await self.gym_spread_character(
                     character            = character,
@@ -96,7 +102,9 @@ class GymTaskScheduler:
                     self.gym_spread_character, 
                     trigger='date', 
                     run_date=character.reminder.end_time_training,
-                    args=[character, character.reminder.time_training, character.reminder.training_stats]
+                    args=[character, character.reminder.time_training, character.reminder.training_stats],
+                    misfire_grace_time = 10
+
                 )
                 
 

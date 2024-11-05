@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import Router, Bot, F
 from aiogram.types import Message, CallbackQuery, FSInputFile
 from aiogram.fsm.context import FSMContext
@@ -83,6 +85,12 @@ async def view_club(query: CallbackQuery, callback_data: SelectClubToJoin):
     
 @find_club_router.callback_query(JoinToClub.filter())
 async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: JoinToClub, character: Character):
+    club = await ClubService.get_club(character.club_id)
+    
+    await asyncio.sleep(0.5)
+    if len(club.characters) >= 11:
+        return await query.message.answer("Перевищено ліміт людей у клубі")
+    
     if character.reminder.time_to_join_club  + TIME_TO_JOIN_TO_CLUB > datetime.now():
         remaining_time = (character.reminder.time_to_join_club + TIME_TO_JOIN_TO_CLUB) - datetime.now()
         hours, remainder = divmod(remaining_time.seconds, 3600)
@@ -100,7 +108,7 @@ async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: J
         character=character,
         club_id=callback_data.club_id
     )
-    club = await ClubService.get_club(character.club_id)
+
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,

@@ -247,7 +247,7 @@ class DuelSender:
                             text=TEXT_DUEL.draw_message.value.format(bid_user = self.duel_users.bid_user_2)
                         )   
         else:
-            bid_winner_user = self.duel_users.bid_user_1 if winner.id == self.duel_users.user_1 else self.duel_users.bid_user_2
+            bid_winner_user = self.duel_users.bid_user_1 if winner.id == self.duel_users.user_1.id else self.duel_users.bid_user_2
             await bot.send_message(
                 chat_id=winner.characters_user_id,
                 text = TEXT_DUEL.victory_message.value.format(
@@ -256,7 +256,7 @@ class DuelSender:
                 )
             )
             oponent_user = self.duel_users.get_opponent(my_user=winner)
-            bid_loser_user  = self.duel_users.bid_user_2 if winner.id == self.duel_users.user_2 else self.duel_users.bid_user_1
+            bid_loser_user  = self.duel_users.bid_user_2 if winner.id == self.duel_users.user_2.id else self.duel_users.bid_user_1
             await bot.send_message(
                 chat_id=oponent_user.characters_user_id,
                 text=TEXT_DUEL.loss_message.value.format(

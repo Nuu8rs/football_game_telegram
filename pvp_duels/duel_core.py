@@ -3,13 +3,16 @@ import asyncio
 
 from database.models.character import Character
 from services.character_service import CharacterService
-from services.reminder_character_service import RemiderCharacterService
+from services.reminder_character_service import RemniderCharacterService
 
 from pvp_duels.types import DuelUser
 from pvp_duels.utils import select_random_roles
 from pvp_duels.duel import Duel
 from pvp_duels.duel_sender import DuelSender
 from pvp_duels.duel_manager import DuelManager
+
+from logging_config import logger
+
 
 class CoreDuel:
     count_users_duel = 2
@@ -49,16 +52,19 @@ class CoreDuel:
         
     async def _waiting_users(self):
         while True:
-            while self.queue_users_duel.qsize() < self.count_users_duel:
-                await asyncio.sleep(2)
-            
-            batch:list[Character] = []
-            for _ in range(self.count_users_duel):
-                user_duel = await self.queue_users_duel.get()
-                batch.append(user_duel)
-            await self.initialization_duel(*batch)
-            batch.clear()
-            
+            try:
+                while self.queue_users_duel.qsize() < self.count_users_duel:
+                    await asyncio.sleep(2)
+                
+                batch:list[Character] = []
+                for _ in range(self.count_users_duel):
+                    user_duel = await self.queue_users_duel.get()
+                    batch.append(user_duel)
+                await self.initialization_duel(*batch)
+                batch.clear()
+                await asyncio.sleep(1)
+            except Exception as E:
+                logger.error(f"error initialization duel err: {E}")
             
     async def initialization_duel(self, user_1: Character, user_2: Character):
         random_roles = select_random_roles() 
@@ -94,7 +100,7 @@ class CoreDuel:
                 amount_energy_adjustment=duel_users.bid_user_2
             )
         for user in duel_users.all_users_duel:
-            await RemiderCharacterService.edit_status_duel_character(
+            await RemniderCharacterService.edit_status_duel_character(
                 character_id=user.id,
                 status=False
             )

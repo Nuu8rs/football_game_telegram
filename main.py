@@ -11,6 +11,7 @@ dp.include_router(main_router)
 
 
 async def start_polling():
+    await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
     
 async def start_weebhook():

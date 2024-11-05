@@ -3,7 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
 from database.models.character import Character
-from services.reminder_character_service import RemiderCharacterService
+from services.reminder_character_service import RemniderCharacterService
 from bot.keyboards.pvp_duels_keyboard import find_oponent_user_duel, leave_pool_find_oponent
 
 from bot.filters.check_duel_filter import CheckDuelStatus
@@ -15,12 +15,13 @@ find_user_duel_router = Router()
 async def find_user_duel_handler(message: Message, character: Character):
     if character.reminder.character_in_duel:
         if not DuelManager.character_in_duel(character):
-            await RemiderCharacterService.edit_status_duel_character(
+            await RemniderCharacterService.edit_status_duel_character(
                 character_id=character.id,
                 status=False
             )
         else:
-            return message.answer("Ви вже в процессі ПВП-пеналті")
+            return message.answer("Ви вже в процессі ПВП-пеналті",
+                                  reply_markup = leave_pool_find_oponent())
     
     await message.answer(
         text = """
@@ -40,7 +41,7 @@ async def add_to_pool_finder_enemy_duel_handler(query: CallbackQuery, character:
         return await query.message.edit_text("❌ <b>Ви вже в пошуку дуелі !</b>", 
                                           reply_markup = leave_pool_find_oponent())
     await CoreDuel.add_user_to_pool(character)
-    await RemiderCharacterService.edit_status_duel_character(
+    await RemniderCharacterService.edit_status_duel_character(
         character_id=character.id, 
         status=True)
     await query.message.edit_text("""
@@ -58,7 +59,7 @@ async def add_to_pool_finder_enemy_duel_handler(query: CallbackQuery, character:
 @find_user_duel_router.callback_query(F.data == "leave_pool_find_oponent")
 async def leave_from_pool_find_enemy_duel_handler(query: CallbackQuery, character: Character):
     await CoreDuel.remove_user_from_pool(character)
-    await RemiderCharacterService.edit_status_duel_character(
+    await RemniderCharacterService.edit_status_duel_character(
         character_id=character.id, 
         status=False)
     await query.message.edit_text("""

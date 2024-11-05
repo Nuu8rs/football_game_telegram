@@ -72,6 +72,7 @@ class ClubMatch:
                 text       = self.club_match_sender.TEMPLATE_NOT_CHARACTERS,
                 character  = self.clubs_in_match.all_characters_in_clubs)
         
+        await asyncio.sleep(0.01)
         await self.club_match_sender.send_messages_to_users(
             text = self.club_match_sender.get_text_fight(),
             characters  = self.clubs_in_match.all_characters_in_match)

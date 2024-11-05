@@ -25,10 +25,10 @@ class ItemCategory(PyEnum):
 
 chance_add_point = {
     timedelta(seconds = 5)   : 90,
-    timedelta(minutes = 30)  : 25,
-    timedelta(minutes = 60)  : 35,
-    timedelta(minutes = 90)  : 50,
-    timedelta(minutes = 120) : 65,
+    timedelta(minutes = 30)  : 35,
+    timedelta(minutes = 60)  : 45,
+    timedelta(minutes = 90)  : 55,
+    timedelta(minutes = 120) : 75,
 }
 
 const_energy_by_time = {

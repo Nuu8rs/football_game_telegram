@@ -112,6 +112,7 @@ class SchedulerSesonDuels:
         await self._distribute_rewards(winner_users)
     
     async def wait_to_end_season_duel(self):
-        self.scheduler.add_job(self.end_duel_season, self.trigger)
+        self.scheduler.add_job(self.end_duel_season, self.trigger,misfire_grace_time = 10
+)
         self.scheduler.start()
     

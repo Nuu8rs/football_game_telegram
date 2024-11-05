@@ -15,7 +15,7 @@ from pvp_duels.contstans import (
     PROCENT_GOAL
         )
 from database.models.character import Character
-from services.reminder_character_service import RemiderCharacterService
+from services.reminder_character_service import RemniderCharacterService
 from services.character_service import CharacterService
 from services.duel_service import DuelService
 
@@ -68,7 +68,7 @@ class Duel:
         
         for user in self.user_duel.all_users_duel:
             
-            await RemiderCharacterService.edit_status_duel_character(
+            await RemniderCharacterService.edit_status_duel_character(
                 character_id=user.id,
                 status=False
             )

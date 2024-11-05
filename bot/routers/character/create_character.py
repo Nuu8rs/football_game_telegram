@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from database.models.user_bot import UserBot
 
 from services.character_service import CharacterService
-from services.reminder_character_service import RemiderCharacterService
+from services.reminder_character_service import RemniderCharacterService
 from services.user_service import UserService
 
 from bot.keyboards.menu_keyboard import menu_instruction, remove_keyboard
@@ -88,7 +88,7 @@ async def create_character_handler(query: CallbackQuery, state: FSMContext, user
     character = await CharacterService.create_character(
         character
     )
-    await RemiderCharacterService.create_character_reminder(character_id=character.id)
+    await RemniderCharacterService.create_character_reminder(character_id=character.id)
     await state.clear()
     user = await UserService.get_user(user_id=user.user_id)
         

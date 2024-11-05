@@ -7,7 +7,7 @@ from database.models.user_bot import UserBot
 from database.models.character import Character
 
 from services.character_service import CharacterService
-from services.reminder_character_service import RemiderCharacterService
+from services.reminder_character_service import RemniderCharacterService
 
 from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, menu_gym, leave_from_gym_keyboard
 from bot.callbacks.gym_calbacks import SelectGymType, SelectTimeGym
@@ -29,16 +29,16 @@ async def go_to_gym(message: Message):
 async def select_position_character(query: CallbackQuery, callback_data:SelectGymType):
     await query.message.edit_caption(
         caption="""
-<b>30 хвилин</b>, шанс підвищення навички <b>25%</b>  
+<b>30 хвилин</b>, шанс підвищення навички <b>35%</b>  
 Вартість - <b>10</b> енергії 
 
-<b>60</b> хвилин, шанс підвищення навички <b>35%</b>  
+<b>60</b> хвилин, шанс підвищення навички <b>45%</b>  
 Вартість - <b>20</b> енергії
 
-<b>90</b> хвилин, шанс підвищення навички <b>50%</b>  
+<b>90</b> хвилин, шанс підвищення навички <b>55%</b>  
 Вартість - <b>40</b> енергії
 
-<b>120</b> хвилин, шанс підвищення навички <b>65%</b> 
+<b>120</b> хвилин, шанс підвищення навички <b>75%</b> 
 Вартість - <b>60</b> енергії""",
         reply_markup=select_time_to_gym(callback_data.gym_type)
     )
@@ -77,13 +77,13 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
         time_job_gym=callback_data.gym_time,
         type_characteristics=callback_data.gym_type
     )
-    await RemiderCharacterService.update_training_info(
+    await RemniderCharacterService.update_training_info(
         character_id=character.id,
         training_stats=callback_data.gym_type,
         time_start_training=datetime.now(),
         time_training_seconds=callback_data.gym_time.total_seconds()
     )
-    await RemiderCharacterService.toggle_character_training_status(
+    await RemniderCharacterService.toggle_character_training_status(
         character_id=character.id,
         
     )
@@ -96,6 +96,6 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
 
 @gym_router.callback_query(F.data == "get_out_of_gym")
 async def leave_from_gym(query: CallbackQuery, character: Character):
-    await RemiderCharacterService.toggle_character_training_status(character_id=character.id)
-    await RemiderCharacterService.update_training_info(character_id=character.id)
+    await RemniderCharacterService.toggle_character_training_status(character_id=character.id)
+    await RemniderCharacterService.update_training_info(character_id=character.id)
     await query.message.answer("Ви вийшли з тренування")

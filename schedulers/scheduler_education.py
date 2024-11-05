@@ -32,7 +32,10 @@ class EducationRewardReminderScheduler():
         self.scheduler.add_job(func=self._send_character_remind_reward_message, 
                                args=[character.characters_user_id],
                                trigger='date',
-                               run_date = time_get_reward)
+                               run_date = time_get_reward,
+                               misfire_grace_time = 10
+
+                               )
         
 
     async def start_reminder(self):

@@ -6,7 +6,7 @@ from sqlalchemy.orm import joinedload
 from database.session import get_session
 from datetime import datetime, timedelta
 
-class RemiderCharacterService:
+class RemniderCharacterService:
     
     @classmethod
     async def create_character_reminder(cls, character_id: int) -> ReminderCharacter:
@@ -38,12 +38,9 @@ class RemiderCharacterService:
     async def toggle_character_training_status(cls, character_id: int) -> ReminderCharacter:
         async for session in get_session():
             async with session.begin():
-                # Получаем объект ReminderCharacter, связанный с данным персонажем
                 result = await session.execute(select(ReminderCharacter).where(ReminderCharacter.character_id == character_id))
                 reminder_character = result.scalars().first()
-
                 if reminder_character:
-                    # Переключаем статус character_in_training
                     current_status = reminder_character.character_in_training
                     new_status = not current_status
                     reminder_character.character_in_training = new_status
