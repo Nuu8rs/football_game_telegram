@@ -72,7 +72,7 @@ async def select_gradation_level(query: CallbackQuery, state: FSMContext, charac
         stats = json.dumps(item['stats']),
         owner_character_id = character.id
     )
-    item = await ItemService.create_item(
+    await ItemService.create_item(
         item_obj=item_obj
     )
     await CharacterService.update_money_character(

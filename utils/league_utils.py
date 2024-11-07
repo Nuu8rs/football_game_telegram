@@ -11,6 +11,8 @@ from services.club_service  import ClubService
 
 from league.club_in_match import ClubsInMatch
 
+from bot.routers.league.utils import get_characters_club_in_match
+
 
 def get_future_matches_by_club(club: Club) -> list[ClubMatch]: 
     current_time = datetime.now()
@@ -29,23 +31,39 @@ async def get_text_league(club: Club):
     enemy_club_id = fight_istance.clubs_in_match.second_club_id if club.id != fight_istance.clubs_in_match.second_club_id else fight_istance.clubs_in_match.first_club_id 
     enemy_club = await ClubService.get_club(enemy_club_id)
     
+    
+
+    characters_in_match = await get_characters_club_in_match(
+        club_id  = club.id,
+        match_id = current_match.match_id
+    )
+
+    enemy_characters_in_match = await get_characters_club_in_match(
+        club_id  = club.id,
+        match_id = current_match.match_id
+    )
+    
     text = """
 ⚽️ Твоя ліга: <b>{name_league}</b>
 
 ⚔️ <b>Наступний матч</b> ⚔️
 
-🛑 <code>{first_name_club}</code>
+🛑 <code>{first_name_club}</code> [{power_first_club}] ({count_characters_first_club}/11)
 <b>VS</b>
-✳️ <code>{second_name_club}</code>
+✳️ <code>{second_name_club}</code> [{power_second_club}] ({count_characters_second_club}/11)
 
 ⏰ Час початку: <b>{time_fight}</b>
     """
     
     return text.format(
-        name_league      = club.league,
-        first_name_club  = club.name_club,
-        second_name_club = enemy_club.name_club,
-        time_fight       = fight_istance.start_time.strftime("%d:%m:%Y - %H:%M")
+        name_league       = club.league,
+        first_name_club   = club.name_club,
+        second_name_club  = enemy_club.name_club,
+        time_fight        = fight_istance.start_time.strftime("%d:%m:%Y - %H:%M"),
+        power_first_club  = sum([character.full_power for character in characters_in_match]),
+        power_second_club = sum([character.full_power for character in enemy_characters_in_match]),
+        count_characters_first_club  = len(characters_in_match),
+        count_characters_second_club = len(enemy_characters_in_match)
     )
     
 
@@ -118,8 +136,7 @@ def get_text_result(fights: list[LeagueFight], club_id: int):
     
     return schedule_table
 
-
-def get_text_rating(fights: list[ClubMatch]):
+async def get_text_rating(fights: list[ClubMatch]):
     # Словари для подсчета очков, голов забитых, пропущенных и разницы голов
     club_points = {}
     club_goals_scored = {}
@@ -154,6 +171,7 @@ def get_text_rating(fights: list[ClubMatch]):
         goal_difference = goals_scored - goals_conceded
 
         rankings.append({
+            'club_id': club_id,  # Добавляем club_id
             'club_name': club.name_club,
             'points': points,
             'goals_scored': goals_scored,
@@ -166,13 +184,17 @@ def get_text_rating(fights: list[ClubMatch]):
     ranking_table = "🏆 <b>Таблиця Рейтингів</b>\n\n"
     medals = ["🥇", "🥈", "🥉"]
     for index, rank in enumerate(sorted_rankings, start=1):
+        club = await ClubService.get_club(
+            club_id=rank['club_id']
+        )
         medal = medals[index-1] if index <= 3 else f"{index}."
         club_info = f"<b>{rank['club_name']}</b>"
         
         ranking_table += (
-            f"{medal} {club_info}\n"
+            f"{medal} {club_info} <b>[{club.total_power:.2f}]</b>\n"
             f"Очки: {rank['points']}, ГЗ {rank['goals_scored']}; ГП {rank['goals_conceded']}, "
             f"РГ {'+' if rank['goal_difference'] >= 0 else ''}{rank['goal_difference']}\n\n"
+            
         )
     
     return ranking_table

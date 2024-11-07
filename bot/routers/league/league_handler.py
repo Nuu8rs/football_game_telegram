@@ -1,16 +1,11 @@
-from aiogram import Router, Bot, F
-from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.context import FSMContext
+from aiogram import Router, F
+from aiogram.types import Message
 
-from datetime import datetime, timedelta
-
-from database.models.club import Club
-from database.models.user_bot import UserBot
+from bot.keyboards.league_keyboard import menu_league_zone, keyboard_to_join_character_to_fight
 from database.models.character import Character
 
 from services.league_service import LeagueFightService
 from services.club_service import ClubService
-from bot.keyboards.league_keyboard import menu_league_zone, keyboard_to_join_character_to_fight
 
 from constants import LEAGUE_PHOTO, JOIN_TO_FIGHT
 
@@ -48,6 +43,7 @@ async def register_character_to_match(message: Message, character: Character):
         return await message.answer(
             text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 24"
         )
+
 
     await message.answer_photo(
         photo=JOIN_TO_FIGHT,
@@ -111,5 +107,5 @@ async def get_table_rait(message: Message, character: Character):
     group_id_mathces = await LeagueFightService.get_group_id_by_club(club_id=character.club_id)
     all_mathes_by_group = await LeagueFightService.get_the_monthly_matches_by_group(group_id=group_id_mathces)
     await message.answer(
-        text=get_text_rating(all_mathes_by_group)
+        text=await get_text_rating(all_mathes_by_group)
     )

@@ -85,7 +85,7 @@ async def view_club(query: CallbackQuery, callback_data: SelectClubToJoin):
     
 @find_club_router.callback_query(JoinToClub.filter())
 async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: JoinToClub, character: Character):
-    club = await ClubService.get_club(character.club_id)
+    club = await ClubService.get_club(callback_data.club_id)
     
     await asyncio.sleep(0.5)
     if len(club.characters) >= 11:
