@@ -1,3 +1,4 @@
+import asyncio
 
 from database.models.club import Club
 from database.models.character import Character
@@ -8,13 +9,16 @@ from logging_config import logger
 from loader import bot
 from bot.keyboards.league_keyboard import keyboard_to_join_character_to_fight
 from constants import JOIN_TO_FIGHT
-import asyncio
+
+from utils.rate_limitter import rate_limiter
 
 class UserSender:
     TEMPLATE_JOIN_TO_FIGHT = """
     ⚽️ Матч між командами <b>{name_first_club}</b> та <b>{name_second_club}</b>! 
     
     """
+    
+    messages_queue = asyncio.Queue()
     
     
     def __init__(self, 
@@ -28,7 +32,7 @@ class UserSender:
         league_fight = await LeagueFightService.get_league_fight(self.match_id)
         self.first_club: Club = league_fight.first_club
         self.second_club: Club = league_fight.second_club
-        self.characters = self.second_club.characters + self.first_club.characters
+        self.characters = [character for character in (self.second_club.characters + self.first_club.characters) if not character.is_bot] 
         
     async def send_messages_to_users(self):
         await self._post_init()
@@ -42,8 +46,10 @@ class UserSender:
             name_second_club = self.second_club.name_club
         )
 
+    @rate_limiter
     async def __send_message(self, character: Character):
         try:
+            
             if not character.is_bot:
                 await asyncio.sleep(1)
                 await bot.send_photo(

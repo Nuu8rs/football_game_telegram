@@ -69,7 +69,7 @@ async def edit_chat_link_club(message: Message, state: FSMContext, character: Ch
     link = message.text
     club = await ClubService.get_club(club_id=character.club_id)
     await ClubService.update_link_to_chat(club=club, new_link=link)
-    await message.answer(f"Ссылка на чат команди была поменянна на - <a href={link}>Чат</a>")
+    await message.answer(f'Ссылка на чат команди была поменянна на - <a href="{link}">Чат</a>')
     await state.clear()
     
 @my_club_router.callback_query(ViewCharatcerClub.filter())

@@ -47,7 +47,7 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
         return query.message.answer(f"<b>Залишилося часу до отримання нагороди годин {hours} і {minutes} хвилин</b>")
     
     
-    exp, coins = GET_RANDOM_NUMBER(1,3), GET_RANDOM_NUMBER(5,10)
+    exp, coins, energy = GET_RANDOM_NUMBER(1,3), GET_RANDOM_NUMBER(5,10), GET_RANDOM_NUMBER(30,50)
     if datetime.now().day >= X2_REWARD_WEEKEND_START_DAY and datetime.now().day <= X2_REWARD_WEEKEND_END_DAY:
         exp = exp * 2
         coins = coins * 2
@@ -64,6 +64,7 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
         character=character,
         amount_add_time=DELTA_TIME_EDUCATION_REWARD
     )
+    await CharacterService.edit_character_energy(character, energy)
     
     scheduler_reward_education = EducationRewardReminderScheduler()
     await scheduler_reward_education.add_job_remind(
@@ -73,5 +74,6 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
     await query.message.answer(get_text_education_center_reward(
         exp = exp,
         coins=coins,
+        energy= energy,
         delta_time_education_reward=DELTA_TIME_EDUCATION_REWARD
     ))

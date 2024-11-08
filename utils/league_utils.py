@@ -39,7 +39,7 @@ async def get_text_league(club: Club):
     )
 
     enemy_characters_in_match = await get_characters_club_in_match(
-        club_id  = club.id,
+        club_id  = enemy_club.id,
         match_id = current_match.match_id
     )
     
@@ -48,9 +48,9 @@ async def get_text_league(club: Club):
 
 ⚔️ <b>Наступний матч</b> ⚔️
 
-🛑 <code>{first_name_club}</code> [{power_first_club}] ({count_characters_first_club}/11)
+🛑 <code>{first_name_club}</code> [{power_first_club:.2f}] ({count_characters_first_club}/11)
 <b>VS</b>
-✳️ <code>{second_name_club}</code> [{power_second_club}] ({count_characters_second_club}/11)
+✳️ <code>{second_name_club}</code> [{power_second_club:.2f}] ({count_characters_second_club}/11)
 
 ⏰ Час початку: <b>{time_fight}</b>
     """

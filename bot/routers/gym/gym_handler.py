@@ -13,8 +13,7 @@ from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, menu
 from bot.callbacks.gym_calbacks import SelectGymType, SelectTimeGym
 
 from constants import GYM_PHOTO, const_name_characteristics, const_energy_by_time
-from schedulers.scheduler_gym import GymTaskScheduler
-
+from schedulers.scheduler_gym_rasks import GymScheduler
 
 gym_router = Router()
 
@@ -71,12 +70,13 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
                                          end_time_full = (datetime.now() + callback_data.gym_time).strftime("%d-%m-%Y, %H:%M")
                                      )
                                      ,reply_markup=None)
-    scheduler = GymTaskScheduler()
-    await scheduler.add_job_gym(
-        character=character,
-        time_job_gym=callback_data.gym_time,
-        type_characteristics=callback_data.gym_type
+  
+    gym_scheduler = GymScheduler(
+        character_id        = character.id,
+        type_characteristic = callback_data.gym_type,
+        time_training       = callback_data.gym_time 
     )
+    gym_scheduler.start_training()
     await RemniderCharacterService.update_training_info(
         character_id=character.id,
         training_stats=callback_data.gym_type,

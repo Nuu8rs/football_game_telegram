@@ -14,10 +14,19 @@ from bot.keyboards.admins_keyboard import select_option_newsletter
 from services.character_service import CharacterService
 from services.admins_functional_service import AdminFunctionalService
 
+from utils.rate_limitter import rate_limiter
+
 from loader import logger
 
 admin_newsletter_commands = Router()
 
+# @admin_newsletter_commands.message(Command("/test"))
+# async def send_message(massage: Message):
+#     for _ in range(500):
+#         await send_message_to_character(
+#             message = massage,
+#             user_id = 6790393255
+#         )
 
 @admin_newsletter_commands.message(Command("send_message"), CheckUserIsAdmin())
 async def send_message_all_user(message: Message, state: FSMContext):
@@ -68,9 +77,9 @@ async def send_message(message: Message, state: FSMContext):
      
     for user_character in characterts:
         try:
-            await asyncio.sleep(1)
-            await message.send_copy(
-                chat_id=user_character.characters_user_id
+            await send_message_to_character(
+                message = message,
+                user_id = user_character.characters_user_id 
             )
         except Exception as E:
             logger.error(f"НЕ СМОГ ОТПРАВИТЬ ПРИ ТОТАЛЬНОЙ РАССЫЛКЕ - {user_character.name}")
@@ -78,3 +87,9 @@ async def send_message(message: Message, state: FSMContext):
     await message.answer("Розсилання цього повідомлення було закінчено")
     await state.clear()
     
+@rate_limiter
+async def send_message_to_character(message: Message, user_id: int) -> None:
+    await message.send_copy(
+        chat_id = user_id
+    )
+        

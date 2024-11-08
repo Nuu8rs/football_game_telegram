@@ -118,9 +118,9 @@ class CORE_LEAGUE:
         
         if start_time_fight < datetime.now():
             return
-        # start_time = datetime.combine(match.time_to_start, datetime.min.time()).replace(hour=21, minute=0)
+        # start_time = datetime.combine(match.time_to_start, datetime.min.time())
         # current_time = datetime.now()
-        # start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(seconds=20)
+        # start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(seconds=40)
         # start_time_fight = start_time_sender + timedelta(seconds=20)
         
         fight = ClubMatch(

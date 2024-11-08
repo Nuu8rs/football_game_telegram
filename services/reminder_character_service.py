@@ -6,6 +6,8 @@ from sqlalchemy.orm import joinedload
 from database.session import get_session
 from datetime import datetime, timedelta
 
+from logging_config import logger
+
 class RemniderCharacterService:
     
     @classmethod
@@ -22,17 +24,30 @@ class RemniderCharacterService:
                 return merged_obj
 
     @classmethod
-    async def get_characters_in_training(cls) -> list[Character]:
+    async def get_characters_in_training(cls) -> list[ReminderCharacter]:
         async for session in get_session():
             async with session.begin():
                 result = await session.execute(
-                    select(Character)
-                    .join(ReminderCharacter)
-                    .options(joinedload(Character.reminder)) 
+                    select(ReminderCharacter)
                     .where(ReminderCharacter.character_in_training == True)
                 )
                 characters_in_training = result.scalars().all()
                 return characters_in_training
+            
+    @classmethod
+    async def anulate_character_training_status(cls, character_id: int) -> None:
+        async for session in get_session():
+            async with session as sess:
+                try:
+                    stmt = (
+                        update(ReminderCharacter)
+                        .where(ReminderCharacter.character_id == character_id)
+                        .values(character_in_training = False)
+                    )
+                    await sess.execute(stmt)
+                    await sess.commit()
+                except Exception as E:
+                    logger.error(f"Не смог анулировать статус тренировки для {character_id} err : {E}")
             
     @classmethod
     async def toggle_character_training_status(cls, character_id: int) -> ReminderCharacter:
@@ -68,7 +83,23 @@ class RemniderCharacterService:
 
                 await session.commit()
                 return reminder_character
-            
+    
+    @classmethod
+    async def anulate_training_character(cls, character_id: int) -> None:
+        async for session in get_session():
+            async with session as sess:
+                try:
+                    stmt = (update(ReminderCharacter)
+                            .where(ReminderCharacter.character_id == character_id)
+                            .values(training_stats = None)
+                            .values(time_start_training = None)
+                            .values(time_training_seconds = None)
+                            )
+                    await sess.execute(stmt)
+                    await sess.commit()
+                except Exception as E:
+                    logger.error(f"Произошла ошибка при онулирования состояния тренировки {E}")
+        
             
     @classmethod
     async def edit_status_duel_character(cls, character_id: int, status: bool):

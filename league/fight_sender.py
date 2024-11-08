@@ -3,6 +3,9 @@ from database.models.character import Character
 
 from loader import bot, logger
 from constants import FIGHT_MENU
+
+from utils.rate_limitter import rate_limiter
+
 import random
 
 goal_conceded = [
@@ -182,8 +185,11 @@ class ClubMatchSender:
 
     async def send_messages_to_users(self, text: str, characters: list[Character], send_photo: bool = True) -> dict[int, int]:
         for character in characters:
+            if character.is_bot:
+                continue
             await self._send_message_to_character(character, text, send_photo)
 
+    @rate_limiter
     async def _send_message_to_character(self, character: Character, text: str, send_photo: bool = True) -> None:
         if not character.is_bot:
             try:

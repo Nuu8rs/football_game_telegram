@@ -3,9 +3,12 @@ from database.models.item import Item
 
 from database.session import get_session
 from sqlalchemy import select, update
-from config import DatabaseType, CONST_ENERGY
+from config import CONST_ENERGY
 from datetime import datetime, timedelta
 from enum import Enum
+
+from logging_config import logger
+
 
 class CharacterService:
     @classmethod
@@ -69,18 +72,24 @@ class CharacterService:
                 return merged_obj
             
     @classmethod
-    async def update_character_field(cls, character_obj: Character, param: str, add_point: int) -> Character:
+    async def update_character_characteristic(cls, character_id: int, type_characteristic: str, amount_add_points: int) -> Character:
         async for session in get_session():
-            async with session.begin():
+            async with session as sess:
                 try:
-                    session.add(character_obj)
-                except:
-                    pass
-                merged_obj = await session.merge(character_obj)
-                current_value = getattr(merged_obj, param, 0)
-                setattr(merged_obj, param, current_value + add_point)
-                await session.commit()
-         
+                    stmt = (
+                        update(Character)
+                        .where(Character.id == character_id)
+                        .values({type_characteristic: getattr(Character, type_characteristic) + amount_add_points})
+                    )
+                    await sess.execute(stmt)
+                    await sess.commit()
+                except Exception as E:
+                    logger.error(
+                        f"Ошибка при изменении характеристики у персонажа с ID {character_id}. "
+                        f"Характеристика: '{type_characteristic}', добавленные очки: {amount_add_points}. "
+                        f"Текст ошибки: {E}"
+                    )
+            
 
     @classmethod
     async def update_training_params(cls, character_obj: Character, characteristic: str, training_time: datetime) -> Character:

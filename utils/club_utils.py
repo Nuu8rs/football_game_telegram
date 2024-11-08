@@ -79,7 +79,7 @@ def calculate_character_rank(my_character: Character, characters_list: list[Char
             return index
         
 
-def get_text_education_center_reward(exp: int, coins: int, delta_time_education_reward: timedelta) -> str:
+def get_text_education_center_reward(exp: int, coins: int, energy: int, delta_time_education_reward: timedelta) -> str:
     current_time = datetime.now()
     next_reward_time = current_time + delta_time_education_reward
     next_reward_time_formatted = next_reward_time.strftime("%d-%m-%Y %H:%M:%S")
@@ -89,6 +89,7 @@ def get_text_education_center_reward(exp: int, coins: int, delta_time_education_
 🎓 <b>Після навчального центру ваш персонаж отримав:</b>
 ✨ {exp} <b>досвіду</b>  
 💰 {coins} <b>монет</b>
+🔋 {energy} <b>енергії</b>
 
 🕒 <b>Ви зможете отримати наступну нагороду через:</b> {delta_time_education_reward} <b>о {next_reward_time_formatted}</b>
 """

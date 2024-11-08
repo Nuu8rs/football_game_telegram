@@ -26,7 +26,7 @@ async def start_functional():
 
     await reset_aplied_energy_club.start_reset_energy()
     await education_reward_reminder.start_reminder()
-    await gym_reminder.cheking_job_gym()
+    await gym_reminder.start_iniatialization_gym()
     asyncio.create_task(core_duel._waiting_users())
     await end_duel_season.wait_to_end_season_duel()
     await core_league.setup_league()
@@ -47,14 +47,14 @@ dp.startup.register(start_functional)
 from league.core_leauge import CORE_LEAGUE, LeagueService
 from schedulers.scheduler_energy import EnergyResetScheduler, EnergyApliedClubResetScheduler
 from schedulers.scheduler_education import EducationRewardReminderScheduler
-from schedulers.scheduler_gym import GymTaskScheduler
+from schedulers.scheduler_gym_rasks import GymStartReseter
 from schedulers.scheduler_season_duels import SchedulerSesonDuels
 from pvp_duels.duel_core import CoreDuel
 
 reset_energy_characters   = EnergyResetScheduler()
 reset_aplied_energy_club  = EnergyApliedClubResetScheduler()
 education_reward_reminder = EducationRewardReminderScheduler()
-gym_reminder              = GymTaskScheduler()
+gym_reminder              = GymStartReseter()
 end_duel_season           = SchedulerSesonDuels()
 
 league_service = LeagueService()

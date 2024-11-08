@@ -70,7 +70,7 @@ class ClubMatch:
         if self.clubs_in_match.clubs_is_have_no_characters:
             return await self.club_match_sender.send_messages_to_users(
                 text       = self.club_match_sender.TEMPLATE_NOT_CHARACTERS,
-                character  = self.clubs_in_match.all_characters_in_clubs)
+                characters  = self.clubs_in_match.all_characters_in_clubs)
         
         await asyncio.sleep(0.01)
         await self.club_match_sender.send_messages_to_users(

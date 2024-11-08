@@ -89,17 +89,7 @@ class ClubsInMatch:
         elif 10 <= count_characters_in_club <= 11:
             return 10
         return 0
-        # if 0 <= count_characters_in_club <= 1:
-        #         return 0
-        # elif 2 <= count_characters_in_club <= 6:
-        #     return 5
-        # elif 7 <= count_characters_in_club <= 9:
-        #     return 7
-        # elif 10 <= count_characters_in_club <= 11:
-        #     return 10
-    
-    
-    
+
     @property
     def first_club_power(self) -> float:
         all_power = sum([character.full_power for character in self.first_club_characters]) + (self.donate_energy_first_club//KOEF_ENERGY_DONATE)
