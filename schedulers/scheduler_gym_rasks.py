@@ -134,7 +134,6 @@ class GymStartReseter:
                                                 )
                                     )
 
-
             
     @staticmethod
     def has_training_ended(character_rem: ReminderCharacter) -> bool:

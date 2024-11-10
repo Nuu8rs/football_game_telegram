@@ -141,7 +141,8 @@ class CORE_LEAGUE:
         # )
         self.scheduler_league.add_job(user_sender.send_messages_to_users, 
                                       trigger=DateTrigger(start_time_sender),
-                                      misfire_grace_time = 10
+                                      misfire_grace_time = 10,
+                                      
                                       )
         self.scheduler_league.add_job(fight.start_match, 
                                       trigger=DateTrigger(start_time_fight),
