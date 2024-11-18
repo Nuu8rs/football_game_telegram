@@ -17,6 +17,10 @@ massage_room_router = Router()
 async def massage_room_handler(message: Message):
     await message.answer("Вітаю у крамниці енергії", reply_markup=menu_massage_room())
     
+@massage_room_router.callback_query(F.data == "massage_room")
+async def message_room_handler(query: CallbackQuery):
+    await query.message.answer("Вітаю у крамниці енергії", reply_markup=menu_massage_room())
+
     
 @massage_room_router.callback_query(SelectCountGetEnergy.filter())
 async def select_count_add_energy_handler(query: CallbackQuery, character: Character, callback_data: SelectCountGetEnergy):
