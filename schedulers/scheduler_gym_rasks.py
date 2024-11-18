@@ -115,11 +115,11 @@ class GymStartReseter:
     async def start_iniatialization_gym(cls) -> None:
         all_character_in_gym: list[ReminderCharacter] = await RemniderCharacterService.get_characters_in_training()
         for character_rem in all_character_in_gym:
-            
-            if character_rem.training_stats is None:
+        
+            if character_rem.character_in_training and character_rem.training_stats is None:
+                await RemniderCharacterService.anulate_character_training_status(character_rem.character_id)
                 await RemniderCharacterService.anulate_training_character(character_rem.character_id)
                 continue
-            
             gym_scheduler = GymScheduler(
                 character_id        = character_rem.character_id,
                 type_characteristic = character_rem.training_stats,

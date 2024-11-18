@@ -9,7 +9,7 @@ from services.character_service import CharacterService
 from services.club_service import ClubService
 
 from bot.callbacks.gym_calbacks import SelectCountDonateEnergy
-from bot.keyboards.gym_keyboard import select_donate_energy_keyboard
+from bot.keyboards.gym_keyboard import select_donate_energy_keyboard, no_energy_keyboard
 from bot.states.gym_state import SelectCountDonateEnergyState
 from bot.filters.check_time_filter import CheckTimeFilterMessage
 
@@ -43,7 +43,10 @@ async def select_count_donate_energy_callback_handler(query: CallbackQuery, stat
         return await query.answer("Ви вже не перебуваєте в той команді, щоб задонатити енергію")
         
     if callback_data.count_energy > character.current_energy:
-        return await query.answer("У вас не вистачає енергії щоб зробити цю дію")
+        return await query.message.answer(
+            text = "У вас не вистачає енергії, ви можете купити енергію в Крамниці енергії",
+            reply_markup = no_energy_keyboard()
+        ) 
     
     club = await ClubService.get_club(club_id=character.club_id)
     
@@ -56,7 +59,7 @@ async def select_count_donate_energy_callback_handler(query: CallbackQuery, stat
 
     
     await ClubService.donate_energy(club=club, count_energy=callback_data.count_energy)
-    await CharacterService.consume_energy(character_obj=character,
+    await CharacterService.consume_energy(character_id=character.id,
                                           energy_consumed=callback_data.count_energy)
     await query.message.answer(f"Вітаю ви поповнили енергію у свою команду на {callback_data.count_energy} 🔋")
     await state.clear()
@@ -70,8 +73,10 @@ async def select_count_donate_energy_message_handler(message: Message, state: FS
     count_energy = int(message.text)
     
     if count_energy > character.current_energy:
-        return await message.reply("У вас не вистачає енергії щоб зробити цю дію")
-
+        return await message.answer(
+            text = "У вас не вистачає енергії, ви можете купити енергію в Крамниці енергії",
+            reply_markup = no_energy_keyboard()
+        ) 
     club = await ClubService.get_club(club_id=character.club_id)
     
     if club.energy_applied + count_energy > 500:
@@ -80,7 +85,7 @@ async def select_count_donate_energy_message_handler(message: Message, state: FS
                                               max_energy_donate = int(500 - club.energy_applied)))
         
     await ClubService.donate_energy(club=club, count_energy=count_energy)
-    await CharacterService.consume_energy(character_obj=character,
+    await CharacterService.consume_energy(character_id=character.id,
                                           energy_consumed=count_energy)
     await message.answer(f"Вітаю ви поповнили енергію у свою команду на {count_energy} 🔋")
     await state.clear()

@@ -107,22 +107,23 @@ class CORE_LEAGUE:
 
     async def starting_matches(self, matches: List['LeagueFight']) -> None:
         for _, match in enumerate(matches):
-                await self.schedule_match_start(match)
+                await self.start_test_match(match)
+            
+                # await self.schedule_match_start(match)
            
-                
-    async def schedule_match_start(self, match: 'LeagueFight') -> None:
-        
-        match_date = match.time_to_start
-        start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
-        start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15)
+    async def start_test_match(self, match: 'LeagueFight') -> None:
+        if match.first_club.is_fake_club and match.second_club.is_fake_club:
+            return
+        # match_date = match.time_to_start
+        start_time = datetime.combine(match.time_to_start, datetime.min.time())
+        current_time = datetime.now()
+        start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
+        start_time_fight = start_time_sender + timedelta(seconds=20)
+
         
         if start_time_fight < datetime.now():
             return
-        # start_time = datetime.combine(match.time_to_start, datetime.min.time())
-        # current_time = datetime.now()
-        # start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(seconds=40)
-        # start_time_fight = start_time_sender + timedelta(seconds=20)
-        
+
         fight = ClubMatch(
             first_club_id  = match.first_club.id  ,
             second_club_id = match.second_club.id ,
@@ -131,14 +132,33 @@ class CORE_LEAGUE:
             group_id       = match.group_id
         )
         user_sender = UserSender(match_id=fight.clubs_in_match.match_id)
-        # from services.match_character_service import MatchCharacterService
-        # from services.character_service import CharacterService
+        self.scheduler_league.add_job(user_sender.send_messages_to_users, 
+                                      trigger=DateTrigger(start_time_sender),
+                                      misfire_grace_time = 10,
+                                      
+                                      )
+        self.scheduler_league.add_job(fight.start_match, 
+                                      trigger=DateTrigger(start_time_fight),
+                                      misfire_grace_time = 10
+                                      )
+
+  
+    async def schedule_match_start(self, match: 'LeagueFight') -> None:
         
-        # character = await CharacterService.get_character_by_id(1)
-        # await MatchCharacterService.add_character_in_match(
-        #     fight.clubs_in_match,
-        #     character
-        # )
+        match_date = match.time_to_start
+        start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
+        start_time_sender = datetime.combine(match_date, datetime.min.time()).replace(hour=20, minute=15)
+        
+        if start_time_fight < datetime.now():
+            return
+        fight = ClubMatch(
+            first_club_id  = match.first_club.id  ,
+            second_club_id = match.second_club.id ,
+            start_time     = start_time_fight,
+            match_id       = match.match_id,
+            group_id       = match.group_id
+        )
+        user_sender = UserSender(match_id=fight.clubs_in_match.match_id)
         self.scheduler_league.add_job(user_sender.send_messages_to_users, 
                                       trigger=DateTrigger(start_time_sender),
                                       misfire_grace_time = 10,

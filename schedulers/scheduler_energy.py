@@ -16,7 +16,7 @@ class EnergyResetScheduler:
     def __init__(self):
         self.scheduler = AsyncIOScheduler()
 
-    async def __send_message_bot(characters: list[Character]):
+    async def __send_message_bot(self, characters: list[Character]):
         for character in characters:
             try:
                 await asyncio.sleep(0.15)

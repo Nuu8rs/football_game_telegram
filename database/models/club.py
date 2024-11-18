@@ -1,3 +1,4 @@
+from aiogram.types import FSInputFile
 from datetime import datetime
 
 from sqlalchemy import Column, BigInteger, String, DateTime, Boolean, ForeignKey, text, Integer
@@ -26,6 +27,9 @@ class Club(Base):
     
     energy_applied = Column(Integer, default=0, server_default='0')
     
+    custom_url_photo_stadion = Column(String(255), nullable = False, default = "src\fight_club_menu.jpg", server_default= "src\fight_club_menu.jpg")
+    custom_name_stadion  = Column(String(255), nullable = False, default = "Стадіон", server_default= "Стадіон")
+    
     owner          = relationship("UserBot", back_populates="clubs", lazy="selectin")
     characters:Mapped[list['Character']]  = relationship("Character", back_populates="club", lazy="selectin")
 
@@ -47,3 +51,9 @@ class Club(Base):
             return 1.1
         else:
             return 1.0
+    
+    @property
+    def custom_photo_stadion(self) -> FSInputFile:
+        return FSInputFile(
+            path = self.custom_url_photo_stadion
+        )

@@ -83,7 +83,7 @@ async def sell_my_item(query: CallbackQuery, character: Character, callback_data
         )
 
     price_for_salle = round(item.price * (PROCENT_TO_SELL / 100))
-    await CharacterService.update_money_character(character=character, amount_money_adjustment=price_for_salle)
+    await CharacterService.update_money_character(character_id=character.id, amount_money_adjustment=price_for_salle)
     await ItemService.delete_item(callback_data.item_id)
     await query.message.edit_text(f"Ви продали <b>{item.name}</b> за {price_for_salle} монет")
     

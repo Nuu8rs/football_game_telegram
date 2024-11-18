@@ -54,6 +54,16 @@ def select_donate_energy_keyboard(club_id: int):
     return keyboard.adjust(1).as_markup()
 
 
+def no_energy_keyboard():
+    return (
+        InlineKeyboardBuilder()
+        .button(
+            text = "🔋 Крамниця енергії",
+            callback_data = "massage_room"
+        )
+        .as_markup()
+    )
+
 def menu_education_cernter():
     return(
         InlineKeyboardBuilder()

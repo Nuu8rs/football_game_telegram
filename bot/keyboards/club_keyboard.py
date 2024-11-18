@@ -13,7 +13,9 @@ from ..callbacks.club_callbacks import (
     SelectSchema, 
     SelectClubToView, 
     ViewCharatcerClub,
-    KickMember
+    KickMember,
+    SelectPhotoStadion,
+    ApprovedPhotoStadion
     )
 from constants import MAX_LEN_MEMBERS_CLUB, ITEM_PER_PAGE
 from utils.club_shemas import SchemaClub 
@@ -43,12 +45,13 @@ def club_menu_keyboard(club: Club, character: Character):
         keyboard.button(text = "🫂 Передати права на команду", callback_data="transfer_rights")
         keyboard.button(text = "❌ Видалити мій команду", callback_data="delete_my_club")
         keyboard.button(text = "🦶👤 Вигнати користувача", callback_data="kick_user")
+        keyboard.button(text = "🏟 Налаштування виду стадіона", callback_data="custom_stadion")
     else:
         keyboard.button(text = "🎮 Схема команди", callback_data="view_schema_club")
         keyboard.button(text = "⬅️ Вийти з команди", callback_data="leave_club")
     keyboard.button(text="👥 Користувачі команди",callback_data=ViewCharatcerClub(club_id=club.id))
     
-    return keyboard.adjust(2, repeat=True).as_markup()
+    return keyboard.adjust(1, repeat=True).as_markup()
 
 
 def find_club(all_clubs: list[Club], page: int = 0 ):
@@ -158,3 +161,38 @@ def select_user_kick(members_club: list[Character]):
                         ))
         
     return keyboard.adjust(1).as_markup()
+
+
+def select_option_custom_stadion():
+    return (InlineKeyboardBuilder()
+            .button(text = "Назва стадіону", 
+                    callback_data = "select_custom_stadion_name")
+            .button(text = "Фото стадіону",
+                    callback_data = "select_custom_stadion_photo"
+                    )
+            .adjust(1)
+            .as_markup()
+            )
+
+def menu_photo_custom_stadion():
+    keyboard = InlineKeyboardBuilder()
+    for num in range(1,10):
+        patch_to_photo = f"src/club_stadions/stadion_{num}.jpg"
+        keyboard.button(
+            text = f"Фото {num}",
+            callback_data = SelectPhotoStadion(
+                patch_to_photo = patch_to_photo
+            )
+        )
+    keyboard.adjust(2)
+    return keyboard.as_markup()
+
+def aproved_photo_stadion(patch_to_photo: str):
+    return (
+        InlineKeyboardBuilder()
+        .button(text = "Вибрати дане фото", 
+                callback_data = ApprovedPhotoStadion(
+                    patch_to_photo = patch_to_photo
+                ))
+        .as_markup()
+    )

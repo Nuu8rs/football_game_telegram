@@ -12,11 +12,7 @@ referral_lock = asyncio.Lock()
 async def handle_referral_reward(character: Character):
     from loader import bot
     async with referral_lock:
-        character = await CharacterService.get_character_by_id(character_id=character.id)
-        
-        if character.referral_award_is_received:
-            return
-        
+        character = await CharacterService.get_character_by_id(character_id=character.id)        
         character_referal = await CharacterService.get_character(character_user_id=character.referal_user_id)
         
         await CharacterService.edit_character_energy(
@@ -24,7 +20,7 @@ async def handle_referral_reward(character: Character):
             amount_energy_adjustment=150
         )
         await CharacterService.update_money_character(
-            character=character_referal,
+            character=character_referal.id,
             amount_money_adjustment=20
         )
         

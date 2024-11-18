@@ -1,5 +1,9 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
-from ..callbacks.league_callbacks import JoinToFight, ViewCharacterRegisteredInMatch
+from ..callbacks.league_callbacks import (
+    JoinToFight, 
+    ViewCharacterRegisteredInMatch,
+    EpizodeDonateEnergyToMatch
+                                        )
 from .utils_keyboard import menu_plosha
 
 def keyboard_to_join_character_to_fight(match_id: int):
@@ -14,6 +18,20 @@ def keyboard_to_join_character_to_fight(match_id: int):
         .adjust(1)
         .as_markup()
     )
+    
+def donate_energy_to_match(match_id: str, time_end_goal: int):
+    return (
+        InlineKeyboardBuilder()
+        .button(
+            text = "🔱 Підвищити шанс голу",
+            callback_data = EpizodeDonateEnergyToMatch(
+                match_id      = match_id,
+                time_end_goal = time_end_goal
+            )
+        )
+        .as_markup()
+    )
+    
     
 def menu_league_zone():
     return(ReplyKeyboardBuilder()

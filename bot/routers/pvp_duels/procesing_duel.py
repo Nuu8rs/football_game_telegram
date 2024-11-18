@@ -3,6 +3,8 @@ from aiogram.types import Message, CallbackQuery
 
 from database.models.character import Character
 from services.character_service import CharacterService
+
+from bot.keyboards.gym_keyboard import no_energy_keyboard
 from bot.callbacks.pvp_duel_callbacks import (
     SelectEnergyBit,
     SelectPositionAngle)
@@ -38,7 +40,10 @@ async def select_bit_user(query: CallbackQuery, character: Character, callback_d
         return await query.message.answer("❌ <b>Дуель не знайдено</b>")
 
     if callback_data.count_energy > character.current_energy:
-        return await query.message.answer("<b>У вас не вистачає енергії, щоб поставити ставку</b>")
+        return await query.message.answer(
+            text = "У вас не вистачає енергії, ви можете купити енергію в Крамниці енергії",
+            reply_markup = no_energy_keyboard()
+        ) 
 
     is_user_1 = character.id == pvp_duel.user_1.id
     if (is_user_1 and pvp_duel.bid_user_1) or (not is_user_1 and pvp_duel.bid_user_2):
@@ -50,7 +55,7 @@ async def select_bit_user(query: CallbackQuery, character: Character, callback_d
         pvp_duel.bid_user_2 = callback_data.count_energy
 
     await CharacterService.consume_energy(
-        character_obj=character,
+        character_id=character.id,
         energy_consumed=callback_data.count_energy
     )
 

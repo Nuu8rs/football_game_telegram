@@ -168,3 +168,27 @@ class ClubService:
                 )
                 await session.commit()
             
+    @classmethod
+    async def change_name_stadion(cls, club_id: int, new_name_stadion: str) -> None:
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Club)
+                    .where(Club.id == club_id)
+                    .values(custom_name_stadion=new_name_stadion)
+                )
+                await session.execute(stmt)
+                await session.commit()
+                
+    @classmethod
+    async def change_photo_url_stadion(cls, club_id: int, photo_url: str) -> None:
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Club)
+                    .where(Club.id == club_id)
+                    .values(custom_url_photo_stadion = photo_url)
+                )
+                await session.execute(stmt)
+                await session.commit()
+                

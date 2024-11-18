@@ -53,11 +53,11 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
         coins = coins * 2
     
     await CharacterService.add_exp_character(
-        character=character,
+        character_id=character.id,
         amount_exp_add=exp
     )
     await CharacterService.update_money_character(
-        character=character,
+        character_id=character.id,
         amount_money_adjustment=coins
     )
     await CharacterService.update_character_education_time(

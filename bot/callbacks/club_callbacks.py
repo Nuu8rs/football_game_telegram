@@ -26,3 +26,9 @@ class ViewCharatcerClub(CallbackData, prefix= "view_character_club"):
     
 class KickMember(CallbackData, prefix = "kick_member"):
     character_id: int
+    
+class SelectPhotoStadion(CallbackData, prefix = "select_photo_stadion"):
+    patch_to_photo: str
+    
+class ApprovedPhotoStadion(CallbackData, prefix = "aproved_photo_stadion"):
+    patch_to_photo: str

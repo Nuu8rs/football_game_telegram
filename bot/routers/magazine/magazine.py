@@ -76,7 +76,7 @@ async def select_gradation_level(query: CallbackQuery, state: FSMContext, charac
         item_obj=item_obj
     )
     await CharacterService.update_money_character(
-        character=character,
+        character_id=character.id,
         amount_money_adjustment= -item_obj.price
     )
 

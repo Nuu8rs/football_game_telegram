@@ -107,17 +107,18 @@ class CharacterService:
 
 
     @classmethod
-    async def consume_energy(cls, character_obj: Character, energy_consumed: int) -> Character:
+    async def consume_energy(cls, character_id: int, energy_consumed: int) -> Character:
         async for session in get_session():
             async with session.begin():
-                try:
-                    session.add(character_obj)
-                except:
-                    pass
-                new_energy = character_obj.current_energy - energy_consumed
-                setattr(character_obj, 'current_energy', max(new_energy, 0))
-                await session.merge(character_obj)
+                stmt_update = (
+                    update(Character)
+                    .where(Character.id == character_id)
+                    .values(current_energy=Character.current_energy - energy_consumed)
+                )
+                await session.execute(stmt_update)
+
                 await session.commit()
+
                 
     
     @classmethod
@@ -197,31 +198,30 @@ class CharacterService:
                     raise e
                 
     @classmethod
-    async def update_money_character(cls, character: Character, amount_money_adjustment: int):
+    async def update_money_character(cls, character_id: int, amount_money_adjustment: int):
         async for session in get_session():
             async with session.begin():
-                try:
-                    session.add(character)
-                except:
-                    pass
-                character.money = character.money+amount_money_adjustment
-                merged_obj = await session.merge(character)
+                stmt = (
+                    update(Character)
+                    .where(Character.id == character_id) 
+                    .values(money=Character.money + amount_money_adjustment) 
+                )
+                await session.execute(stmt)
                 await session.commit()
-                return merged_obj
-            
+                
     @classmethod
-    async def add_exp_character(cls, character: Character, amount_exp_add: int):
+    async def add_exp_character(cls, character_id: int, amount_exp_add: int):
         async for session in get_session():
             async with session.begin():
-                try:
-                    session.add(character)
-                except:
-                    pass
-                character.exp = character.exp+amount_exp_add
-                merged_obj = await session.merge(character)
+                stmt = (
+                    update(Character)
+                    .where(Character.id == character_id)  
+                    .values(exp=Character.exp + amount_exp_add)   
+                )
+                await session.execute(stmt)
                 await session.commit()
-                return merged_obj
-            
+                
+                
     @classmethod
     async def update_character_education_time(cls, character: Character, amount_add_time: timedelta):
         async for session in get_session():

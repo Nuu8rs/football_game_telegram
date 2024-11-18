@@ -9,7 +9,7 @@ from database.models.character import Character
 from services.character_service import CharacterService
 from services.reminder_character_service import RemniderCharacterService
 
-from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, menu_gym, leave_from_gym_keyboard
+from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, no_energy_keyboard
 from bot.callbacks.gym_calbacks import SelectGymType, SelectTimeGym
 
 from constants import GYM_PHOTO, const_name_characteristics, const_energy_by_time
@@ -57,8 +57,9 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
     if character.current_energy < const_energy_by_time[callback_data.gym_time]:
         try:
             return await query.message.answer(
-                text="<b>У персонажа не вистачає енергії щоб піти на тренування, вибери інший час, aбо віднови енергію у массажному салону</b>",
-            )
+                text = "У вас не вистачає енергії, ви можете купити енергію в Крамниці енергії",
+                reply_markup = no_energy_keyboard()
+            ) 
         except:
             return
     
@@ -89,7 +90,7 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
     )
     
     await CharacterService.consume_energy(
-        character_obj=character,
+        character_id=character.id,
         energy_consumed=const_energy_by_time[callback_data.gym_time]
     )
     

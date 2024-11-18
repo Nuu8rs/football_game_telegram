@@ -158,9 +158,9 @@ def get_text_schemas(club: Club):
 
 
 async def send_message_characters_club(characters_club: list[Character],
-                                       my_character: Character, text: str):
+                                       my_character: Character | None, text: str):
     for character in characters_club:
-        if character.characters_user_id == my_character.characters_user_id:
+        if my_character and character.characters_user_id == my_character.characters_user_id:
             continue
         try:
             await bot.send_message(chat_id= character.characters_user_id, text = text)

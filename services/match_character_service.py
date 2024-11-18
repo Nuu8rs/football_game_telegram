@@ -27,7 +27,7 @@ class MatchCharacterService:
                 return club
                 
     @classmethod
-    async def add_character_in_match(cls, club_in_match: ClubsInMatch, character: Character) -> None:
+    async def add_character_in_match(cls, club_in_match: ClubsInMatch, character: Character) -> bool:
         async for session in get_session():
             async with session.begin():
                 existing_entry = await session.execute(
@@ -51,13 +51,13 @@ class MatchCharacterService:
                 session.add(match_character_obj)
                 
                 try:
-                    await session.commit() 
+                    await session.commit()
+                    return True 
                 except IntegrityError as e:
-                    print(e)
                     await session.rollback() 
                 except Exception as e:
                     await session.rollback() 
-                
+        return False
     @classmethod
     async def get_characters_from_match(cls, match_id: str) -> list[MatchCharacter]:
         async for session in get_session():

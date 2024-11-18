@@ -33,6 +33,9 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
     fight_instance = ClubMatchManager.get_fight_by_id(
         match_id=callback_data.match_id
     )
+    if not fight_instance:
+        return await query.answer("Не зміг знайти матч", show_alert= True)
+    
     
     current_time = datetime.now()
     if current_time > fight_instance.start_time:

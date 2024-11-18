@@ -7,3 +7,8 @@ class JoinToFight(CallbackData, prefix="join_to_fight"):
     
 class ViewCharacterRegisteredInMatch(CallbackData, prefix = "view_reg_match"):
     match_id: str
+    
+    
+class EpizodeDonateEnergyToMatch(CallbackData, prefix = "donate_energy"):
+    match_id: str
+    time_end_goal: int
