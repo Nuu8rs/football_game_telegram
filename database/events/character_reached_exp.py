@@ -20,7 +20,7 @@ async def handle_referral_reward(character: Character):
             amount_energy_adjustment=150
         )
         await CharacterService.update_money_character(
-            character=character_referal.id,
+            character_id=character_referal.id,
             amount_money_adjustment=20
         )
         
