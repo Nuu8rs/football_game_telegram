@@ -45,3 +45,15 @@ def menu_league_zone():
            .as_markup(resize_keyboard = True)
            )
     
+def menu_beast_league_zone():
+    return(ReplyKeyboardBuilder()
+           .button(text = "📝 Зареєструватися в матч Єврокубків")
+           .button(text = "📋 Таблиця Єврокубків")
+           .button(text = "🔋 Задонатити в матч")
+           .button(text = "📅 Календар Єврокубків")
+           .button(text = "📊 Результати Єврокубків")
+           .attach(menu_plosha())
+           .adjust(1,1,1,2,1)
+           .as_markup(resize_keyboard = True)
+           )
+    

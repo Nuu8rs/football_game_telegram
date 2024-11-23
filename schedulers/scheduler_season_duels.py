@@ -89,7 +89,7 @@ class SchedulerSesonDuels:
             energy = reward['energy'] 
               
             await CharacterService.update_money_character(
-                character_id=user.id,
+                character_id==user.id,
                 amount_money_adjustment=money
             )
             if energy:

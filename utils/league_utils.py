@@ -66,6 +66,53 @@ async def get_text_league(club: Club):
         count_characters_second_club = len(enemy_characters_in_match)
     )
     
+    
+async def get_text_league_devision(club: Club):
+
+    current_match = await LeagueFightService.get_next_league_fight_by_club(club_id=club.id)
+    if not current_match:
+        return "⚽️ Твоя ліга: <b>{name_league}</b>\n\nМатчів немає, відпочивайте".format(name_league = club.league)
+    
+    fight_istance = ClubMatchManager.get_fight_by_id(match_id=current_match.match_id)
+    enemy_club_id = fight_istance.clubs_in_match.second_club_id if club.id != fight_istance.clubs_in_match.second_club_id else fight_istance.clubs_in_match.first_club_id 
+    enemy_club = await ClubService.get_club(enemy_club_id)
+    
+    
+
+    characters_in_match = await get_characters_club_in_match(
+        club_id  = club.id,
+        match_id = current_match.match_id
+    )
+
+    enemy_characters_in_match = await get_characters_club_in_match(
+        club_id  = enemy_club.id,
+        match_id = current_match.match_id
+    )
+    
+    text = """
+⚽️ Вітаємо вашу команду із тим, що ви потрапили в : <b>{name_division}</b>
+
+⚔️ <b>Наступний матч</b> ⚔️
+
+🛑 <code>{first_name_club}</code> [{power_first_club:.2f}] ({count_characters_first_club}/11)
+<b>VS</b>
+✳️ <code>{second_name_club}</code> [{power_second_club:.2f}] ({count_characters_second_club}/11)
+
+⏰ Час початку: <b>{time_fight}</b>
+    """
+    
+    return text.format(
+        name_division     = fight_istance.group_id,
+        first_name_club   = club.name_club,
+        second_name_club  = enemy_club.name_club,
+        time_fight        = fight_istance.start_time.strftime("%d:%m:%Y - %H:%M"),
+        power_first_club  = sum([character.full_power for character in characters_in_match]),
+        power_second_club = sum([character.full_power for character in enemy_characters_in_match]),
+        count_characters_first_club  = len(characters_in_match),
+        count_characters_second_club = len(enemy_characters_in_match)
+    )
+    
+    
 
 def get_text_calendar_matches(matches: list[LeagueFightService], club_id: int):
     sorted_fights = sorted(matches, key=lambda fight: fight.time_to_start)

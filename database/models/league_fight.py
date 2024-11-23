@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, Mapped
 
@@ -21,6 +21,8 @@ class LeagueFight(Base):
     
     goal_first_club  = Column(Integer, default=0)
     goal_second_club = Column(Integer, default=0)
+    
+    is_beast_league: bool = Column(Boolean, nullable=False, server_default = "0")
     
     @hybrid_property
     def total_points_first_club(self) -> int:

@@ -107,9 +107,9 @@ class CORE_LEAGUE:
 
     async def starting_matches(self, matches: List['LeagueFight']) -> None:
         for _, match in enumerate(matches):
-                await self.start_test_match(match)
+                # await self.start_test_match(match)
             
-                # await self.schedule_match_start(match)
+                await self.schedule_match_start(match)
            
     async def start_test_match(self, match: 'LeagueFight') -> None:
         if match.first_club.is_fake_club and match.second_club.is_fake_club:
@@ -120,7 +120,6 @@ class CORE_LEAGUE:
         start_time_sender = start_time.replace(hour=current_time.hour, minute=current_time.minute) + timedelta(minutes=1)
         start_time_fight = start_time_sender + timedelta(seconds=20)
 
-        
         if start_time_fight < datetime.now():
             return
 

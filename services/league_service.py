@@ -12,13 +12,16 @@ class LeagueFightService:
                                   first_club_id: int, 
                                   second_club_id: int, 
                                   time_to_start: datetime,
-                                  group_id: int) -> LeagueFight:
+                                  group_id: int,
+                                  is_beast_league: bool = False
+                                  ) -> LeagueFight:
         league_fight = LeagueFight(
             match_id=match_id,
             first_club_id=first_club_id,
             second_club_id=second_club_id,
             time_to_start=time_to_start,
-            group_id=group_id
+            group_id=group_id,
+            is_beast_league = is_beast_league
         )
         
         async for session in get_session():
@@ -100,6 +103,7 @@ class LeagueFightService:
                 except SQLAlchemyError as e:
                     print(f"Ошибка при получении следующего матча для команди {club_id}: {e}")
                     return None
+      
                 
     @classmethod
     async def get_the_monthly_matches_by_group(cls, group_id: str) -> list[LeagueFight] | None:
@@ -205,3 +209,51 @@ class LeagueFightService:
                 )
                 result = await session.execute(stmt)
                 return result.scalar_one_or_none()
+            
+            
+    @classmethod
+    async def get_my_league_divison_fight(cls, club_id: int) -> list[LeagueFight]:
+        today = datetime.now().date().replace(day=22)
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    league_fights = await session.execute(
+                        select(LeagueFight)
+                        .where(
+                                LeagueFight.time_to_start >= today,
+                            or_(
+                                LeagueFight.first_club_id == club_id,
+                                LeagueFight.second_club_id == club_id
+                            )
+                        )
+                        .order_by(LeagueFight.time_to_start.asc())
+                    )
+                    return league_fights.scalars().all()
+                except SQLAlchemyError as e:
+                    print(f"Ошибка при получении следующего матча для команди {club_id}: {e}")
+                    return None
+    
+    
+    @classmethod
+    async def get_devision_matches_by_club(cls, club_id: int) -> LeagueFight | None:
+        today = datetime.now().date().replace(day=1)
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    league_fights = await session.execute(
+                        select(LeagueFight)
+                        .where(
+                                LeagueFight.time_to_start >= today,
+                            or_(
+                                LeagueFight.first_club_id == club_id,
+                                LeagueFight.second_club_id == club_id
+                            )
+                        )
+                        .order_by(LeagueFight.time_to_start.asc())
+                    )
+                    return league_fights.scalars().all()
+                except SQLAlchemyError as e:
+                    print(f"Ошибка при получении следующего матча для команди {club_id}: {e}")
+                    return None
+    
+    

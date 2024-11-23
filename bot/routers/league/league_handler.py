@@ -41,7 +41,7 @@ async def register_character_to_match(message: Message, character: Character):
     )
     if next_match is None:
         return await message.answer(
-            text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 24"
+            text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 23"
         )
 
 

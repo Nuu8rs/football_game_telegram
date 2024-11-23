@@ -52,6 +52,14 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
         exp = exp * 2
         coins = coins * 2
     
+
+    await CharacterService.edit_character_energy(character, energy)
+    
+    await CharacterService.update_character_education_time(
+        character=character,
+        amount_add_time=DELTA_TIME_EDUCATION_REWARD
+    )
+    
     await CharacterService.add_exp_character(
         character_id=character.id,
         amount_exp_add=exp
@@ -60,11 +68,6 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
         character_id=character.id,
         amount_money_adjustment=coins
     )
-    await CharacterService.update_character_education_time(
-        character=character,
-        amount_add_time=DELTA_TIME_EDUCATION_REWARD
-    )
-    await CharacterService.edit_character_energy(character, energy)
     
     scheduler_reward_education = EducationRewardReminderScheduler()
     await scheduler_reward_education.add_job_remind(

@@ -49,7 +49,7 @@ class ClubMatch:
         
         self.start_time = start_time
         self.group_id   = group_id
-        self.total_goals = random.randint(8,10)
+        self.total_goals = random.randint(2,10)
         
         self.clubs_in_match = ClubsInMatch(
             first_club_id  = first_club_id,
