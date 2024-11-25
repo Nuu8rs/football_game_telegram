@@ -1,5 +1,5 @@
+import asyncio
 from datetime import datetime
-
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -33,13 +33,13 @@ async def start_functional():
     await init_db()
     await init_leagues()
     
-    # await reset_energy_characters.start_reset_energy()
+    await reset_energy_characters.start_reset_energy()
 
-    # await reset_aplied_energy_club.start_reset_energy()
+    await reset_aplied_energy_club.start_reset_energy()
     # await education_reward_reminder.start_reminder()
-    # await gym_reminder.start_iniatialization_gym()
-    # asyncio.create_task(core_duel._waiting_users())
-    # await end_duel_season.wait_to_end_season_duel()
+    await gym_reminder.start_iniatialization_gym()
+    asyncio.create_task(core_duel._waiting_users())
+    await end_duel_season.wait_to_end_season_duel()
 
 
 async def init_db():

@@ -121,22 +121,44 @@ class ClubMatch:
         asyncio.create_task(self._timer_event_generate(start_time_taimer))
         await self._timer_event_match(start_time_taimer)
         
-    def generate_goal_times(self, start_timestamp: int, total_goals: int) -> list:
-        goal_times = []
-        current_time = start_timestamp + 60 
-        for _ in range(total_goals):
-            current_time += 45
-            current_time += random.randint(10, 25)
-            goal_times.append(current_time)
+    def generate_goal_times(self, start_timestamp: int, total_goals: int, end_timestamp: int) -> list:
+        first_half_goals = total_goals // 2  
+        second_half_goals = total_goals - first_half_goals  
 
-        return sorted(goal_times)
+        first_half_times = []
+        second_half_times = []
+
+        current_time = start_timestamp
+        for _ in range(first_half_goals):
+            current_time += random.randint(45, 70)  
+            if current_time % 2 != 0: 
+                current_time += 1
+            if current_time > start_timestamp + 300: 
+                break
+            first_half_times.append(current_time)
+
+
+        current_time = start_timestamp + 300  
+        for _ in range(second_half_goals):
+            current_time += random.randint(45, 70) 
+            if current_time % 2 == 0: 
+                current_time += 1
+            if current_time > end_timestamp: 
+                break
+            second_half_times.append(current_time)
+
+        goal_times = sorted(first_half_times + second_half_times)
+        return goal_times
             
     async def _timer_event_generate(self, match_time_start: datetime):
+        match_time_end = match_time_start + TIME_FIGHT - BUFFER_TIME
         start_timestamp = int(match_time_start.timestamp())
+        end_timestamp = int(match_time_end.timestamp())
         
         goal_times = self.generate_goal_times(
             start_timestamp=start_timestamp,
             total_goals=self.total_goals,
+            end_timestamp = end_timestamp
         )
         for goal_time in goal_times:
             current_time = datetime.now()

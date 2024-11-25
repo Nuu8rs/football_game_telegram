@@ -15,8 +15,19 @@ from uuid import uuid4
 
 class BestClubLeagueMatchService:
     
+    def getname(self, league: list[LeagueFight]):
+        
+        club_names = set()
+        for fight in league:
+            club_names.add(fight.first_club.name_club)
+            club_names.add(fight.second_club.name_club)
+        
+        for club in club_names:
+            print(club)
+        
     async def get_matches(self) -> list[LeagueFight]:    
         best_club_league = await BestLeagueService.get_best_league()
+        self.getname(best_club_league)
         if not best_club_league:
             await self.generate_matches()
             best_club_league = await BestLeagueService.get_best_league()

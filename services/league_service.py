@@ -32,7 +32,7 @@ class LeagueFightService:
                     await session.commit()
                     return merged_obj
                 except SQLAlchemyError as e:
-                    await session.rollback()
+                    # await session.rollback()
                     print(f"Ошибка при создании битвы: {e}")
                     return None
                 
