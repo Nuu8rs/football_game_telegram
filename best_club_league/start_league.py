@@ -37,10 +37,12 @@ class BestClubLeague:
             match_id       = match.match_id,
             group_id       = match.group_id
         )
-    
+
+         
+        
         time_send_join_match_text = match.time_to_start.replace(
-            minute = 20,
-            hour = 20
+            hour = 20,
+            minute = 20
         )
         time_start_match = match.time_to_start.replace(
             hour = 21,
@@ -56,7 +58,6 @@ class BestClubLeague:
             trigger = DateTrigger(time_send_join_match_text),
             misfire_grace_time = 10
         )
-        
         self.scheduler_best_league.add_job(
             func    = match_club.start_match,
             trigger = DateTrigger(time_start_match),

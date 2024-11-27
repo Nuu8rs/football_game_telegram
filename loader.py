@@ -22,7 +22,7 @@ async def init_bot_command():
 
 
 async def init_leagues():
-    # await core_league.setup_league()
+    await core_league.setup_league()
     current_data = datetime.now() 
     if current_data.day >= START_DAY_BEST_LEAGUE and current_data.day <= END_DAY_BEST_LEAGUE:
         await best_club_league.start_best_league()
@@ -36,7 +36,7 @@ async def start_functional():
     await reset_energy_characters.start_reset_energy()
 
     await reset_aplied_energy_club.start_reset_energy()
-    # await education_reward_reminder.start_reminder()
+    await education_reward_reminder.start_reminder()
     await gym_reminder.start_iniatialization_gym()
     asyncio.create_task(core_duel._waiting_users())
     await end_duel_season.wait_to_end_season_duel()
