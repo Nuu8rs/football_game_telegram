@@ -192,3 +192,13 @@ class ClubService:
                 await session.execute(stmt)
                 await session.commit()
                 
+    @classmethod
+    async def get_clubs_by_ids(cls, club_ids: list[int]) -> list[Club]:
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    select(Club)
+                    .where(Club.id.in_(club_ids))
+                )
+                result = await session.execute(stmt)
+                return result.scalars().all()

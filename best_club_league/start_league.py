@@ -38,8 +38,6 @@ class BestClubLeague:
             group_id       = match.group_id
         )
 
-         
-        
         time_send_join_match_text = match.time_to_start.replace(
             hour = 20,
             minute = 20
@@ -47,7 +45,6 @@ class BestClubLeague:
         time_start_match = match.time_to_start.replace(
             hour = 21,
             minute = 0
-            
         )
         
         user_sender = UserSender(

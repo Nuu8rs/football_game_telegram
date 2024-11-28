@@ -34,7 +34,7 @@ async def start_functional():
     await init_leagues()
     
     await reset_energy_characters.start_reset_energy()
-
+    await end_beast_league.wait_to_end_season_best_league()
     await reset_aplied_energy_club.start_reset_energy()
     await education_reward_reminder.start_reminder()
     await gym_reminder.start_iniatialization_gym()
@@ -59,6 +59,7 @@ from schedulers.scheduler_energy import EnergyResetScheduler, EnergyApliedClubRe
 from schedulers.scheduler_education import EducationRewardReminderScheduler
 from schedulers.scheduler_gym_rasks import GymStartReseter
 from schedulers.scheduler_season_duels import SchedulerSesonDuels
+from schedulers.scheduler_season_beast_league import SchedulerSesonBeastLeague
 from pvp_duels.duel_core import CoreDuel
 from best_club_league.start_league import BestClubLeague
 
@@ -67,9 +68,11 @@ reset_aplied_energy_club  = EnergyApliedClubResetScheduler()
 education_reward_reminder = EducationRewardReminderScheduler()
 gym_reminder              = GymStartReseter()
 end_duel_season           = SchedulerSesonDuels()
+end_beast_league          = SchedulerSesonBeastLeague()
 best_club_league          = BestClubLeague()
 
 league_service = LeagueService()
 
 core_duel    = CoreDuel()
 core_league  = CORE_LEAGUE(league_service)
+
