@@ -202,3 +202,19 @@ class ClubService:
                 )
                 result = await session.execute(stmt)
                 return result.scalars().all()
+            
+    @classmethod
+    async def update_rang_league(
+        cls, 
+        club_id: int,
+        new_rang_league: str
+    ):
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Club)
+                    .where(Club.id == club_id)
+                    .values(league = new_rang_league)
+                )
+                await session.execute(stmt)
+                await session.commit()  

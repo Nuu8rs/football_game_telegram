@@ -23,8 +23,7 @@ from typing import List, Tuple
 class SchedulerSesonBeastLeague:
 
     winners_count = 10
-    # trigger = CronTrigger(day=END_DAY_BEST_LEAGUE, hour=12, minute=0)
-    trigger = CronTrigger(day=29, hour=1, minute=5)
+    trigger = CronTrigger(day=END_DAY_BEST_LEAGUE, hour=12, minute=0)
 
     
     place_emojis = {

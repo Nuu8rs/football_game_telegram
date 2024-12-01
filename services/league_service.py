@@ -257,3 +257,24 @@ class LeagueFightService:
                     return None
     
     
+    @classmethod
+    async def get_league_matches_last_month(cls) -> list[LeagueFight]:
+        today = datetime.now().date().replace(day=1)
+        last_month = today - timedelta(days=1)
+        start_day_last_month = last_month.replace(day=1)
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    league_fights = await session.execute(
+                        select(LeagueFight)
+                        .where(
+                            LeagueFight.time_to_start >= start_day_last_month,
+                            LeagueFight.time_to_start < last_month,
+                            LeagueFight.is_beast_league == False
+                        )
+                        .order_by(LeagueFight.time_to_start.asc())
+                    )
+                    return league_fights.scalars().all()
+                except SQLAlchemyError as e:
+                    print(f"Ошибка при получении матчей для команды за прошлый месяц")
+        return None

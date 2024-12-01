@@ -31,15 +31,16 @@ async def init_leagues():
 async def start_functional():
     await init_bot_command()
     await init_db()
-    await init_leagues()
+    # await init_leagues()
     
-    await reset_energy_characters.start_reset_energy()
-    await end_beast_league.wait_to_end_season_best_league()
-    await reset_aplied_energy_club.start_reset_energy()
-    await education_reward_reminder.start_reminder()
-    await gym_reminder.start_iniatialization_gym()
+    # await reset_energy_characters.start_reset_energy()
+    # await reset_aplied_energy_club.start_reset_energy()
+    # await education_reward_reminder.start_reminder()
+    # await gym_reminder.start_iniatialization_gym()
+    # await end_beast_league.wait_to_end_season_best_league()
+    # await end_duel_season.wait_to_end_season_duel()
+    await league_ranking_update._start()
     asyncio.create_task(core_duel._waiting_users())
-    await end_duel_season.wait_to_end_season_duel()
 
 
 async def init_db():
@@ -62,6 +63,7 @@ from schedulers.scheduler_season_duels import SchedulerSesonDuels
 from schedulers.scheduler_season_beast_league import SchedulerSesonBeastLeague
 from pvp_duels.duel_core import CoreDuel
 from best_club_league.start_league import BestClubLeague
+from schedulers.scheduler_league_rankings_update import UpdateLeagueRaiting
 
 reset_energy_characters   = EnergyResetScheduler()
 reset_aplied_energy_club  = EnergyApliedClubResetScheduler()
@@ -76,3 +78,4 @@ league_service = LeagueService()
 core_duel    = CoreDuel()
 core_league  = CORE_LEAGUE(league_service)
 
+league_ranking_update = UpdateLeagueRaiting()
