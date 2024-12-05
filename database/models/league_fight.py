@@ -23,6 +23,7 @@ class LeagueFight(Base):
     goal_second_club = Column(Integer, default=0)
     
     is_beast_league: bool = Column(Boolean, nullable=False, server_default = "0")
+    is_top_20_club: bool = Column(Boolean, nullable=False, server_default = "0")
     
     @hybrid_property
     def total_points_first_club(self) -> int:

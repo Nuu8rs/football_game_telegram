@@ -13,7 +13,8 @@ class LeagueFightService:
                                   second_club_id: int, 
                                   time_to_start: datetime,
                                   group_id: int,
-                                  is_beast_league: bool = False
+                                  is_beast_league: bool = False,
+                                  is_top_20_club: bool = False
                                   ) -> LeagueFight:
         league_fight = LeagueFight(
             match_id=match_id,
@@ -21,7 +22,8 @@ class LeagueFightService:
             second_club_id=second_club_id,
             time_to_start=time_to_start,
             group_id=group_id,
-            is_beast_league = is_beast_league
+            is_beast_league = is_beast_league,
+            is_top_20_club = is_top_20_club
         )
         
         async for session in get_session():
@@ -48,7 +50,9 @@ class LeagueFightService:
                     league_fights = await session.execute(
                         select(LeagueFight).where(
                             LeagueFight.time_to_start >= start_of_month,
-                            LeagueFight.time_to_start <= end_of_month
+                            LeagueFight.time_to_start <= end_of_month,
+                            LeagueFight.is_beast_league == False,
+                            LeagueFight.is_top_20_club == False
                         )
                     )
                     return league_fights.scalars().all()
@@ -71,7 +75,10 @@ class LeagueFightService:
                                 LeagueFight.first_club_id == club_id,
                                 LeagueFight.second_club_id == club_id
                             )
+                        
                         )
+                        .where(LeagueFight.is_beast_league == False)
+                        .where(LeagueFight.is_top_20_club == False)
                         .order_by(LeagueFight.time_to_start.asc())
                         .limit(1)
                     )
@@ -200,11 +207,12 @@ class LeagueFightService:
             async with session.begin():
                 stmt = select(LeagueFight).where(
                     and_(
-                        func.date(LeagueFight.time_to_start) == current_date, 
+                        func.date(LeagueFight.time_to_start) == current_date,
                         or_(
-                            LeagueFight.first_club_id == club_id,  
-                            LeagueFight.second_club_id == club_id 
-                        )
+                            LeagueFight.first_club_id == club_id,
+                            LeagueFight.second_club_id == club_id
+                        ),
+                        LeagueFight.is_top_20_club == False
                     )
                 )
                 result = await session.execute(stmt)

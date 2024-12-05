@@ -10,7 +10,13 @@ from database.session import engine
 from database.model_base import Base
 from logging_config import logger
 from config import BOT_TOKEN, ADMINS
-from constants import START_DAY_BEST_LEAGUE, END_DAY_BEST_LEAGUE
+from constants import (
+    START_DAY_BEST_LEAGUE, 
+    END_DAY_BEST_LEAGUE,
+    
+    START_DAY_BEST_20_CLUB_LEAGUE,
+    END_DAY_BEST_20_CLUB_LEAGUE
+)
 
 async def init_bot_command():
     commands = [
@@ -26,20 +32,23 @@ async def init_leagues():
     current_data = datetime.now() 
     if current_data.day >= START_DAY_BEST_LEAGUE and current_data.day <= END_DAY_BEST_LEAGUE:
         await best_club_league.start_best_league()
+    
+    if current_data.day >= START_DAY_BEST_20_CLUB_LEAGUE and current_data.day <= END_DAY_BEST_20_CLUB_LEAGUE:
+        await best_20_club_league.start_best_league()
         
 
 async def start_functional():
     await init_bot_command()
     await init_db()
-    # await init_leagues()
+    await init_leagues()
     
-    # await reset_energy_characters.start_reset_energy()
-    # await reset_aplied_energy_club.start_reset_energy()
-    # await education_reward_reminder.start_reminder()
-    # await gym_reminder.start_iniatialization_gym()
-    # await end_beast_league.wait_to_end_season_best_league()
-    # await end_duel_season.wait_to_end_season_duel()
-    await league_ranking_update._start()
+    await reset_energy_characters.start_reset_energy()
+    await reset_aplied_energy_club.start_reset_energy()
+    await education_reward_reminder.start_reminder()
+    await gym_reminder.start_iniatialization_gym()
+    await end_beast_league.wait_to_end_season_best_league()
+    await end_duel_season.wait_to_end_season_duel()
+    await league_ranking_update.start()
     asyncio.create_task(core_duel._waiting_users())
 
 
@@ -63,6 +72,8 @@ from schedulers.scheduler_season_duels import SchedulerSesonDuels
 from schedulers.scheduler_season_beast_league import SchedulerSesonBeastLeague
 from pvp_duels.duel_core import CoreDuel
 from best_club_league.start_league import BestClubLeague
+from league_20_power_club.start_league import Best20ClubLeague
+
 from schedulers.scheduler_league_rankings_update import UpdateLeagueRaiting
 
 reset_energy_characters   = EnergyResetScheduler()
@@ -72,6 +83,7 @@ gym_reminder              = GymStartReseter()
 end_duel_season           = SchedulerSesonDuels()
 end_beast_league          = SchedulerSesonBeastLeague()
 best_club_league          = BestClubLeague()
+best_20_club_league       = Best20ClubLeague()
 
 league_service = LeagueService()
 

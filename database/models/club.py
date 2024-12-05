@@ -9,9 +9,6 @@ from database.models.character import Character
 from config import LEAGUES
 from database.model_base import Base
 
-
-
-
 class Club(Base):
     __tablename__ = 'clubs'
     

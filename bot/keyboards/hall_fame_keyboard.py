@@ -11,6 +11,8 @@ def menu_hall_fame():
     keyboard.button(text = "📊 Рейтинг за рівнем гравця")
     keyboard.button(text = "🏆 Рейтинг команд за силою")
     keyboard.button(text = "🏃🏼 Рейтинг бомбардирів")
+    keyboard.button(text = "📊 Клубний рейтинг")
+    
     
     if (datetime.now().day >= DUEL_START_DAY_SEASON) and (datetime.now().day <= DUEL_END_DAY_SEASON):
         keyboard.button(text = "👥 Рейтинг ПВП-пеналті") 

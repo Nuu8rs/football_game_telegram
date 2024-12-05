@@ -57,3 +57,14 @@ def menu_beast_league_zone():
            .as_markup(resize_keyboard = True)
            )
     
+def menu_national_cup_ukraine():
+    return(ReplyKeyboardBuilder()
+           .button(text = "📝 Зареєструватися в матч Кубка України")
+           .button(text = "📋 Таблиця Кубка України")
+           .button(text = "🔋 Задонатити в матч Кубка України")
+           .button(text = "📅 Календар Кубка України")
+           .button(text = "📊 Результати Кубка України")
+           .attach(menu_plosha())
+           .adjust(1,1,1,2,1)
+           .as_markup(resize_keyboard = True)
+           )

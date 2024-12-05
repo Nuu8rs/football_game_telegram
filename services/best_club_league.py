@@ -11,7 +11,7 @@ from database.models.club import Club
 class BestLeagueService:
 
     @classmethod
-    async def get_top_24_clubs(cls) -> list[Club]:
+    async def get_top_24_clubs(cls) -> list[tuple[Club, int]]:
         now = datetime.now()
         start_of_month = now.replace(day=1, hour=0)
         end_of_month_20th = now.replace(day=20, hour=0)
