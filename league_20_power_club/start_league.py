@@ -44,8 +44,8 @@ class Best20ClubLeague:
             minute = 0
         )
         time_start_match = match.time_to_start.replace(
-            hour = 16,
-            minute = 0
+            hour = 14,
+            minute = 54
         )
         
         user_sender = UserSender(

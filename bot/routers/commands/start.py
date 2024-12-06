@@ -79,16 +79,3 @@ async def plosha(message: Message, user: UserBot):
                                """,
                                reply_markup=main_menu(user))
 
-# async def test(character: Character):
-#     from utils.club_shemas import SchemaSerivce
-#     from services.club_service import ClubService
-#     from utils.club_utils import get_text_schemas
-#     club = await ClubService.get_club(club_id=character.club_id)
-#     text = get_text_schemas(club)
-#     print(text)
-#     # await SchemaSerivce.character_is_enough_room(
-#     #     match_id="0aac6013-13fc-44cd-be92-ed67d4fb5671",
-#     #     club = club,
-#     #     my_character=character
-        
-#     # )

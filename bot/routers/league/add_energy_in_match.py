@@ -69,18 +69,8 @@ async def donate_energy_from_match_handler(
                                   show_alert = True)
         return await query.message.delete()
     
-
-    current_match_db = await LeagueFightService.get_match_today(
-        club_id=character.club_id
-    )
-
-    if current_match_db is None:
-        await query.answer("На даний момент немає матчів",
-                                  show_alert = True)
-        return await query.message.delete()
-        
     
-    current_match = ClubMatchManager.get_fight_by_id(current_match_db.match_id)
+    current_match = ClubMatchManager.get_fight_by_id(callback_data.match_id)
     if not current_match:
         return
     
@@ -99,6 +89,10 @@ async def donate_epizode_energy(
     state: FSMContext
 ):
     energy = int(message.text)
+    if energy < 1:
+        await state.clear()
+        return await message.answer("Мінімум 1 енергія")
+    
     if character.current_energy < energy:
         await state.clear()
         return await message.answer(
@@ -112,7 +106,7 @@ async def donate_epizode_energy(
     current_match: ClubMatch = data.get("current_match", False)
     if not current_match:
         return
-    
+
     match = current_match.clubs_in_match
     if character.id in match.charactets_id_first_club:
         key = "epizode_energy_first_club"

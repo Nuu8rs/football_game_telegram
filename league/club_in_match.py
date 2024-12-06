@@ -59,7 +59,7 @@ class ClubsInMatch:
             characater_bot = await CharacterService.get_character_by_id(character_id=self.second_club.characters[0].id)
             result = await MatchCharacterService.add_character_in_match(club_in_match=self, character=characater_bot)
             if result:
-                self.first_club_characters.append(characater_bot)
+                self.second_club_characters.append(characater_bot)
             
     
     async def __add_character_in_match(self, characters: list[MatchCharacter]):

@@ -194,15 +194,15 @@ def get_top_24_clubs(fights: list[LeagueFight]) -> str:
 
     def format_league_section(league, title, emoji):
         return f"{title}\n" + "\n".join(
-            f"{index + 1}. {rank['club_name']} {emoji} [💪 {rank['total_power']:.2f}] "
-            f"[ОЧ {rank['points']}], [ГЗ {rank['goals_scored']}], [ГП {rank['goals_conceded']}], "
+            f"<b>{index + 1}.</b> {rank['club_name']} {emoji} [💪 {rank['total_power']:.2f}] "
+            f"[ОЧ {rank['points']}], "
             f"[РГ {'+' if rank['goal_difference'] >= 0 else ''}{rank['goal_difference']}]"
             for index, rank in enumerate(league)
         ) + "\n\n"
 
     ranking_table = "🏆 <b>Рейтинг команд</b>\n\n"
-    ranking_table += format_league_section(champions_league, "Ліга Чемпіонів", "🏆")
-    ranking_table += format_league_section(europa_league, "Ліга Європи", "⚽️")
-    ranking_table += format_league_section(conference_league, "Ліга Конференції", "🌟")
+    ranking_table += format_league_section(champions_league, "<b><u>Ліга Чемпіонів</u></b>\n", "🏆")
+    ranking_table += format_league_section(europa_league, "<b><u>Ліга Європи</u></b>\n", "⚽️")
+    ranking_table += format_league_section(conference_league, "<b><u>Ліга Конференції</u></b>\n", "🌟")
 
     return ranking_table
