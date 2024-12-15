@@ -91,7 +91,7 @@ async def donate_epizode_energy(
     energy = int(message.text)
     if energy < 1:
         await state.clear()
-        return await message.answer("Мінімум 1 енергія")
+        return await message.answer("Мінімум 2 енергії")
     
     if character.current_energy < energy:
         await state.clear()

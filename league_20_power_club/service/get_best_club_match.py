@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from uuid import uuid4
 
 from database.models.league_fight import LeagueFight
 from database.models.club import Club
@@ -13,7 +14,6 @@ from league_20_power_club.utils.best_club_create_match import (
 from services.best_20_club_league_service import Best20ClubLeagueService
 from services.league_service import LeagueFightService
 
-from uuid import uuid4
 
 class BestClubLeagueMatchService:
  

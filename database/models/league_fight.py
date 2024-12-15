@@ -42,4 +42,3 @@ class LeagueFight(Base):
             return 3
         else:
             return 0
-        

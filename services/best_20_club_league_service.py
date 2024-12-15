@@ -83,7 +83,7 @@ class Best20ClubLeagueService:
     
     @classmethod
     async def get_my_league_top_20_club(cls, club_id: int):
-        today = datetime.now().date().replace(day=4)
+        today = datetime.now().date()
         async for session in get_session():
             async with session.begin():
                 try:
@@ -104,3 +104,24 @@ class Best20ClubLeagueService:
                     print(f"Ошибка при получении следующего матча для команди {club_id}: {e}")
                     return None
     
+    
+    @classmethod
+    async def get_end_last_match(cls) -> LeagueFight:
+        now = datetime.now()
+        start_date = now.replace(day=4, hour=0, minute=0, second=0, microsecond=0)
+        end_date = now.replace(day=20, hour=23, minute=59, second=59, microsecond=999999)
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    stmt = select(LeagueFight).filter(
+                    LeagueFight.is_top_20_club == True,
+                    LeagueFight.group_id == "LAST_MATCH",
+                    LeagueFight.time_to_start >= start_date,
+                    LeagueFight.time_to_start <= end_date
+                )
+                    
+                    result = await session.execute(stmt)
+                    return result.scalar_one_or_none()
+                except Exception as e:
+                    logger.error(f"Ошибка при получении последнего матча: {e}")
+        return None
