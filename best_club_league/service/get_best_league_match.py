@@ -27,7 +27,6 @@ class BestClubLeagueMatchService:
         
     async def get_matches(self) -> list[LeagueFight]:    
         best_club_league = await BestLeagueService.get_best_league()
-        self.getname(best_club_league)
         if not best_club_league:
             await self.generate_matches()
             best_club_league = await BestLeagueService.get_best_league()
@@ -35,9 +34,48 @@ class BestClubLeagueMatchService:
         return best_club_league
         
     async def get_top_clubs(self) -> list[Club]:
-        top_league_clubs = await BestLeagueService.get_top_24_clubs()
-        return [item[0] for item in top_league_clubs]  
-    
+        fights = await LeagueFightService.get_league_fights_current_month()
+        club_points = {}
+        club_goals_scored = {}
+        club_goals_conceded = {}
+
+        for fight in fights:
+            for club_id in [fight.first_club_id, fight.second_club_id]:
+                if club_id not in club_points:
+                    club_points[club_id] = 0
+                    club_goals_scored[club_id] = 0
+                    club_goals_conceded[club_id] = 0
+
+            if fight.time_to_start <= datetime.now():
+                club_points[fight.first_club_id] += fight.total_points_first_club
+                club_goals_scored[fight.first_club_id] += fight.goal_first_club
+                club_goals_conceded[fight.first_club_id] += fight.goal_second_club
+
+                club_points[fight.second_club_id] += fight.total_points_second_club
+                club_goals_scored[fight.second_club_id] += fight.goal_second_club
+                club_goals_conceded[fight.second_club_id] += fight.goal_first_club
+
+        rankings = []
+        for club_id, points in club_points.items():
+            club = next(fight.first_club if fight.first_club_id == club_id else fight.second_club
+                        for fight in fights if fight.first_club_id == club_id or fight.second_club_id == club_id)
+
+            goals_scored = club_goals_scored[club_id]
+            goals_conceded = club_goals_conceded[club_id]
+            goal_difference = goals_scored - goals_conceded
+
+            rankings.append({
+                'club_id': club_id,
+                'club': club,
+                'points': points,
+                'goals_scored': goals_scored,
+                'goals_conceded': goals_conceded,
+                'goal_difference': goal_difference,
+            })
+
+        sorted_rankings = sorted(rankings, key=lambda x: (-x['points'], -x['goal_difference'], -x['goals_scored']))
+        return [club['club'] for club in sorted_rankings][:24]
+        
     async def generate_matches(self):
         top_clubs = await self.get_top_clubs()
         group_generator = generate_club_group(top_clubs)

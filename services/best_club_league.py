@@ -11,15 +11,15 @@ from database.models.club import Club
 class BestLeagueService:
 
     @classmethod
-    async def get_top_24_clubs(cls) -> list[tuple[Club, int]]:
+    async def get_top_24_clubs(cls) -> list[Club]:
         now = datetime.now()
-        start_of_month = now.replace(day=1, hour=0)
-        end_of_month_20th = now.replace(day=20, hour=0)
+        start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        end_of_month_20th = now.replace(day=20, hour=0, minute=0, second=0, microsecond=0)
 
-        
         async for session in get_session():
             async with session.begin():
-                points_query = (
+                # Подзапрос для очков, забитых и пропущенных голов для первой и второй команды
+                first_team_points = (
                     select(
                         LeagueFight.first_club_id.label("club_id"),
                         func.sum(
@@ -28,47 +28,64 @@ class BestLeagueService:
                                 (LeagueFight.goal_first_club == LeagueFight.goal_second_club, 1),
                                 else_=0,
                             )
-                        ).label("total_points")
+                        ).label("points"),
+                        func.sum(LeagueFight.goal_first_club).label("goals_scored"),
+                        func.sum(LeagueFight.goal_second_club).label("goals_conceded")
                     )
-                    .filter(LeagueFight.time_to_start >= start_of_month)
-                    .filter(LeagueFight.time_to_start <= end_of_month_20th)
+                    .where(LeagueFight.time_to_start >= start_of_month)
+                    .where(LeagueFight.time_to_start <= end_of_month_20th)
                     .group_by(LeagueFight.first_club_id)
-                    .union_all(
-                        select(
-                            LeagueFight.second_club_id.label("club_id"),
-                            func.sum(
-                                case(
-                                    (LeagueFight.goal_second_club > LeagueFight.goal_first_club, 3),
-                                    (LeagueFight.goal_second_club == LeagueFight.goal_first_club, 1),
-                                    else_=0,
-                                )
-                            ).label("total_points")
-                        )
-                        .filter(LeagueFight.time_to_start >= start_of_month)
-                        .filter(LeagueFight.time_to_start <= end_of_month_20th)
-                        .group_by(LeagueFight.second_club_id)
-                    )
-                ).subquery()
+                )
 
-                final_points_query = (
+                second_team_points = (
                     select(
-                        points_query.c.club_id,
-                        func.sum(points_query.c.total_points).label("total_points")
+                        LeagueFight.second_club_id.label("club_id"),
+                        func.sum(
+                            case(
+                                (LeagueFight.goal_second_club > LeagueFight.goal_first_club, 3),
+                                (LeagueFight.goal_second_club == LeagueFight.goal_first_club, 1),
+                                else_=0,
+                            )
+                        ).label("points"),
+                        func.sum(LeagueFight.goal_second_club).label("goals_scored"),
+                        func.sum(LeagueFight.goal_first_club).label("goals_conceded")
                     )
-                    .group_by(points_query.c.club_id)
+                    .where(LeagueFight.time_to_start >= start_of_month)
+                    .where(LeagueFight.time_to_start <= end_of_month_20th)
+                    .group_by(LeagueFight.second_club_id)
+                )
+
+                # Объединяем результаты для первой и второй команды
+                combined_points = first_team_points.union_all(second_team_points).subquery()
+
+                # Агрегируем данные по клубам
+                aggregated_points = (
+                    select(
+                        combined_points.c.club_id,
+                        func.sum(combined_points.c.points).label("total_points"),
+                        func.sum(combined_points.c.goals_scored).label("total_goals_scored"),
+                        func.sum(combined_points.c.goals_conceded).label("total_goals_conceded"),
+                        (func.sum(combined_points.c.goals_scored) - func.sum(combined_points.c.goals_conceded)).label("goal_difference")
+                    )
+                    .group_by(combined_points.c.club_id)
                     .subquery()
                 )
 
+                # Финальный запрос для получения клубов
                 final_query = (
-                    select(Club, final_points_query.c.total_points)
-                    .join(final_points_query, final_points_query.c.club_id == Club.id)
-                    .group_by(Club.id)
-                    .order_by(func.sum(final_points_query.c.total_points).desc())
+                    select(Club)
+                    .join(aggregated_points, aggregated_points.c.club_id == Club.id)
+                    .order_by(
+                        aggregated_points.c.total_points.desc(),
+                        aggregated_points.c.goal_difference.desc(),
+                        aggregated_points.c.total_goals_scored.desc()
+                    )
                     .limit(24)
                 )
 
-                top_clubs = await session.execute(final_query)
-                return [(club, total_points) for club, total_points in top_clubs]
+                result = await session.execute(final_query)
+                return [club for club, in result]
+
                         
                 
     @classmethod
