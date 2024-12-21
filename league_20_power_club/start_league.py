@@ -31,7 +31,6 @@ class Best20ClubLeague:
             trigger = END_MATCH_TOP_20_CLUB
         )
         
-        await self._start_end_match()
         self.scheduler_best_league.start()
 
         

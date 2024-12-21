@@ -5,6 +5,8 @@ from sqlalchemy import select, or_, and_, func
 from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 
+from constants import START_DAY_BEST_LEAGUE
+
 class LeagueFightService:
     @classmethod
     async def create_league_fight(cls, 
@@ -221,7 +223,7 @@ class LeagueFightService:
             
     @classmethod
     async def get_my_league_divison_fight(cls, club_id: int) -> list[LeagueFight]:
-        today = datetime.now().date().replace(day=22)
+        today = datetime.now().date().replace(day=START_DAY_BEST_LEAGUE)
         async for session in get_session():
             async with session.begin():
                 try:

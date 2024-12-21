@@ -109,4 +109,30 @@ class BestLeagueService:
                 return result.scalars().first()
                 
         
-    
+    @classmethod
+    async def get_next_league_fight_by_club(cls, club_id: int):
+        today = datetime.now()
+
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    next_fight = await session.execute(
+                        select(LeagueFight)
+                        .where(
+                            LeagueFight.time_to_start > today,
+                            or_(
+                                LeagueFight.first_club_id == club_id,
+                                LeagueFight.second_club_id == club_id
+                            )
+                        
+                        )
+                        .where(LeagueFight.is_beast_league == True)
+                        .order_by(LeagueFight.time_to_start.asc())
+                        .limit(1)
+                    )
+                    result = next_fight.scalars().first()
+                    return result
+                except Exception as e:
+                    print(f"Ошибка при получении следующего матча для команди {club_id}: {e}")
+                    return None
+                

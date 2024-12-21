@@ -8,6 +8,7 @@ from services.character_service import CharacterService
 from services.league_service import LeagueFightService
 from services.match_character_service import MatchCharacterService
 from services.best_20_club_league_service import Best20ClubLeagueService
+from services.best_club_league import BestLeagueService
 from services.club_service  import ClubService
 
 from league.club_in_match import ClubsInMatch
@@ -70,7 +71,7 @@ async def get_text_league(club: Club):
     
 async def get_text_league_devision(club: Club):
 
-    current_match = await LeagueFightService.get_next_league_fight_by_club(club_id=club.id)
+    current_match = await BestLeagueService.get_next_league_fight_by_club(club_id=club.id)
     if not current_match:
         return "⚽️ Твоя ліга: <b>{name_league}</b>\n\nМатчів немає, відпочивайте".format(name_league = club.league)
     
@@ -158,11 +159,7 @@ async def get_text_top_club_text(club: Club):
         count_characters_first_club  = len(characters_in_match),
         count_characters_second_club = len(enemy_characters_in_match)
     )
-    
-    
-
-
-    
+     
 
 def get_text_calendar_matches(matches: list[LeagueFightService], club_id: int):
     sorted_fights = sorted(matches, key=lambda fight: fight.time_to_start)

@@ -30,7 +30,7 @@ async def menu_best_league(message: Message, character: Character):
 @best_league_router.message(F.text == "📝 Зареєструватися в матч Єврокубків", UserInClub(), ClubInBeastLeague())
 async def register_character_to_match(message: Message, character: Character):
     club = await ClubService.get_club(club_id=character.club_id)
-    next_match = await LeagueFightService.get_next_league_fight_by_club(
+    next_match = await BestLeagueService.get_next_league_fight_by_club(
         club_id=character.club_id
     )
     await message.answer_photo(
@@ -58,7 +58,7 @@ async def get_result_matches(message: Message, character: Character):
     
 @best_league_router.message(F.text == "📋 Таблиця Єврокубків", UserInClub(), ClubInBeastLeague())
 async def get_table_rait(message: Message, character: Character):
-    next_match = await LeagueFightService.get_next_league_fight_by_club(
+    next_match = await BestLeagueService.get_next_league_fight_by_club(
         club_id=character.club_id
     )
     all_mathes_by_group = await LeagueFightService.get_the_monthly_matches_by_group(group_id=next_match.group_id)
