@@ -147,8 +147,8 @@ def GET_RANDOM_NUMBER(LIMIT_1 = 1, LIMIT_2 = 5):
 def date_is_get_reward_christmas_tree() -> bool:
     today = datetime.now().date()
     today_month_day = (today.month, today.day)
-    start_date = (12, 20)
-    end_date = (1, 1)
+    start_date = (12, 28)
+    end_date = (1, 10)
     return start_date <= today_month_day or today_month_day <= end_date
 
 MIN_ENERGY_CHRISTMAS_REWARD = 10

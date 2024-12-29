@@ -11,7 +11,7 @@ from sqlalchemy import (
     Enum
 )
 
-from bot.routers.stores.box.open_box import TypeBox
+from database.models.types import TypeBox
 
 from database.model_base import Base
 

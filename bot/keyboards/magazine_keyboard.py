@@ -10,7 +10,7 @@ from bot.callbacks.magazine_callbacks import (
     SelectBox,
 )
 
-from bot.routers.stores.box.open_box import TypeBox
+from database.models.types import TypeBox
 from bot.routers.stores.items.types import TypeItems
 
 def menu_stores():

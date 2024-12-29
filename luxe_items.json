@@ -6,11 +6,11 @@
         "level_required": 1,
         "price": 600,
         "stats": {
-            "technique": 10,
-            "kicks": 10,
-            "ball_selection": 10,
-            "speed": 10,
-            "endurance": 10
+            "technique": 15,
+            "kicks": 15,
+            "ball_selection": 15,
+            "speed": 15,
+            "endurance": 15
         }
     },
     {
@@ -20,11 +20,11 @@
         "level_required": 1,
         "price": 450,
         "stats": {
-            "technique": 12,
-            "kicks": 12,
-            "ball_selection": 7,
-            "speed": 7,
-            "endurance": 7
+            "technique": 15,
+            "kicks": 15,
+            "ball_selection": 12,
+            "speed": 12,
+            "endurance": 12
         }
     },
     {
@@ -34,10 +34,10 @@
         "level_required": 1,
         "price": 400,
         "stats": {
-            "technique": 0,
-            "kicks": 10,
+            "technique": 5,
+            "kicks": 15,
             "ball_selection": 15,
-            "speed": 0,
+            "speed": 8,
             "endurance": 10
         }
     },
@@ -51,8 +51,8 @@
             "technique": 20,
             "kicks": 15,
             "ball_selection": 12,
-            "speed": 0,
-            "endurance": 0
+            "speed": 8,
+            "endurance": 7
         }
     }
 ]

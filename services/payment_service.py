@@ -3,7 +3,7 @@ from sqlalchemy import select, update
 
 from database.session import get_session
 from database.models.payments import Payment
-from bot.routers.stores.box.open_box import TypeBox
+from database.models.types import TypeBox
 
 from logging_config import logger
 

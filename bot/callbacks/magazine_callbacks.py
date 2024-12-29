@@ -1,5 +1,5 @@
 from aiogram.filters.callback_data import CallbackData
-from bot.routers.stores.box.open_box import TypeBox
+from database.models.types import TypeBox
 
 class SelectTypeItems(CallbackData, prefix="select_type_items"):
     item: str
