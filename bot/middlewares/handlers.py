@@ -6,7 +6,7 @@ from aiogram.types import Message, CallbackQuery, ErrorEvent, User
 from typing import Any, Awaitable, Callable, Dict
 from services.user_service import UserService
 
-from loader import dp, logger
+from loader import dp
 
 async def get_user(user_bot: User):
     try:
@@ -20,7 +20,7 @@ async def get_user(user_bot: User):
             user = await UserService.get_user(user_id=user_bot.id)
         return user
     except Exception as E:
-        logger.error(E)
+        logging.error(E)
 
 
 @dp.error()

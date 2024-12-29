@@ -5,7 +5,8 @@ from api.monobank.create_payment import CreatePayment
 from bot.keyboards.gym_keyboard import menu_massage_room, send_payment_keyboard
 from bot.callbacks.massage_room_callbacks import SelectCountGetEnergy
 
-from constants import CONST_PRICE_ENERGY
+from constants import CONST_PRICE_ENERGY, ENERGY_STORE_PHOTO
+from config import CALLBACK_URL_WEBHOOK_ENERGY
 from database.models.character import Character
 
 from services.payment_service import PaymentServise
@@ -15,11 +16,27 @@ massage_room_router = Router()
 
 @massage_room_router.message(F.text == "🏪🔋 Крамниця енергії")
 async def massage_room_handler(message: Message):
-    await message.answer("Вітаю у крамниці енергії", reply_markup=menu_massage_room())
+    await message.answer_photo(
+        photo=ENERGY_STORE_PHOTO,
+        caption = (
+        "⚡ Вітаємо у Крамниці Енергії! ⚡\n"
+        "Тут ви можете придбати енергію для вашого персонажа 💪.\n"
+        "Оновіть сили і продовжуйте свою подорож! 🌟"
+        ), 
+        reply_markup=menu_massage_room()
+    )
     
 @massage_room_router.callback_query(F.data == "massage_room")
 async def message_room_handler(query: CallbackQuery):
-    await query.message.answer("Вітаю у крамниці енергії", reply_markup=menu_massage_room())
+    await query.message.answer_photo(
+        photo=ENERGY_STORE_PHOTO,
+        caption = (
+            "⚡ Вітаємо у Крамниці Енергії! ⚡\n"
+            "Тут ви можете придбати енергію для вашого персонажа 💪.\n"
+            "Оновіть сили і продовжуйте свою подорож! 🌟"
+        ), 
+        reply_markup=menu_massage_room()
+    )
 
     
 @massage_room_router.callback_query(SelectCountGetEnergy.filter())
@@ -28,9 +45,9 @@ async def select_count_add_energy_handler(query: CallbackQuery, character: Chara
     
     payment = CreatePayment(
         price=price_energy,
-        name_product=f"Buy {callback_data.count_energy} energy"
-        
-        )
+        name_product=f"Buy {callback_data.count_energy} energy",
+        webhook_url = CALLBACK_URL_WEBHOOK_ENERGY
+    )
     url_payment_response = await payment.send_request()
     if not url_payment_response:
         return await query.answer("Произошла ошибка при создании платежа")

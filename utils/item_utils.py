@@ -74,3 +74,10 @@ async def read_items():
         contents = await file.read()
         data = json.loads(contents)
         return data
+    
+    
+async def read_luxe_items():
+    async with aiofiles.open("luxe_items.json", mode='r', encoding='utf-8-sig') as file:
+        contents = await file.read()
+        data = json.loads(contents)
+        return data

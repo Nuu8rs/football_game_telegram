@@ -8,26 +8,22 @@ from database.models.item import Item
 from services.character_service import CharacterService
 from services.items_service import ItemService
 
-from bot.keyboards.magazine_keyboard import (select_type_items_keyboard, 
-                                             gradation_values_item, 
-                                             select_items_for_buy)
+from bot.keyboards.magazine_keyboard import (
+    menu_stores, 
+    gradation_values_item, 
+    select_items_for_buy,
+    select_type_items_keyboard
+    )
 from bot.callbacks.magazine_callbacks import SelectTypeItems, SelectGradationLevelItem, ByItems
 from utils.item_utils import read_items, text_info_items
 
+from constants import MAGAZINE_PHOTO
 
 import json
 
-magazine_router = Router()
+items_store_router = Router()
 
-@magazine_router.message(F.text == "🏬 Магазин")
-async def magazine_handler(message: Message, character: Character, state: FSMContext):
-    await message.answer("Виберіть речі які хочете купити", 
-                         reply_markup=select_type_items_keyboard())
-    
-
-
-
-@magazine_router.callback_query(SelectTypeItems.filter())
+@items_store_router.callback_query(SelectTypeItems.filter())
 async def select_item(query: CallbackQuery, state: FSMContext, callback_data: SelectTypeItems):
     
     data_items = await read_items()
@@ -40,7 +36,7 @@ async def select_item(query: CallbackQuery, state: FSMContext, callback_data: Se
                                       item_сategory= callback_data.item,
                                       max_level_item=max_leve_item))
     
-@magazine_router.callback_query(SelectGradationLevelItem.filter())
+@items_store_router.callback_query(SelectGradationLevelItem.filter())
 async def select_gradation_level(query: CallbackQuery, state: FSMContext, callback_data: SelectGradationLevelItem):
     data = await state.get_data()
     
@@ -54,7 +50,7 @@ async def select_gradation_level(query: CallbackQuery, state: FSMContext, callba
 
     
     
-@magazine_router.callback_query(ByItems.filter())
+@items_store_router.callback_query(ByItems.filter())
 async def select_gradation_level(query: CallbackQuery, state: FSMContext, character: Character, callback_data: ByItems):
     data = await state.get_data()
     item = [item for item in data["data_items"] if item['id'] == callback_data.id_item][0]

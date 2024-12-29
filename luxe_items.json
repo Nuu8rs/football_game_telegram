@@ -1,0 +1,58 @@
+[
+    {
+        "id": 2,
+        "name": "Футболка Домінанта [S]",
+        "category": "T_SHIRT",
+        "level_required": 1,
+        "price": 600,
+        "stats": {
+            "technique": 10,
+            "kicks": 10,
+            "ball_selection": 10,
+            "speed": 10,
+            "endurance": 10
+        }
+    },
+    {
+        "id": 3,
+        "name": "Шорти Домінанта [S]",
+        "category": "SHORTS",
+        "level_required": 1,
+        "price": 450,
+        "stats": {
+            "technique": 12,
+            "kicks": 12,
+            "ball_selection": 7,
+            "speed": 7,
+            "endurance": 7
+        }
+    },
+    {
+        "id": 4,
+        "name": "Гетри Домінанта [S]",
+        "category": "SOCKS",
+        "level_required": 1,
+        "price": 400,
+        "stats": {
+            "technique": 0,
+            "kicks": 10,
+            "ball_selection": 15,
+            "speed": 0,
+            "endurance": 10
+        }
+    },
+    {
+        "id": 5,
+        "name": "Бутси Домінанта [S]",
+        "category": "BOOTS",
+        "level_required": 1,
+        "price": 550,
+        "stats": {
+            "technique": 20,
+            "kicks": 15,
+            "ball_selection": 12,
+            "speed": 0,
+            "endurance": 0
+        }
+    }
+]

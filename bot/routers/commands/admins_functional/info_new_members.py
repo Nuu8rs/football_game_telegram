@@ -14,7 +14,7 @@ from bot.keyboards.admins_keyboard import select_option_newsletter
 from services.admins_functional_service import AdminFunctionalService
 from utils.admins_functional_utils import get_new_member_characters
 
-from loader import logger
+from logging_config import logger
 
 admin_info_new_member_router = Router()
 

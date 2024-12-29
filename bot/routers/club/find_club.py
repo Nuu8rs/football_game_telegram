@@ -18,7 +18,7 @@ from bot.callbacks.switcher import SwitchClub
 
 from constants import TIME_TO_JOIN_TO_CLUB
 
-from loader import logger
+from logging_config import logger
 
 from constants import CLUB_PHOTO
 from utils.club_utils import get_club_description, send_message_characters_club

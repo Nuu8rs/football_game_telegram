@@ -1,11 +1,14 @@
-import asyncio
 from aiohttp import web
+import asyncio
 
-from loader import bot, dp
 from bot.routers.router import main_router
+from loader import bot, dp, app
 
-from webhook_api.handlers import MonoResult
-from config import WEBAPP_HOST, WEBAPP_PORT
+from config import (
+    WEBAPP_HOST, 
+    WEBAPP_PORT, 
+
+)
 
 dp.include_router(main_router)
 
@@ -15,9 +18,7 @@ async def start_polling():
     await dp.start_polling(bot)
     
 async def start_weebhook():
-    app = web.Application()
-    app.router.add_post("/mono-result", MonoResult.router)
-    
+
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, WEBAPP_HOST, WEBAPP_PORT)    

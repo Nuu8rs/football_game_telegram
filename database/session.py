@@ -16,3 +16,5 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
             await session.rollback()
         finally:
             await session.close()
+
+

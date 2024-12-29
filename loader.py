@@ -1,15 +1,17 @@
 import asyncio
-from datetime import datetime
+
+from aiohttp import web
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types.bot_command import BotCommand
 from aiogram.types.bot_command_scope_chat import BotCommandScopeChat
 
+from datetime import datetime
 from database.session import engine
 from database.model_base import Base
-from logging_config import logger
-from config import BOT_TOKEN, ADMINS
+from config import BOT_TOKEN, ADMINS, CALLBACK_URL_WEBHOOK_ENERGY, CALLBACK_URL_WEBHOOK_BOX
+
 from constants import (
     START_DAY_BEST_LEAGUE, 
     END_DAY_BEST_LEAGUE,
@@ -17,6 +19,10 @@ from constants import (
     START_DAY_BEST_20_CLUB_LEAGUE,
     END_DAY_BEST_20_CLUB_LEAGUE
 )
+
+from webhook_api.handlers.energy_handler import MonoResultEnergy
+from webhook_api.handlers.box_handler import MonoResultBox
+
 
 async def init_bot_command():
     commands = [
@@ -60,8 +66,11 @@ dp = Dispatcher()
 bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp.startup.register(start_functional)
 
+app = web.Application()
+app.router.add_post("/" + CALLBACK_URL_WEBHOOK_ENERGY.split("/")[-1], MonoResultEnergy.router)
+app.router.add_post("/" + CALLBACK_URL_WEBHOOK_BOX.split("/")[-1], MonoResultBox.router)
 
-             
+            
 
 
 from league.core_leauge import CORE_LEAGUE, LeagueService

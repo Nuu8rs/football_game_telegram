@@ -1,7 +1,7 @@
 import uuid
 import random
 
-from config import TOKEN_MONOBANK, CALLBACK_URL_WEBHOOK
+from config import TOKEN_MONOBANK
 from api.client import Client, HttpMethods
 
 from loader import bot
@@ -18,9 +18,15 @@ class CreatePayment(Client):
     method = HttpMethods.POST.value
     data = None
     
-    def __init__(self, price: int, name_product: str) -> None:
+    def __init__(
+        self, 
+        price: int, 
+        name_product: str,
+        webhook_url: str
+    ) -> None:
         self.price = price
         self.name_product = name_product
+        self.webhook_url = webhook_url
         
     def _generate_hash(self) -> str:
         return str(uuid.uuid4())[:10]
@@ -43,7 +49,7 @@ class CreatePayment(Client):
                 "comment": f"Покупка {self.name_product}",
             
             },
-            "webHookUrl" : CALLBACK_URL_WEBHOOK,
+            "webHookUrl" : self.webhook_url,
             "redirectUrl"   : await self._get_return_url()
         }
         

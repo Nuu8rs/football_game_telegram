@@ -16,7 +16,7 @@ from services.admins_functional_service import AdminFunctionalService
 
 from utils.rate_limitter import rate_limiter
 
-from loader import logger
+from logging_config import logger
 
 admin_newsletter_commands = Router()
 

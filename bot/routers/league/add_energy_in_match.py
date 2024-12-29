@@ -91,7 +91,7 @@ async def donate_epizode_energy(
     energy = int(message.text)
     if energy < 1:
         await state.clear()
-        return await message.answer("Мінімум 2 енергії")
+        return await message.answer("Мінімум 1 енергії")
     
     if character.current_energy < energy:
         await state.clear()
@@ -121,7 +121,7 @@ async def donate_epizode_energy(
     chance_first_club_before  = match.calculate_chances 
     chance_second_club_before = 100 - chance_first_club_before 
     
-    setattr(match, key, getattr(match, key) + energy)
+    setattr(match, key, getattr(match, key) + energy*5)
     
     chance_first_club_after  = match.calculate_chances 
     chance_second_club_after = 100 - chance_first_club_after

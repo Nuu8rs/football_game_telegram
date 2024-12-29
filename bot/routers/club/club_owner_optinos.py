@@ -21,7 +21,8 @@ from utils.club_utils import send_message_characters_club, get_text_schemas, tex
 
 from datetime import timedelta, datetime
 from config import EPOCH_ZERO
-from loader import bot,logger
+from loader import bot
+from logging_config import logger
 
 owner_option_club_router = Router()
 

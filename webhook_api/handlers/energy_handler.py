@@ -1,16 +1,20 @@
-from aiohttp.web import Request, Response
+from aiogram import Bot
+from aiohttp.web import Response
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from webhook_api.schemas import MonoResultSchema
-from .base_endpoint import EndPoint, HTTPMethod
+from ..base_endpoint import EndPoint, HTTPMethod
 
 from services.payment_service import PaymentServise
 from services.character_service import CharacterService
-from loader import bot
+from config import BOT_TOKEN
 
-class MonoResult(EndPoint):
+class MonoResultEnergy(EndPoint):
     schema = MonoResultSchema
     data: MonoResultSchema
     method = HTTPMethod.POST
-    
+    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
     TEXT_TEMPLATE = """
 <b>Ви оплатили замовлення, вам нараховано</b>: {amount_energy} 🔋
     """
@@ -27,14 +31,11 @@ class MonoResult(EndPoint):
         if payment.status:
             return
         
-        
-        
         character = await CharacterService.get_character(payment.user_id)
         await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
         
         await CharacterService.edit_character_energy(character, amount_energy_adjustment=payment.amount_energy)
-        
-        await bot.send_message(
+        await self.bot.send_message(
             chat_id = payment.user_id,
             text    = self.TEXT_TEMPLATE.format(amount_energy = payment.amount_energy)
         )

@@ -11,7 +11,8 @@ from database.models.club import Club
 from utils.rate_limitter import rate_limiter
 from .club_in_match import ClubsInMatch
 
-from loader import bot, logger
+from loader import bot
+from logging_config import logger
 
 goal_conceded = [
     "Воротар невдало відбив м'яч після удару суперника, і на добиванні нападник суперника першим опинився біля м'яча, забивши гол з близької відстані.",

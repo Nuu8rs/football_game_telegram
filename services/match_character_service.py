@@ -6,7 +6,7 @@ from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
 
 from database.session import get_session
-from loader import logger
+from logging_config import logger
 
 class MatchCharacterService:
     @classmethod

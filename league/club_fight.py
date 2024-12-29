@@ -18,7 +18,7 @@ from .fight_sender_v2 import ClubMatchSender
 
 from typing import Union
 
-from loader import logger
+from logging_config import logger
 
 class ClubMatchManager:
     all_fights: dict[str, "ClubMatch"] = {}

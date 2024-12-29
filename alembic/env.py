@@ -28,6 +28,7 @@ from database.models.reminder_character import ReminderCharacter
 from database.models.match_character import MatchCharacter
 from database.models.duel import Duel
 from database.models.payments import Payment
+from database.models.christmas_reward import ChristmasReward
 
 target_metadata = Base.metadata
 

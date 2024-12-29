@@ -11,7 +11,8 @@ from utils.club_shemas import SchemaClub
 
 
 from datetime import datetime, timedelta
-from loader import logger, bot
+from logging_config import logger
+from loader import bot
 
 
 text_schemas = {

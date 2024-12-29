@@ -1,4 +1,3 @@
-from enum import Enum
 from enum import Enum as PyEnum
 
 from aiogram.types import FSInputFile
@@ -73,7 +72,12 @@ PLOSHA_PEREMOGU  = FSInputFile("src/plosha_peremogu.jpg")
 EDUCATION_CENTER = FSInputFile("src/education_center_photo.jpg")
 HALL_FAME_PHOTO  = FSInputFile("src/hall_fame_photo.jpg")
 DUEL_PHOTO       = FSInputFile("src/duel_photo.jpg")
-
+CHRISTMAS_TREE_PHOTO = FSInputFile("src/сhristmas_tree.jpg")
+MAGAZINE_PHOTO   = FSInputFile("src/magazine_photo.jpg")
+BOXES_PHOTO      = FSInputFile("src/boxes_photo.jpg")
+DEFAULT_MAGAZINE_PHOTO = FSInputFile("src/default_store.jpg")
+LUXE_STORE_PHOTO = FSInputFile("src/luxe_store.jpg")
+ENERGY_STORE_PHOTO = FSInputFile("src/energy_store.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 
@@ -106,6 +110,7 @@ REFERAL_EXP = 20
 ALL_COUNT_ENERGY_BIT = [30,50,100,150]
 
 
+
 TIME_TO_JOIN_TO_CLUB = timedelta(minutes=2)
 
 #KEY - COUNT ENERGY | VALUE - PRICE UAH
@@ -130,9 +135,60 @@ END_DAY_BEST_LEAGUE = 30
 
 START_DAY_BEST_20_CLUB_LEAGUE = 5
 
-
-
 ITEM_PER_PAGE = 9
 
 def GET_RANDOM_NUMBER(LIMIT_1 = 1, LIMIT_2 = 5):
     return random.randint(LIMIT_1,LIMIT_2)
+
+
+
+
+#CHRISTMAS
+def date_is_get_reward_christmas_tree() -> bool:
+    today = datetime.now().date()
+    today_month_day = (today.month, today.day)
+    start_date = (12, 20)
+    end_date = (1, 1)
+    return start_date <= today_month_day or today_month_day <= end_date
+
+MIN_ENERGY_CHRISTMAS_REWARD = 10
+MAX_ENERGY_CHRISTMAS_REWARD = 50
+
+MIN_MONEY_CHRISTMAS_REWARD = 5
+MAX_MONEY_CHRISTMAS_REWARD = 10
+
+#======================================================
+
+
+lootboxes = {
+    "small_box": {
+        "name_lootbox": "Маленький бокс футболіста",
+        "min_energy": 50,
+        "max_energy": 100,
+        "min_money": 5,
+        "max_money": 15,
+        "min_exp": 1,
+        "max_exp": 5,
+        "price": 150
+    },
+    "medium_box": {
+        "name_lootbox": "Середній бокс футболіста",
+        "min_energy": 100,
+        "max_energy": 200,
+        "min_money": 15,
+        "max_money": 30,
+        "min_exp": 5,
+        "max_exp": 10,
+        "price": 290
+    },
+    "large_box": {
+        "name_lootbox": "Преміум бокс",
+        "min_energy": 250,
+        "max_energy": 400,
+        "min_money": 30,
+        "max_money": 50,
+        "min_exp": 10,
+        "max_exp": 15,
+        "price": 590
+    }
+}
