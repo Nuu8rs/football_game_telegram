@@ -43,7 +43,6 @@ class EndPoint(ABC, ResponseAnswer):
     async def get_data(self) -> BaseModel:  
         try:
             data = await self.request.json()
-            print(data)
             data = self.schema(**data)
             return data
         except ValidationError as E:

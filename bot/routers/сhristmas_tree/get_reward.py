@@ -8,6 +8,7 @@ from database.models.christmas_reward import ChristmasReward
 
 from bot.filters.check_time_christmas_tree import CheckTimeChristmasTree
 from bot.keyboards.get_christmas_reward import get_christmas_reward_keyboard
+from bot.utils.user_lock import UserLock
 
 from services.christmas_reward_service import ChristmasRewardService
 from services.character_service import CharacterService
@@ -85,18 +86,22 @@ async def get_reward_christmas_tree(
     query: CallbackQuery,
     character: Character
 ):
-    reward = await ChristmasRewardService.get_christmas_reward(
-        user_id = character.characters_user_id
-    )
-    if not reward:
-        await ChristmasRewardService.create_christmas_reward(
+    async with UserLock(user_id=character.characters_user_id):
+        reward = await ChristmasRewardService.get_christmas_reward(
             user_id = character.characters_user_id
         )
-    get_reward  = user_get_rewards(reward)
-    if not get_reward:
-        return await query.answer(
-            text = "Ви сьогодні вже отримали нагороду",
-            show_alert = True
+        if not reward:
+            await ChristmasRewardService.create_christmas_reward(
+                user_id = character.characters_user_id
+            )
+        get_reward  = user_get_rewards(reward)
+        if not get_reward:
+            return await query.answer(
+                text = "Ви сьогодні вже отримали нагороду",
+                show_alert = True
+            )
+        await ChristmasRewardService.update_time_get_reward(
+            user_id = character.characters_user_id
         )
     await query.message.answer("Ви отримали 🎁 <b><u>новорічний кейс</u></b> 🎁, він буде автоматично відкритий через 5 секунд")
     await asyncio.sleep(5)
@@ -118,9 +123,6 @@ async def get_reward_christmas_tree(
         )
     )
     
-    await ChristmasRewardService.update_time_get_reward(
-        user_id = character.characters_user_id
-    )
     if type(open_box.winner_item) == Energy:
         await CharacterService.edit_character_energy(
             character_obj = character,
