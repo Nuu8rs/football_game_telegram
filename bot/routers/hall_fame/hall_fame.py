@@ -17,7 +17,7 @@ from utils.hall_fame_utils import (get_top_characters_by_power,
                                    get_top_club_by_power,
                                    get_top_bomber_raiting,
                                    get_top_duelists_ranking,
-                                   get_top_24_clubs
+                                   get_top_24_clubs_text
                                    )
 from constants import HALL_FAME_PHOTO, DUEL_END_DAY_SEASON, DUEL_START_DAY_SEASON
 
@@ -100,7 +100,7 @@ async def menu_hall_of_fame_best_24_club(message: Message, character: Character)
     fights_from_league = await LeagueFightService.get_league_fights_current_month()
     
     await message.answer(
-        text = get_top_24_clubs(
+        text = get_top_24_clubs_text(
             fights_from_league
         )
     )

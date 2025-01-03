@@ -15,6 +15,7 @@ class BestClubLeague:
     def __init__(self) -> None:
         self.scheduler_best_league =  AsyncIOScheduler()
         self.best_league_service = BestClubLeagueMatchService()
+        
     async def start_best_league(self):
         await self._start_league()
         

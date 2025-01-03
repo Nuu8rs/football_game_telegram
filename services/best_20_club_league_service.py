@@ -10,13 +10,17 @@ from database.models.league_fight import LeagueFight
 from database.session import get_session
 
 from logging_config import logger
+from constants import (
+    START_DAY_BEST_20_CLUB_LEAGUE,
+    END_DAY_BEST_20_CLUB_LEAGUE
+)
 
 class Best20ClubLeagueService:
     @classmethod
     async def get_top_20_club_matches(self) -> list[LeagueFight]:
         now = datetime.now()
-        start_date = now.replace(day=4, hour=0, minute=0, second=0, microsecond=0)
-        end_date = now.replace(day=20, hour=23, minute=59, second=59, microsecond=999999)
+        start_date = now.replace(day=START_DAY_BEST_20_CLUB_LEAGUE, hour=0)
+        end_date = now.replace(day=END_DAY_BEST_20_CLUB_LEAGUE, hour=23)
 
         
         async for session in get_session():

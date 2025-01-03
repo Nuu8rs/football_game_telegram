@@ -1,4 +1,3 @@
-from aiogram import Bot
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
 
@@ -39,12 +38,16 @@ class EducationRewardReminderScheduler():
         
 
     async def start_reminder(self):
+        current_time = datetime.now()
+        one_month_ago = current_time - timedelta(days=30)
         all_not_bot_users = await CharacterService.get_all_users_not_bot()
         for character in all_not_bot_users:
             if character.reminder.education_reward_date == EPOCH_ZERO:
                 continue
+            if character.reminder.education_reward_date < one_month_ago:
+                continue
             
-            if character.reminder.education_reward_date > datetime.now():
+            if character.reminder.education_reward_date > current_time:
                 await self.add_job_remind(
                     character=character,
                     time_get_reward=character.reminder.education_reward_date

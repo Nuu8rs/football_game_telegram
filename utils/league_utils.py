@@ -122,6 +122,7 @@ async def get_text_top_club_text(club: Club):
         return "⚽️ Твоя ліга: <b>{name_league}</b>\n\nМатчів немає, відпочивайте".format(name_league = club.league)
     
     fight_istance = ClubMatchManager.get_fight_by_id(match_id=current_match.match_id)
+    
     enemy_club_id = fight_istance.clubs_in_match.second_club_id if club.id != fight_istance.clubs_in_match.second_club_id else fight_istance.clubs_in_match.first_club_id 
     enemy_club = await ClubService.get_club(enemy_club_id)
     

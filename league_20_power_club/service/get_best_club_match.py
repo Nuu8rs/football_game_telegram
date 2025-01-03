@@ -1,3 +1,5 @@
+import random
+
 from datetime import datetime, timedelta
 from uuid import uuid4
 
@@ -28,7 +30,8 @@ class BestClubLeagueMatchService:
 
         
     async def generate_top_20_club_matches(self):
-        top_20_clubs = await get_top_20_club()
+        top_20_clubs: list[Club] = await get_top_20_club()
+        random.shuffle(top_20_clubs)
         group_generator = generate_club_group(top_20_clubs)
         for group in LeagueBestClubRanking:
             group_clubs = next(group_generator)
@@ -44,14 +47,14 @@ class BestClubLeagueMatchService:
     ) -> None:
         
         matches_group:list[list[Club]] = generate_matches_club(clubs = group_clubs)
-        start_date_match = datetime.now().replace(hour = 16, minute = 0, second= 0 )
+        start_date_match = datetime.now().replace(hour = 17, minute = 0, second= 0 )
         for match in matches_group:
             await self.create_matches_day(
                 clubs_match_day = match,
                 date_match      = start_date_match,
                 group           = group
             )
-            start_date_match = start_date_match + timedelta(days=1)
+            start_date_match = start_date_match + timedelta(days=2)
 
             
         

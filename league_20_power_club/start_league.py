@@ -66,7 +66,7 @@ class Best20ClubLeague:
 
 
     
-    async def start_match(self, match: LeagueFight) -> None:
+    async def start_match(self, match: LeagueFight) -> None:        
         if match.time_to_start < datetime.now():
             return
         
@@ -79,13 +79,13 @@ class Best20ClubLeague:
         )
 
         time_send_join_match_text = match.time_to_start.replace(
-            hour = 15,
-            minute = 0
+            hour = 16,
+            minute = 15
         )
 
         
         time_start_match = match.time_to_start.replace(
-            hour = 16,
+            hour = 17,
             minute = 0
         )
         

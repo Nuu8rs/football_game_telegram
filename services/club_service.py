@@ -33,7 +33,10 @@ class ClubService:
     async def get_all_clubs(cls) -> list[Club]:
         async for session in get_session():
             async with session.begin():
-                stmt = select(Club)
+                stmt = (
+                    select(Club)
+                    .where(Club.is_fake_club == False)
+                )
                 result = await session.execute(stmt)
                 clubs = result.scalars().all()
                 return clubs
