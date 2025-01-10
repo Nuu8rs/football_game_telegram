@@ -20,6 +20,8 @@ def menu_stores():
             .button(text="⚡ Крамниця енергії", callback_data="massage_room")
             .button(text="💎 Ексклюзивний магазин", callback_data="store_luxury")
             .button(text="🏦 Банк", callback_data="bank")
+            .button(text="🎫 V.I.P Пасс", callback_data="vip_pass")
+            .button(text="🔄 Зміна позиції", callback_data="change_position")
             .adjust(1)
             .as_markup()
             )
@@ -107,3 +109,4 @@ def buy_box(url_payment: str):
             )
             .as_markup()
             )
+    

@@ -30,6 +30,8 @@ chance_add_point = {
     timedelta(minutes = 120) : 75,
 }
 
+CHANCE_VIP_PASS = 5
+
 const_energy_by_time = {
     timedelta(seconds = 5)   : 5,
     timedelta(minutes = 30)  : 10,
@@ -78,6 +80,9 @@ BOXES_PHOTO      = FSInputFile("src/boxes_photo.jpg")
 DEFAULT_MAGAZINE_PHOTO = FSInputFile("src/default_store.jpg")
 LUXE_STORE_PHOTO = FSInputFile("src/luxe_store.jpg")
 ENERGY_STORE_PHOTO = FSInputFile("src/energy_store.jpg")
+VIP_PASS_PHOTO   = FSInputFile("src/vip_pass_photo.jpg")
+BANK_PHOTO       = FSInputFile("src/bank_photo.jpg")
+CHANGE_POSITION_PHOTO = FSInputFile("src/change_position_photo.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 
@@ -192,3 +197,5 @@ lootboxes = {
         "price": 590
     }
 }
+
+PRICE_CHANGE_POSITION = 150

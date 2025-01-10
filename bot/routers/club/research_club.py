@@ -16,7 +16,7 @@ research_club_router = Router()
 @research_club_router.message(F.text == "🧿 Переглянути інші команди")
 async def research_club_handler(message: Message, character: Character, state: FSMContext):    
     all_clubs = await ClubService.get_all_clubs_to_join()
-    all_clubs_not_my_club = [club for club in all_clubs if club.id != character.club_id]
+    all_clubs_not_my_club = [club for club in all_clubs if club.id != character.club_id if not club.is_fake_club]
     await state.update_data(all_clubs = all_clubs_not_my_club)
     if not all_clubs_not_my_club:
         return await message.answer("Немає команд для перегляду")

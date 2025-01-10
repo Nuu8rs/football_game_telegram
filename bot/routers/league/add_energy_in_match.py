@@ -88,10 +88,12 @@ async def donate_epizode_energy(
     character: Character,
     state: FSMContext
 ):
+    
+    MIN_ENERGY_DONATE_MATCH = 10
     energy = int(message.text)
-    if energy < 1:
+    if energy < MIN_ENERGY_DONATE_MATCH:
         await state.clear()
-        return await message.answer("Мінімум 1 енергії")
+        return await message.answer(f"Мінімум {MIN_ENERGY_DONATE_MATCH} енергії")
     
     if character.current_energy < energy:
         await state.clear()
@@ -121,13 +123,13 @@ async def donate_epizode_energy(
     chance_first_club_before  = match.calculate_chances 
     chance_second_club_before = 100 - chance_first_club_before 
     
-    setattr(match, key, getattr(match, key) + energy*5)
+    setattr(match, key, getattr(match, key) + energy*10)
     
     chance_first_club_after  = match.calculate_chances 
     chance_second_club_after = 100 - chance_first_club_after
     
     text = f"""
-⚽️ <b>{character.name} додав {energy}💪 сил команді {my_club.name_club}!</b> ⚽️  
+⚽️ <b>{character.character_name} додав {energy}💪 сил команді {my_club.name_club}!</b> ⚽️  
 
 🔥 <b>Зміни шансів на гол:</b>  
 - ⚽️ Команда: {match.first_club.name_club} - <b>{chance_first_club_before:.2f}%</b> → <b>{chance_first_club_after:.2f}%</b>  
@@ -193,7 +195,7 @@ async def select_coint_donate_energy_in_match(message: Message, character: Chara
     
 
 async def send_message_members_match_to_donate_energy(current_match: ClubMatch, my_character: Character, count_energy: int):
-    text = (f"👑Учасник <b>{my_character.name}</b> задонатив <b>{count_energy}</b> одиниць енергії🔋, "
+    text = (f"👑Учасник <b>{my_character.character_name}</b> задонатив <b>{count_energy}</b> одиниць енергії🔋, "
         f"зміцнив свою команду <b>{my_character.club.name_club}</b>, "
         f"додавши <b>{count_energy/KOEF_ENERGY_DONATE}</b> до його сили💪")
 

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import Column, BigInteger, String, DateTime, Boolean, ForeignKey, text
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, BigInteger, String, DateTime, Boolean, ForeignKey, text, Integer
+from sqlalchemy.orm import relationship, Mapped
 
 from database.model_base import Base
 
@@ -24,7 +24,7 @@ class ReminderCharacter(Base):
     time_to_join_club     = Column(DateTime, default=datetime(1970, 1, 1), server_default=text('\'1970-01-01 00:00:00\''), nullable=False)
 
     character = relationship("Character", back_populates="reminder", uselist=False)
-
+    # delta_chance_succes_training = Column(Integer, default=0, server_default="0")
 
     @property
     def time_training(self) -> timedelta | None:

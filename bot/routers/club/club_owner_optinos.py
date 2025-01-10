@@ -57,7 +57,7 @@ async def send_message_all_member_club(message: Message, state: FSMContext, char
                 chat_id=character_club.characters_user_id
             )            
         except Exception as E:
-            logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ {character.name}")
+            logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ {character.character_name}")
     await state.clear()
     
 @owner_option_club_router.callback_query(F.data == "transfer_rights")
@@ -89,11 +89,11 @@ async def transfer_owner_club(query: CallbackQuery, character: Character, callba
         new_owner_id=callback_data.user_id_new_owner
     )
     character_owner = [character for character in club.characters if character.characters_user_id == callback_data.user_id_new_owner][0]
-    await query.message.answer(f"Вы передали лидера {character_owner.name}")
+    await query.message.answer(f"Вы передали лидера {character_owner.character_name}")
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
-        text=f"👤 <b>Лідер команди змінився з {character.name} -> {character_owner.name}</b>"
+        text=f"👤 <b>Лідер команди змінився з {character.character_name} -> {character_owner.character_name}</b>"
     )
     
 @owner_option_club_router.callback_query(F.data == "delete_my_club")
@@ -202,6 +202,6 @@ async def select_user_from_kick_handler(query: CallbackQuery, character: Charact
     character_kick = await CharacterService.get_character_by_id(
         character_id=callback_data.character_id
     )
-    await query.message.answer(f"Ви вигнали користувача - {character_kick.name}")
+    await query.message.answer(f"Ви вигнали користувача - {character_kick.character_name}")
     await query.bot.send_message(chat_id=character_kick.characters_user_id,
                                  text=f"Капітан прийняв рішення, ви більше не в команді [{club.name_club}]")

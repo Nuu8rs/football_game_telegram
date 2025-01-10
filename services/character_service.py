@@ -159,10 +159,18 @@ class CharacterService:
                     stmt = (
                         update(Character)
                         .where(Character.is_bot == False)
-                        .where(Character.current_energy <= CONST_ENERGY) 
+                        .where(Character.current_energy <= CONST_ENERGY)
                         .values(current_energy=CONST_ENERGY)
                     )
+                    stmt_vip = (
+                        update(Character)
+                        .where(Character.is_bot == False)
+                        .where(Character.vip_pass_expiration_date > datetime.now())
+                        .where(Character.current_energy <= CONST_ENERGY)
+                        .values(current_energy=CONST_ENERGY * 2)
+                    )
                     await session.execute(stmt)
+                    await session.execute(stmt_vip)
                     await session.commit()
                 except Exception as e:
                     raise e
@@ -286,3 +294,42 @@ class CharacterService:
                 except Exception as e:
                     raise e
                 
+
+    @classmethod
+    async def update_vip_pass_time(
+        cls,
+        character: Character,
+        day_vip_pass: int
+    ):
+        async for session in get_session():
+            async with session.begin():
+                current_time = datetime.now()
+                
+                if character and character.vip_pass_expiration_date > current_time:
+                    new_vip_pass_time = character.vip_pass_expiration_date + timedelta(days=day_vip_pass)
+                else:
+                    new_vip_pass_time = current_time + timedelta(days=day_vip_pass)
+                
+                stmt = (
+                    update(Character)
+                    .where(Character.id == character.id)
+                    .values(vip_pass_expiration_date=new_vip_pass_time)
+                )
+                await session.execute(stmt)
+                await session.commit()
+                
+    @classmethod
+    async def change_position(
+        cls,
+        character_id: Character,
+        position: str
+    ):
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Character)
+                    .where(Character.id == character_id)
+                    .values(position=position)
+                )
+                await session.execute(stmt)
+                await session.commit()

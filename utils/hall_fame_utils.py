@@ -24,7 +24,7 @@ def generate_rankings(entities, my_entity, entity_type, sorting_attribute, displ
         display_format = "{:>5.2f}"  
 
         if entity_type == 'character':
-            entity_name = entity.name
+            entity_name = entity.character_name
             display_value = getattr(entity, display_attribute)
             if display_attribute == 'level':
                 display_format = "{:>5}"  
@@ -81,7 +81,7 @@ async def get_top_bomber_raiting(all_matches: list[MatchCharacter], my_character
         if character.is_bot:
             continue
         rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
-        rankings.append(f"{index + 1:>2}. <b>{character.name:<10}</b> - {total_goals:>5} забитих голів {rank_icon}")
+        rankings.append(f"{index + 1:>2}. <b>{character.character_name:<10}</b> - {total_goals:>5} забитих голів {rank_icon}")
         
         all_real_characters.append(character)
         index += 1
@@ -104,8 +104,8 @@ def get_top_duelists_ranking(all_duels: list[Duel], my_character: Character):
 
     # Подсчет очков за каждый дуэль и сбор информации о персонажах
     for duel in all_duels:
-        characters_dict[duel.user_1.id] = duel.user_1.name
-        characters_dict[duel.user_2.id] = duel.user_2.name
+        characters_dict[duel.user_1.id] = duel.user_1.character_name
+        characters_dict[duel.user_2.id] = duel.user_2.character_name
         
         if duel.get_winner_duel == [duel.user_1, duel.user_2]:
             # Ничья, каждому игроку по 1 очку

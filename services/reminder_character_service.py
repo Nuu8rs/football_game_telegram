@@ -1,10 +1,8 @@
 from database.models.reminder_character import ReminderCharacter
-from database.models.character import Character
 from sqlalchemy import select, update
-from sqlalchemy.orm import joinedload
 
 from database.session import get_session
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from logging_config import logger
 
@@ -111,3 +109,14 @@ class RemniderCharacterService:
                     .values(character_in_duel=status)
                 )
                 await session.commit()
+                
+    @classmethod
+    async def get_characters_not_training(cls) -> list[ReminderCharacter]:
+        async for session in get_session():
+            async with session.begin():
+                result = await session.execute(
+                    select(ReminderCharacter)
+                    .where(ReminderCharacter.character_in_training == False)
+                )
+                characters_not_training = result.scalars().all()
+                return characters_not_training

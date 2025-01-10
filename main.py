@@ -3,6 +3,7 @@ import asyncio
 
 from bot.routers.router import main_router
 from loader import bot, dp, app
+from bot.middlewares import handlers
 
 from config import (
     WEBAPP_HOST, 

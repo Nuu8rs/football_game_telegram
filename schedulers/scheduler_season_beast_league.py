@@ -98,7 +98,7 @@ class SchedulerSesonBeastLeague:
                 text = text
             )
         except Exception as E:
-            logger.error(f"{E} send text {character.name}")
+            logger.error(f"{E} send text {character.character_name}")
     
     async def end_season_beast_league(self):
         logger.info("ОКАНЧИВАЮ СЕЗОН ЛИГИ МАТЧЕЙ")

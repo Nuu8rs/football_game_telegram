@@ -42,7 +42,7 @@ class ChristmasRewardService:
             sql = (
                 update(ChristmasReward)
                 .where(ChristmasReward.user_id == user_id)
-                .values(time_get=datetime.utcnow())
+                .values(time_get=datetime.now())
             )
             await session.execute(sql)
             await session.commit()

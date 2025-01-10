@@ -27,7 +27,7 @@ async def handle_referral_reward(character: Character):
         try:    
             await bot.send_message(
                 chat_id=character.referal_user_id,
-                text=f"🏅 Ваш реферал [{character.name}] набрав {REFERAL_EXP} очок досвіду! Вы получаете 150 энергии и 20 монет!"
+                text=f"🏅 Ваш реферал [{character.character_name}] набрав {REFERAL_EXP} очок досвіду! Вы получаете 150 энергии и 20 монет!"
             )
         except Exception as e:
             print(f"Error sending message: {e}")

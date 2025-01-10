@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 
 from api.monobank.create_payment import CreatePayment
 
-from bot.callbacks.magazine_callbacks import SelectBox, BuyBox
+from bot.callbacks.magazine_callbacks import SelectBox
 from bot.keyboards.magazine_keyboard import buy_box
 
 from database.models.character import Character
@@ -37,12 +37,6 @@ async def select_box_handler(
     text_lootbox = TEXT_TEMPLATE.format(**lootboxes.get(callback_data.type_box))
     type_box = callback_data.type_box
 
-    from .open_box import OpenBoxService
-    op = OpenBoxService(
-        type_box = type_box,
-        character = character,
-        bot = query.message.bot 
-    )
     price_box = lootboxes[type_box]['price']
     payment = CreatePayment(
         price=price_box,
@@ -61,10 +55,13 @@ async def select_box_handler(
         reply_markup=buy_box(url_payment)
 
     )
-
-    await PaymentServise.create_payment(
+    payment = await PaymentServise.create_payment(
         price    = price_box,
         user_id  = character.characters_user_id,
         order_id = order_id,
+    )
+    
+    await PaymentServise.create_box_payment(
+        order_id = payment.order_id,
         type_box = type_box
     )

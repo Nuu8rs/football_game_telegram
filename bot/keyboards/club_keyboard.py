@@ -127,7 +127,7 @@ def transfer_club_owner_keyboard(club: Club):
         if club.owner_id == character_club.characters_user_id:
             continue
         
-        keyboard.button(text = f"{character_club.name}",
+        keyboard.button(text = f"{character_club.character_name}",
                         callback_data=TransferOwner(user_id_new_owner =  character_club.characters_user_id))
     keyboard.adjust(3)
     return keyboard.as_markup()
@@ -155,7 +155,7 @@ def select_schema_keyboard():
 def select_user_kick(members_club: list[Character]):
     keyboard = InlineKeyboardBuilder()
     for member in members_club:
-        keyboard.button(text = f"Вигнати {member.name}", 
+        keyboard.button(text = f"Вигнати {member.character_name}", 
                         callback_data=KickMember(
                             character_id=member.id
                         ))

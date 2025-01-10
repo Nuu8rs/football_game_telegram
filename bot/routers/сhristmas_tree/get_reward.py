@@ -123,7 +123,7 @@ async def get_reward_christmas_tree(
         )
     )
     
-    if type(open_box.winner_item) == Energy:
+    if open_box.winner_item.description == "Енергія":
         await CharacterService.edit_character_energy(
             character_obj = character,
             amount_energy_adjustment = open_box.winner_item.count_item

@@ -160,13 +160,13 @@ class ClubMatchSender:
 
         if goal_event == "goal":
             message = random.choice(goal_scored)
-            current_score += f"\n\n💪🏻 Гол забив: {self.clubs_in_match.how_to_increment_goal.name}"
+            current_score += f"\n\n💪🏻 Гол забив: {self.clubs_in_match.how_to_increment_goal.character_name}"
             
         elif goal_event == "no_goal":
             message = random.choice(no_goal)
         else:
             message = random.choice(goal_conceded)
-            current_score += f"\n\n💪🏻 Гол забив: {self.clubs_in_match.how_to_increment_goal.name}"
+            current_score += f"\n\n💪🏻 Гол забив: {self.clubs_in_match.how_to_increment_goal.character_name}"
 
         return f"{message}\n\n{current_score}"
 

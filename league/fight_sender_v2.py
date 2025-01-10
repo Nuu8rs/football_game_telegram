@@ -227,7 +227,7 @@ class ClubMatchSender:
         if self.clubs_in_match.first_club_characters:
             members_first_club =  "\n".join(
                 TextsMatch.TEMPLATE_PARTICIPANT.format(
-                    character_name=character.name, 
+                    character_name=character.character_name, 
                     power_user=character.full_power, 
                     lvl=character.level)
                 for character in self.clubs_in_match.first_club_characters)
@@ -237,7 +237,7 @@ class ClubMatchSender:
         if self.clubs_in_match.second_club_characters:
             members_second_club =  "\n".join(
                 TextsMatch.TEMPLATE_PARTICIPANT.format(
-                    character_name=character.name, 
+                    character_name=character.character_name, 
                     power_user=character.full_power, 
                     lvl=character.level)
                 for character in self.clubs_in_match.second_club_characters)
@@ -337,10 +337,10 @@ class ClubMatchSender:
         text_asist_goal = ""
         if self.clubs_in_match.how_to_pass_goal:
             text_asist_goal = TextsMatch.TEXT_ASIST_GOAL.format(
-                last_assist_player = self.clubs_in_match.how_to_pass_goal.name
+                last_assist_player = self.clubs_in_match.how_to_pass_goal.character_name
             ) 
         return  TextsMatch.TEXT_HOW_TO_GOAL.format(
-            last_goal_member   = self.clubs_in_match.how_to_increment_goal.name,
+            last_goal_member   = self.clubs_in_match.how_to_increment_goal.character_name,
             asist_text = text_asist_goal,
             
         )
@@ -420,4 +420,4 @@ class ClubMatchSender:
                     reply_markup = keyboard
                 )
         except Exception as E:
-            logger.error(f"Err {E} send message to {character.name}")
+            logger.error(f"Err {E} send message to {character.character_name}")

@@ -14,7 +14,7 @@ def create_defender() -> Character:
         gender="",
         exp=0,
         money=0,
-        created_at=datetime.utcnow()
+        created_at=datetime.now()
     )
 
 def create_midfielder() -> Character:
@@ -28,7 +28,7 @@ def create_midfielder() -> Character:
         gender="",
         exp=0,
         money=0,
-        created_at=datetime.utcnow()
+        created_at=datetime.now()
     )
 
 def create_goalkeeper() -> Character:
@@ -42,7 +42,7 @@ def create_goalkeeper() -> Character:
         gender="",
         exp=0,
         money=0,
-        created_at=datetime.utcnow()
+        created_at=datetime.now()
     )
 
 def create_attacker() -> Character:
@@ -56,7 +56,7 @@ def create_attacker() -> Character:
         gender="",
         exp=0,
         money=0,
-        created_at=datetime.utcnow()
+        created_at=datetime.now()
     )
 
 def CREATE_CHARACTER_CONST(position: PositionCharacter) -> Character:

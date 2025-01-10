@@ -60,6 +60,6 @@ class UserSender:
                         match_id=self.match_id
                     )
                 )
-                logger.info(f"ОТПРАВИЛ СООБЩЕНИЕ {character.name} ID USER {character.characters_user_id}")
+                logger.info(f"ОТПРАВИЛ СООБЩЕНИЕ {character.character_name} ID USER {character.characters_user_id}")
         except Exception as E:
             logger.error(f"Failed to send message to {character.characters_user_id}\nError: {E}")

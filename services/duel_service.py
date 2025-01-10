@@ -63,3 +63,17 @@ class DuelService:
                 except Exception as E:
                     logger.error(f"Err get sesason duels: {E}")
                     
+    @classmethod
+    async def get_duel_by_id(cls, duel_id: str) -> Duel:
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    duel = await session.execute(
+                        select(Duel).where(
+                            Duel.duel_id == duel_id
+                        )
+                    )
+                    return duel.scalar_one_or_none()
+                except Exception as E:
+                    logger.error(f"Err get sesason duels: {E}")
+                    

@@ -7,6 +7,8 @@ from aiogram.enums import ParseMode
 from webhook_api.schemas import MonoResultSchema
 from ..base_endpoint import EndPoint, HTTPMethod
 
+from database.models.payment.box_payment import BoxPayment
+
 from bot.routers.stores.box.open_box import OpenBoxService
 from services.payment_service import PaymentServise
 from services.character_service import CharacterService
@@ -25,7 +27,10 @@ class MonoResultBox(EndPoint):
     """
     
     async def handle_request(self) -> Response:
-        payment = await PaymentServise.get_payment(order_id=self.data.invoiceId)
+        payment: BoxPayment = await PaymentServise.get_payment(
+            order_id=self.data.invoiceId,
+            type_payment = BoxPayment
+        )
         
         if not payment:
             return
@@ -33,16 +38,16 @@ class MonoResultBox(EndPoint):
         if self.data.status != "success":
             return
         
-        if payment.status:
+        if payment.payment.status:
             return
         
         
-        character = await CharacterService.get_character(payment.user_id)
+        character = await CharacterService.get_character(payment.payment.user_id)
         await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
         
         name_box = lootboxes[payment.type_box]['name_lootbox']
         await self.bot.send_message(
-            chat_id = payment.user_id,
+            chat_id = payment.payment.user_id,
             text    = self.TEXT_TEMPLATE.format(name_box = name_box)
         )
         open_box = OpenBoxService(
@@ -52,3 +57,4 @@ class MonoResultBox(EndPoint):
         )
         await asyncio.sleep(30)
         asyncio.create_task(open_box.open_box())
+        return Response(status=200)

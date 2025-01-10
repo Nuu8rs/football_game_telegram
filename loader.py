@@ -10,7 +10,15 @@ from aiogram.types.bot_command_scope_chat import BotCommandScopeChat
 from datetime import datetime
 from database.session import engine
 from database.model_base import Base
-from config import BOT_TOKEN, ADMINS, CALLBACK_URL_WEBHOOK_ENERGY, CALLBACK_URL_WEBHOOK_BOX
+from config import (
+    BOT_TOKEN, 
+    ADMINS, 
+    CALLBACK_URL_WEBHOOK_ENERGY, 
+    CALLBACK_URL_WEBHOOK_BOX,
+    CALLBACK_URL_WEBHOOK_CHANGE_POSITION,
+    CALLBACK_URL_WEBHOOK_MONEY,
+    CALLBACK_URL_WEBHOOK_VIP_PASS
+)
 
 from constants import (
     START_DAY_BEST_LEAGUE, 
@@ -20,9 +28,12 @@ from constants import (
     END_DAY_BEST_20_CLUB_LEAGUE
 )
 
+
 from webhook_api.handlers.energy_handler import MonoResultEnergy
 from webhook_api.handlers.box_handler import MonoResultBox
-
+from webhook_api.handlers.change_position_handler import MonoResultChangePosition
+from webhook_api.handlers.money_handler import MonoResultMoney
+from webhook_api.handlers.vip_pass_handler import MonoResultVipPass
 
 async def init_bot_command():
     commands = [
@@ -55,6 +66,8 @@ async def start_functional():
     await end_beast_league.wait_to_end_season_best_league()
     await end_duel_season.wait_to_end_season_duel()
     await league_ranking_update.start()
+    await reminder_buy_energy.start()
+    await reminder_go_to_training.start()
     asyncio.create_task(core_duel._waiting_users())
 
 
@@ -69,8 +82,10 @@ dp.startup.register(start_functional)
 app = web.Application()
 app.router.add_post("/" + CALLBACK_URL_WEBHOOK_ENERGY.split("/")[-1], MonoResultEnergy.router)
 app.router.add_post("/" + CALLBACK_URL_WEBHOOK_BOX.split("/")[-1], MonoResultBox.router)
+app.router.add_post("/" + CALLBACK_URL_WEBHOOK_CHANGE_POSITION.split("/")[-1], MonoResultChangePosition.router)
+app.router.add_post("/" + CALLBACK_URL_WEBHOOK_MONEY.split("/")[-1], MonoResultMoney.router)
+app.router.add_post("/" + CALLBACK_URL_WEBHOOK_VIP_PASS.split("/")[-1], MonoResultVipPass.router)
 
-            
 
 
 from league.core_leauge import CORE_LEAGUE, LeagueService
@@ -79,6 +94,9 @@ from schedulers.scheduler_education import EducationRewardReminderScheduler
 from schedulers.scheduler_gym_rasks import GymStartReseter
 from schedulers.scheduler_season_duels import SchedulerSesonDuels
 from schedulers.scheduler_season_beast_league import SchedulerSesonBeastLeague
+from schedulers.scheduler_buy_energy import ReminderBuyEnergy
+from schedulers.scheduler_training import ReminderTraning
+
 from pvp_duels.duel_core import CoreDuel
 from best_club_league.start_league import BestClubLeague
 from league_20_power_club.start_league import Best20ClubLeague
@@ -93,6 +111,8 @@ end_duel_season           = SchedulerSesonDuels()
 end_beast_league          = SchedulerSesonBeastLeague()
 best_club_league          = BestClubLeague()
 best_20_club_league       = Best20ClubLeague()
+reminder_buy_energy       = ReminderBuyEnergy()
+reminder_go_to_training   = ReminderTraning()
 
 league_service = LeagueService()
 

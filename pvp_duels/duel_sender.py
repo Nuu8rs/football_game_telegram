@@ -160,12 +160,12 @@ class DuelSender:
                 chat_id=user.characters_user_id,
                 photo=DUEL_PHOTO,
                 caption = TEXT_DUEL.message_select_bit.value.format(
-                    user_1_name     = self.duel_users.user_1.name ,
+                    user_1_name     = self.duel_users.user_1.character_name ,
                     user_1_power    = self.duel_users.user_1.full_power,
                     user_1_position = self.duel_users.user_1.acronym_position,
                     user_1_level    = self.duel_users.user_1.level,
                     
-                    user_2_name     = self.duel_users.user_2.name ,
+                    user_2_name     = self.duel_users.user_2.character_name ,
                     user_2_power    = self.duel_users.user_2.full_power,
                     user_2_position = self.duel_users.user_2.acronym_position,
                     user_2_level    = self.duel_users.user_2.level,
@@ -178,7 +178,7 @@ class DuelSender:
             await bot.send_message(
                 chat_id=user.characters_user_id,
                 text=TEXT_DUEL.dont_select_bit.value.format(
-                    user_name = user_not_selected_bit.name
+                    user_name = user_not_selected_bit.character_name
                 )
             )
 
@@ -217,10 +217,10 @@ class DuelSender:
         await self.__send_message_to_roles(
             RoleDuel.FORWARD, 
             text_event_goal.value[RoleDuel.FORWARD]['text'].format(
-                    user_1_name   = self.duel_users.user_1.name,
+                    user_1_name   = self.duel_users.user_1.character_name,
                     points_user_1 = self.duel_users.points_user_1,
                     points_user_2 = self.duel_users.points_user_2,
-                    user_2_name   = self.duel_users.user_2.name,
+                    user_2_name   = self.duel_users.user_2.character_name,
                                                                     ),
             photo=text_event_goal.value[RoleDuel.FORWARD]['photo']
                         
@@ -228,10 +228,10 @@ class DuelSender:
         await self.__send_message_to_roles(
             RoleDuel.GOALKEEPER, 
             text_event_goal.value[RoleDuel.GOALKEEPER]['text'].format(
-                user_1_name   = self.duel_users.user_1.name,
+                user_1_name   = self.duel_users.user_1.character_name,
                 points_user_1 = self.duel_users.points_user_1,
                 points_user_2 = self.duel_users.points_user_2,
-                user_2_name   = self.duel_users.user_2.name,
+                user_2_name   = self.duel_users.user_2.character_name,
                                                             ),
             photo=text_event_goal.value[RoleDuel.GOALKEEPER]['photo']
             )

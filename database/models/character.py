@@ -61,6 +61,21 @@ class Character(Base):
     gaiters = relationship("Item", foreign_keys=[gaiters_id], lazy="selectin")
     boots = relationship("Item", foreign_keys=[boots_id], lazy="selectin")
 
+    vip_pass_expiration_date = Column(DateTime, nullable=True)
+
+    @property
+    def character_name(self) -> str:
+        text = self.name
+        if self.vip_pass_is_active:
+            text = f"⚜️ <u><b>[VIP]</b></u> ⚜️ {text}"
+        
+        return text
+
+    @property
+    def vip_pass_is_active(self) -> bool:
+        if not self.vip_pass_expiration_date:
+            return False
+        return self.vip_pass_expiration_date > datetime.datetime.now()
 
     @property
     def koef_club_power(self) -> float:

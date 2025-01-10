@@ -32,7 +32,7 @@ def get_character_text(character: Character) -> str:
         boots_text =  "Не экипировано" 
 
     character_text_template = f"""
-<b>⚽ Персонаж:</b> {character.name}
+<b>⚽ Персонаж:</b> {character.character_name}
 
 {level_text}
 <b>💰 Монети:</b> {character.money}

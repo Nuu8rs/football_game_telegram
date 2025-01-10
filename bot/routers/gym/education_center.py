@@ -28,16 +28,6 @@ async def go_to_gym(message: Message):
 @education_center_router.callback_query(F.data == "get_rewards_education_center")
 async def get_rewards_education_cernter(query: CallbackQuery, character: Character, user):
     
-    from bot.routers.commands.instruction import send_instruction
-    from bot.callbacks.menu_callbacks import NextInstruction
-
-    # return await send_instruction(
-    #     query = query,
-    #     user  = user,
-    #     callback_data = NextInstruction(
-    #         index_instruction=0
-    #     )
-    # )
     
     if not datetime.now() > character.reminder.education_reward_date:
         time_to_get_reward = character.reminder.education_reward_date - datetime.now()
@@ -48,10 +38,16 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
     
     
     exp, coins, energy = GET_RANDOM_NUMBER(1,3), GET_RANDOM_NUMBER(5,10), GET_RANDOM_NUMBER(30,50)
-    if datetime.now().day >= X2_REWARD_WEEKEND_START_DAY and datetime.now().day <= X2_REWARD_WEEKEND_END_DAY:
+    current_day = datetime.now().day
+    
+    if current_day >= X2_REWARD_WEEKEND_START_DAY and current_day <= X2_REWARD_WEEKEND_END_DAY:
         exp = exp * 2
         coins = coins * 2
-    
+    else:
+        if character.vip_pass_is_active:
+            exp = exp * 2
+            coins = coins * 2
+        
 
     await CharacterService.edit_character_energy(character, energy)
     

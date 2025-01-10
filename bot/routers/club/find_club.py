@@ -112,7 +112,7 @@ async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: J
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
-        text=f"🎟 Вітаємо у вашій команді поповнення, приєднався новий учасник <b>{character.name}</b>"
+        text=f"🎟 Вітаємо у вашій команді поповнення, приєднався новий учасник <b>{character.character_name}</b>"
     )
     character = await CharacterService.get_character_by_id(character.id)
     await query.message.answer("🎉 Вітаю ви приєдналися до команди", 

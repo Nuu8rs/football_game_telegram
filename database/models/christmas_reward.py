@@ -27,4 +27,4 @@ class ChristmasReward(Base):
     def can_be_rewarded(self) -> bool:
         if self.time_get is None:
             return True
-        return datetime.utcnow() >= self.get_next_reward
+        return datetime.now() >= self.get_next_reward

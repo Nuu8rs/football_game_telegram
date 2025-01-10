@@ -25,7 +25,7 @@ class EnergyResetScheduler:
                     text="<b>Ваша енергія ⚡️ повністю відновлена 🔋</b>"
                 )
             except Exception as E:
-                logger.error(f"Не смог отправить сообщение {character.name}")
+                logger.error(f"Не смог отправить сообщение {character.character_name}")
 
 
     async def reset_energy_character(self):

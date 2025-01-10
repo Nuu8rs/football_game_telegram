@@ -91,7 +91,7 @@ async def join_to_match(query: CallbackQuery, callback_data: ViewCharacterRegist
     text = "🏆 <b>На матч зареєструвались</b>:\n\n"
     for match_character in character_club_in_match:
         character = await CharacterService.get_character_by_id(match_character.character_id)
-        text += f"👤 {character.name} <b>[{character.full_power:.2f}]</b> [<b>{character.acronym_position}</b>]\n"
+        text += f"👤 {character.character_name} <b>[{character.full_power:.2f}]</b> [<b>{character.acronym_position}</b>]\n"
         total_power += character.full_power
         
     text += f"\n💪 <b>Загальна сила персонажей</b> {total_power:.2f}"

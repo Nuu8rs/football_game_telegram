@@ -14,7 +14,8 @@ from constants import (
     X2_REWARD_WEEKEND_START_DAY,
     X2_REWARD_WEEKEND_END_DAY,
     chance_add_point, 
-    const_name_characteristics
+    const_name_characteristics,
+    CHANCE_VIP_PASS
 )
 from utils.randomaizer import check_chance
 from loader import bot
@@ -66,7 +67,12 @@ class GymScheduler:
 
     async def _run_training(self) -> None:
         try:
-            success = check_chance(chance_add_point[self.time_training])
+            chance = chance_add_point[self.time_training]
+            
+            if self.character.vip_pass_is_active:
+                chance += CHANCE_VIP_PASS
+                
+            success = check_chance(chance)
             self.result_training = ResultTraining.SUCCESS if success else ResultTraining.FAILURE
 
             if self.result_training == ResultTraining.SUCCESS:
@@ -106,7 +112,7 @@ class GymScheduler:
                 caption=message_text
             )
         except Exception as e:
-            logger.error(f"Ошибка при отправке сообщения пользователю {self.character.name}: {e}")
+            logger.error(f"Ошибка при отправке сообщения пользователю {self.character.character_name}: {e}")
             
 
 class GymStartReseter:

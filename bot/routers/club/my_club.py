@@ -99,7 +99,7 @@ async def leave_club_handler(query: CallbackQuery, user: UserBot, character: Cha
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
-        text=f"☹️ Персонаж <b>{character.name}</b> покинул вашу команду"
+        text=f"☹️ Персонаж <b>{character.character_name}</b> покинул вашу команду"
     )
 
 @my_club_router.callback_query(F.data == "view_schema_club")

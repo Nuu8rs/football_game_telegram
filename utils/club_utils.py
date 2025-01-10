@@ -27,7 +27,7 @@ text_schemas = {
 async def get_club_text(club: Club, character: Character) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
     text_leader = (
-        f"{character_leader.name}"
+        f"{character_leader.character_name}"
         f"[{character_leader.owner.link_to_user}]"
         f"[💪 <b>{character_leader.full_power:.2f}</b>]"
         f"[<b>{character_leader.level} рів.</b>]"
@@ -36,7 +36,7 @@ async def get_club_text(club: Club, character: Character) -> str:
     club = await ClubService.get_club(club_id=club.id)
     
     text = f"""
-⚽ Гравець: {character.name}
+⚽ Гравець: {character.character_name}
 
 🏆 Команда: {club.name_club}
 👑 Лідер: {text_leader}
@@ -58,7 +58,7 @@ async def get_club_text(club: Club, character: Character) -> str:
 
 async def get_club_description(club: Club) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
-    text_leader = f"{character_leader.name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power:.2f}</b>] [<b>{character_leader.level} рів.</b>][<b>{character_leader.acronym_position}</b>]"
+    text_leader = f"{character_leader.character_name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power:.2f}</b>] [<b>{character_leader.level} рів.</b>][<b>{character_leader.acronym_position}</b>]"
     club = await ClubService.get_club(club_id=club.id)
 
     
@@ -115,13 +115,13 @@ def rating_club(club: Club, character: Character) -> str:
         medal = get_medal_emoji(idx)
         if char.characters_user_id == character.characters_user_id:
             rank_texts.append(
-                f"{medal} {idx} місце - <b><a href='tg://user?id={char.characters_user_id}'>{char.name}</a>🩳 </b> "
+                f"{medal} {idx} місце - <b><a href='tg://user?id={char.characters_user_id}'>{char.character_name}</a>🩳 </b> "
                 f"[💪 <b>{char.full_power:.2f}</b>] [<b>{char.level} рів.</b>]"
                 f"[<b>{char.acronym_position}</b>]"
             )
         else:
             rank_texts.append(
-                f"{medal} {idx} місце - <a href='tg://user?id={char.characters_user_id}'>{char.name}</a> "
+                f"{medal} {idx} місце - <a href='tg://user?id={char.characters_user_id}'>{char.character_name}</a> "
                 f"[<b>💪 {char.full_power:.2f}</b>] [<b>{char.level} рів.</b>]"
                 f"[<b>{char.acronym_position}</b>]"
 
@@ -166,6 +166,6 @@ async def send_message_characters_club(characters_club: list[Character],
         try:
             await bot.send_message(chat_id= character.characters_user_id, text = text)
         except Exception as E:
-            logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ ПЕРСОНАЖУ {character.name}")
+            logger.error(f"НЕ СМОГ ОТПРАВИТЬ СООБЩЕНИЕ ПЕРСОНАЖУ {character.character_name}")
             
             
