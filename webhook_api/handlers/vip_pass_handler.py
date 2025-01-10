@@ -57,8 +57,8 @@ class MonoResultVipPass(EndPoint):
         
         duration = vip_passes.get(payment.type_vip_pass).duration
         
+        
         character = await CharacterService.get_character(payment.payment.user_id)
-        await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
         await CharacterService.update_vip_pass_time(
             character = character,
             day_vip_pass = duration
@@ -69,7 +69,8 @@ class MonoResultVipPass(EndPoint):
                 duration = duration
             )
         )
-        
+        await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
+        return self.OK()
         
 
 

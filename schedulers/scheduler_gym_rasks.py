@@ -67,6 +67,7 @@ class GymScheduler:
 
     async def _run_training(self) -> None:
         try:
+            self.character = await CharacterService.get_character_by_id(self.character_id)
             chance = chance_add_point[self.time_training]
             
             if self.character.vip_pass_is_active:
@@ -82,7 +83,6 @@ class GymScheduler:
                     amount_add_points=self.training_points
                 )
                 
-            self.character = await CharacterService.get_character_by_id(self.character_id)
             await self.send_end_training_message()
         except Exception as e:
             logger.error(f"Ошибка при выполнении тренировки: {e}")

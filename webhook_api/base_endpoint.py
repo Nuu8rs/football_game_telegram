@@ -36,6 +36,7 @@ class EndPoint(ABC, ResponseAnswer):
     async def handle_request(self) -> Response:
         pass
     
+    
     @property
     def method_is_valid(self) -> bool:
         return self.request.method == self.method.value

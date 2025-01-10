@@ -45,7 +45,6 @@ class MonoResultChangePosition(EndPoint):
             return
         
         character = await CharacterService.get_character(payment.payment.user_id)
-        await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
         await CharacterService.change_position(
             character_id = character.id,
             position = payment.position.value
@@ -56,6 +55,7 @@ class MonoResultChangePosition(EndPoint):
             text    = self.TEXT_TEMPLATE.format(
                 new_position_name = payment.position.value)
         )
-        return Response(status=200)
+        await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
+        return self.OK()
 
 

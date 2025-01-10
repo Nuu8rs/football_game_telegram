@@ -37,7 +37,6 @@ class MonoResultMoney(EndPoint):
             return
         
         character = await CharacterService.get_character(payment.payment.user_id)
-        await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
         
         await CharacterService.update_money_character(
             character_id = character.id,
@@ -47,6 +46,8 @@ class MonoResultMoney(EndPoint):
             chat_id = payment.payment.user_id,
             text    = self.TEXT_TEMPLATE.format(amount_money = payment.count_money)
         )
+        await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
+        raise self.OK()
         
         
 

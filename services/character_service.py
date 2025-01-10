@@ -305,11 +305,12 @@ class CharacterService:
             async with session.begin():
                 current_time = datetime.now()
                 
-                if character and character.vip_pass_expiration_date > current_time:
-                    new_vip_pass_time = character.vip_pass_expiration_date + timedelta(days=day_vip_pass)
-                else:
-                    new_vip_pass_time = current_time + timedelta(days=day_vip_pass)
-                
+                new_vip_pass_time = current_time + timedelta(days=day_vip_pass)
+                   
+                if character.vip_pass_expiration_date is not None: 
+                    if character.vip_pass_expiration_date > current_time:
+                        new_vip_pass_time = character.vip_pass_expiration_date + timedelta(days=day_vip_pass)
+                    
                 stmt = (
                     update(Character)
                     .where(Character.id == character.id)

@@ -43,7 +43,6 @@ class MonoResultBox(EndPoint):
         
         
         character = await CharacterService.get_character(payment.payment.user_id)
-        await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
         
         name_box = lootboxes[payment.type_box]['name_lootbox']
         await self.bot.send_message(
@@ -55,6 +54,7 @@ class MonoResultBox(EndPoint):
             character = character,
             bot = self.bot
         )
+        await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
         await asyncio.sleep(30)
         asyncio.create_task(open_box.open_box())
-        return Response(status=200)
+        return self.OK()
