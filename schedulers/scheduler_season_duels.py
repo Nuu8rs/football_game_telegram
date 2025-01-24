@@ -94,8 +94,8 @@ class SchedulerSesonDuels:
             )
             if energy:
                 await CharacterService.edit_character_energy(
-                    character_obj=user,
-                    amount_energy_adjustment=energy
+                    character_id  = user.id,
+                    amount_energy = energy
                 )
             
             text = self._get_text(money,energy)

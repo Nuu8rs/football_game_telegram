@@ -6,7 +6,7 @@ from .box.box_handler import open_box_roter
 from .bank.buy_money import bank_router
 from .vip_pass.buy_vip_pass import vip_pass_router
 from .change_position.change_position import change_position_router
-
+from .energy.buy_energy import buy_energy_router
 
 magazine_main_router = Router()
 magazine_main_router.include_routers(
@@ -16,5 +16,6 @@ magazine_main_router.include_routers(
     luxe_items_store_router,
     bank_router,
     vip_pass_router,
-    change_position_router
+    change_position_router,
+    buy_energy_router
 )

@@ -37,6 +37,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 LINK_TO_CHAT = os.getenv("LINK_TO_CHAT")
 
 CONST_ENERGY = 150
+CONST_VIP_ENERGY = 300
 
 EPOCH_ZERO = datetime(1970, 1, 1)
 

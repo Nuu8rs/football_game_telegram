@@ -3,7 +3,7 @@ from database.models.item import Item
 
 from database.session import get_session
 from sqlalchemy import select, update
-from config import CONST_ENERGY
+from config import CONST_ENERGY, CONST_VIP_ENERGY
 from datetime import datetime, timedelta
 from enum import Enum
 
@@ -110,31 +110,24 @@ class CharacterService:
     async def consume_energy(cls, character_id: int, energy_consumed: int) -> Character:
         async for session in get_session():
             async with session.begin():
-                stmt_update = (
-                    update(Character)
-                    .where(Character.id == character_id)
-                    .values(current_energy=Character.current_energy - energy_consumed)
-                )
-                await session.execute(stmt_update)
-
-                await session.commit()
+                character = await session.get(Character, character_id)
+                if character:
+                    character.current_energy -= energy_consumed
+                    await session.flush()
 
                 
     
     @classmethod
-    async def edit_character_energy(cls, character_obj: Character,  amount_energy_adjustment: int) -> Character:
+    async def edit_character_energy(
+        cls, 
+        character_id: int, 
+        amount_energy: int) -> Character:
         async for session in get_session():
             async with session.begin():
-                try:
-                    session.add(character_obj)
-                except:
-                    pass
-                merged_obj = await session.merge(character_obj)
-                current_energy = getattr(merged_obj, 'current_energy', 0)
-                new_energy = current_energy + amount_energy_adjustment
-                setattr(merged_obj, 'current_energy', max(new_energy, 0))
-                await session.commit()
-
+                character = await session.get(Character, character_id)
+                if character:
+                    character.current_energy += amount_energy
+                    await session.flush()
                 
     @classmethod        
     async def update_character_club_id(cls,character: Character ,club_id: int):
@@ -166,8 +159,8 @@ class CharacterService:
                         update(Character)
                         .where(Character.is_bot == False)
                         .where(Character.vip_pass_expiration_date > datetime.now())
-                        .where(Character.current_energy <= CONST_ENERGY)
-                        .values(current_energy=CONST_ENERGY * 2)
+                        .where(Character.current_energy <= CONST_VIP_ENERGY)
+                        .values(current_energy=CONST_VIP_ENERGY)
                     )
                     await session.execute(stmt)
                     await session.execute(stmt_vip)
@@ -184,6 +177,7 @@ class CharacterService:
                         select(Character)
                         .where(Character.is_bot == False)
                         .where(Character.current_energy <= CONST_ENERGY) 
+                        .where(Character.vip_pass_expiration_date <= datetime.now())
                     )
                     all_characters_not_bot = result.scalars().all()
                     return all_characters_not_bot
@@ -221,12 +215,14 @@ class CharacterService:
     async def add_exp_character(cls, character_id: int, amount_exp_add: int):
         async for session in get_session():
             async with session.begin():
-                stmt = (
-                    update(Character)
-                    .where(Character.id == character_id)  
-                    .values(exp=Character.exp + amount_exp_add)   
-                )
-                await session.execute(stmt)
+                stmt_select = select(Character).where(Character.id == character_id)
+                result = await session.execute(stmt_select)
+                character = result.scalar_one()
+
+                character.exp += amount_exp_add
+
+                # Изменения автоматически отследятся и вызовут события
+                session.add(character)
                 await session.commit()
                 
                 
@@ -295,29 +291,7 @@ class CharacterService:
                     raise e
                 
 
-    @classmethod
-    async def update_vip_pass_time(
-        cls,
-        character: Character,
-        day_vip_pass: int
-    ):
-        async for session in get_session():
-            async with session.begin():
-                current_time = datetime.now()
-                
-                new_vip_pass_time = current_time + timedelta(days=day_vip_pass)
-                   
-                if character.vip_pass_expiration_date is not None: 
-                    if character.vip_pass_expiration_date > current_time:
-                        new_vip_pass_time = character.vip_pass_expiration_date + timedelta(days=day_vip_pass)
-                    
-                stmt = (
-                    update(Character)
-                    .where(Character.id == character.id)
-                    .values(vip_pass_expiration_date=new_vip_pass_time)
-                )
-                await session.execute(stmt)
-                await session.commit()
+
                 
     @classmethod
     async def change_position(

@@ -120,16 +120,18 @@ async def donate_epizode_energy(
     else:
         return
     
+    new_power = energy*10
+    
     chance_first_club_before  = match.calculate_chances 
     chance_second_club_before = 100 - chance_first_club_before 
     
-    setattr(match, key, getattr(match, key) + energy*10)
+    setattr(match, key, getattr(match, key) + new_power)
     
     chance_first_club_after  = match.calculate_chances 
     chance_second_club_after = 100 - chance_first_club_after
     
     text = f"""
-⚽️ <b>{character.character_name} додав {energy}💪 сил команді {my_club.name_club}!</b> ⚽️  
+⚽️ <b>{character.character_name} додав {new_power}💪 сил команді {my_club.name_club}!</b> ⚽️  
 
 🔥 <b>Зміни шансів на гол:</b>  
 - ⚽️ Команда: {match.first_club.name_club} - <b>{chance_first_club_before:.2f}%</b> → <b>{chance_first_club_after:.2f}%</b>  

@@ -34,7 +34,7 @@ class Character(Base):
     position        = Column(String(255))
     gender          = Column(String(255))
     
-    created_at      = Column(DateTime, default=datetime.datetime.utcnow)
+    created_at      = Column(DateTime, default=datetime.datetime.now)
     is_bot          = Column(Boolean, default=False)
     
     referal_user_id            = Column(BigInteger, nullable=True)  

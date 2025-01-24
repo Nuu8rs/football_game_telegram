@@ -13,7 +13,7 @@ class UserBot(Base):
     user_id = Column(BigInteger, unique=True, index=True)  
     user_name = Column(String(255), index=True)  
     user_full_name = Column(String(255)) 
-    user_time_register = Column(DateTime, default=datetime.datetime.utcnow)
+    user_time_register = Column(DateTime, default=datetime.datetime.now)
     
     referal_user_id = Column(BigInteger, nullable=True)  
     

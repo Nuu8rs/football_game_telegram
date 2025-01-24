@@ -12,9 +12,9 @@ from database.models.character import Character
 from services.payment_service import PaymentServise
 
 
-massage_room_router = Router()
+buy_energy_router = Router()
 
-@massage_room_router.message(F.text == "🏪🔋 Крамниця енергії")
+@buy_energy_router.message(F.text == "🏪🔋 Крамниця енергії")
 async def massage_room_handler(message: Message):
     await message.answer_photo(
         photo=ENERGY_STORE_PHOTO,
@@ -26,7 +26,7 @@ async def massage_room_handler(message: Message):
         reply_markup=menu_massage_room()
     )
     
-@massage_room_router.callback_query(F.data == "massage_room")
+@buy_energy_router.callback_query(F.data == "massage_room")
 async def message_room_handler(query: CallbackQuery):
     await query.message.answer_photo(
         photo=ENERGY_STORE_PHOTO,
@@ -39,7 +39,7 @@ async def message_room_handler(query: CallbackQuery):
     )
 
     
-@massage_room_router.callback_query(SelectCountGetEnergy.filter())
+@buy_energy_router.callback_query(SelectCountGetEnergy.filter())
 async def select_count_add_energy_handler(query: CallbackQuery, character: Character, callback_data: SelectCountGetEnergy):
     price_energy = CONST_PRICE_ENERGY[callback_data.count_energy]
     payment = CreatePayment(

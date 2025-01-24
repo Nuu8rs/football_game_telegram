@@ -84,8 +84,8 @@ class OpenBoxService:
             amount_money_adjustment = self.open_box_money.winner_item.count_item
         )
         await CharacterService.edit_character_energy(
-            character_obj = self.character,
-            amount_energy_adjustment = self.open_box_energy.winner_item.count_item
+            character_id = self.character.id,
+            amount_energy = self.open_box_energy.winner_item.count_item
         )
         
         text = """

@@ -43,13 +43,18 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
     if current_day >= X2_REWARD_WEEKEND_START_DAY and current_day <= X2_REWARD_WEEKEND_END_DAY:
         exp = exp * 2
         coins = coins * 2
+        energy = energy * 2
     else:
         if character.vip_pass_is_active:
             exp = exp * 2
             coins = coins * 2
+            energy = energy * 2
         
 
-    await CharacterService.edit_character_energy(character, energy)
+    await CharacterService.edit_character_energy(
+        character_id = character.id,
+        amount_energy = energy
+    )
     
     await CharacterService.update_character_education_time(
         character=character,

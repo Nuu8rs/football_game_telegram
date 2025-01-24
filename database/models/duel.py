@@ -29,7 +29,7 @@ class Duel(Base):
     bit_user_1   = Column(Integer, default=0, server_default="0", insert_default=0, nullable=False)
     bit_user_2   = Column(Integer, default=0, server_default="0", insert_default=0, nullable=False)
     
-    created_time = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_time = Column(DateTime, default=datetime.now, nullable=False)
     
     @property
     def get_winner_duel(self) -> Union[Character, list[Character]]:

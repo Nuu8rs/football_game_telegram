@@ -77,7 +77,6 @@ async def selected_type_vip_pass(
         price = current_vip_pass.price,
         daily_price = current_vip_pass.day_price
     )
-
     payment = CreatePayment(
         price        = current_vip_pass.price,
         name_product = callback_data.type_vip_pass.name,

@@ -38,7 +38,10 @@ class MonoResultEnergy(EndPoint):
         
         character = await CharacterService.get_character(payment.payment.user_id)
         
-        await CharacterService.edit_character_energy(character, amount_energy_adjustment=payment.amount_energy)
+        await CharacterService.edit_character_energy(
+            character_id  = character.id,
+            amount_energy = payment.amount_energy
+        )
         await self.bot.send_message(
             chat_id = payment.payment.user_id,
             text    = self.TEXT_TEMPLATE.format(amount_energy = payment.amount_energy)

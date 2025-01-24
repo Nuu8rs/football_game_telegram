@@ -57,14 +57,23 @@ class Duel:
     async def _end_duel(self, winner_duel: Character | list[Character]):
         if isinstance(winner_duel, list):
             user_1 = await CharacterService.get_character_by_id(character_id=self.user_duel.user_1.id)
-            await CharacterService.edit_character_energy(character_obj=user_1, amount_energy_adjustment=self.user_duel.bid_user_1)
+            await CharacterService.edit_character_energy(
+                character_id  = user_1.id, 
+                amount_energy = self.user_duel.bid_user_1
+            )
             
             user_2 = await CharacterService.get_character_by_id(character_id=self.user_duel.user_2.id)
-            await CharacterService.edit_character_energy(character_obj=user_2, amount_energy_adjustment=self.user_duel.bid_user_2)
+            await CharacterService.edit_character_energy(
+                character_id  = user_2.id, 
+                amount_energy = self.user_duel.bid_user_2
+            )
         else:
             user_winner = await CharacterService.get_character_by_id(character_id=winner_duel.id)
             bid_winner_user = self.user_duel.bid_user_1 if winner_duel.id == self.user_duel.user_1.id else self.user_duel.bid_user_2
-            await CharacterService.edit_character_energy(character_obj=user_winner, amount_energy_adjustment=bid_winner_user*2)
+            await CharacterService.edit_character_energy(
+                character_id  = user_winner.id, 
+                amount_energy = bid_winner_user*2
+            )
         
         for user in self.user_duel.all_users_duel:
             

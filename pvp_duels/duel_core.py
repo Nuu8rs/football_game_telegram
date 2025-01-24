@@ -90,14 +90,14 @@ class CoreDuel:
         if duel_users.bid_user_1:
             character = await CharacterService.get_character_by_id(character_id=duel_users.user_1.id)
             await CharacterService.edit_character_energy(
-                character_obj=character,
-                amount_energy_adjustment=duel_users.bid_user_1
+                character_id=character.id,
+                amount_energy=duel_users.bid_user_1
             )
         if duel_users.bid_user_2:
             character = await CharacterService.get_character_by_id(character_id=duel_users.user_2.id)
             await CharacterService.edit_character_energy(
-                character_obj=character,
-                amount_energy_adjustment=duel_users.bid_user_2
+                character_id = character.id,
+                amount_energy = duel_users.bid_user_2
             )
         for user in duel_users.all_users_duel:
             await RemniderCharacterService.edit_status_duel_character(

@@ -1,1 +1,1 @@
-from database.events import character_reached_exp
+from database.events import event_listener

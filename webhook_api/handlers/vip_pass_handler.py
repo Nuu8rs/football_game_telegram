@@ -8,7 +8,10 @@ from bot.routers.stores.vip_pass.types import VipPassTypes, vip_passes
 from database.models.payment.vip_pass_payment import VipPassPayment
 
 from services.payment_service import PaymentServise
+from services.vip_pass_service import VipPassService
 from services.character_service import CharacterService
+
+from schedulers.scheduler_vip_pass import VipPassScheduler
 
 from webhook_api.schemas import MonoResultSchema
 
@@ -59,7 +62,7 @@ class MonoResultVipPass(EndPoint):
         
         
         character = await CharacterService.get_character(payment.payment.user_id)
-        await CharacterService.update_vip_pass_time(
+        await VipPassService.update_vip_pass_time(
             character = character,
             day_vip_pass = duration
         )
@@ -70,6 +73,9 @@ class MonoResultVipPass(EndPoint):
             )
         )
         await PaymentServise.change_payment_status(order_id=self.data.invoiceId)
+        update_character = await CharacterService.get_character(payment.payment.user_id)
+        vip_pass_reminder = VipPassScheduler(update_character)
+        await vip_pass_reminder.start_taimer()
         return self.OK()
         
 

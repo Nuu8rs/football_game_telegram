@@ -114,7 +114,7 @@ class TextsMatch:
 🏆 Гра обіцяє бути цікавою та напруженою!
     """
     
-    TEMPLATE_PARTICIPANT = """👤 <b>{character_name:.20}</b> | ⚔️ Сила: <b>{power_user:.2f}</b> | 📈 Рівень: <b>{lvl}</b>"""
+    TEMPLATE_PARTICIPANT = """👤 {character_name} | ⚔️ Сила: <b>{power_user:.2f}</b> | 📈 Рівень: <b>{lvl}</b>"""
     
     TEMPLATE_NOT_CHARACTERS = """
 На жаль, ніхто з учасників не з'явився на цей матч. 😔

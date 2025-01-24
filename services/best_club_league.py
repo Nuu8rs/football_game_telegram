@@ -101,6 +101,7 @@ class BestLeagueService:
                     select(LeagueFight)
                     .filter(LeagueFight.time_to_start >= start_date)
                     .filter(LeagueFight.time_to_start <= end_date)
+                    .filter(LeagueFight.is_beast_league == True)
                 )
                 
                 result = await session.execute(stmt)

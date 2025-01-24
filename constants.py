@@ -9,7 +9,7 @@ from database.models.item import Item
 from datetime import datetime, timedelta
 
 from config import PositionCharacter, Gender
-import random, json
+import random
 
 
     
@@ -83,6 +83,9 @@ ENERGY_STORE_PHOTO = FSInputFile("src/energy_store.jpg")
 VIP_PASS_PHOTO   = FSInputFile("src/vip_pass_photo.jpg")
 BANK_PHOTO       = FSInputFile("src/bank_photo.jpg")
 CHANGE_POSITION_PHOTO = FSInputFile("src/change_position_photo.jpg")
+END_VIP_PASS_PHOTO = FSInputFile("src/end_vip_pass_photo.jpg")
+LOW_ENERGY_PHOTO = FSInputFile("src/low_energy_photo.jpg")
+
 
 MAX_LEN_MEMBERS_CLUB = 11
 

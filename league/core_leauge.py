@@ -107,12 +107,12 @@ class CORE_LEAGUE:
 
     async def starting_matches(self, matches: List['LeagueFight']) -> None:
         for _, match in enumerate(matches):
-                # await self.start_test_match(match)
-            
                 await self.schedule_match_start(match)
            
     async def start_test_match(self, match: 'LeagueFight') -> None:
         if match.first_club.is_fake_club and match.second_club.is_fake_club:
+            return
+        if not match.first_club.id in [42,22] or not match.second_club.id in [42,22]:
             return
         # match_date = match.time_to_start
         start_time = datetime.combine(match.time_to_start, datetime.min.time())
@@ -167,5 +167,3 @@ class CORE_LEAGUE:
                                       trigger=DateTrigger(start_time_fight),
                                       misfire_grace_time = 10
                                       )
-        # import asyncio
-        # asyncio.create_task(fight.start_match())

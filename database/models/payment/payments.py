@@ -22,6 +22,6 @@ class Payment(Base):
     user_id              = Column(BigInteger, ForeignKey("users.user_id"), nullable=False)
     price                = Column(Integer, nullable=False)
     
-    created_time_payment = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_time_payment = Column(DateTime, default=datetime.now, nullable=False)
     payment_time         = Column(DateTime, nullable=True)
     status               = Column(Boolean, default=False, server_default="0")
