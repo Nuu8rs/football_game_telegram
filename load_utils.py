@@ -1,7 +1,10 @@
 import asyncio
 from datetime import datetime
 
-from league.core_leauge import CORE_LEAGUE, LeagueService
+from league.start_league import (
+    StartDefaultLeague,
+    SchedulerDefaultLeague
+)
 from schedulers.scheduler_energy import EnergyResetScheduler, EnergyApliedClubResetScheduler
 from schedulers.scheduler_education import EducationRewardReminderScheduler
 from schedulers.scheduler_gym_rasks import GymStartReseter
@@ -12,8 +15,15 @@ from schedulers.scheduler_training import ReminderTraning
 from schedulers.scheduler_vip_pass import VipPassSchedulerService
 
 from pvp_duels.duel_core import CoreDuel
-from best_club_league.start_league import BestClubLeague
-from league_20_power_club.start_league import Best20ClubLeague
+from best_club_league.start_league import (
+    BestClubLeague, 
+    SchedulerBestClubtLeague
+)
+
+from league_20_power_club.start_league import (
+    Best20ClubLeague,
+    SchedulerBest20ClubLeague
+)
 
 from schedulers.scheduler_league_rankings_update import UpdateLeagueRaiting
 
@@ -30,7 +40,7 @@ from database.events.event_listener import (
 )
 
 async def init_leagues():
-    await core_league.setup_league()
+    await DEFAULT_LEAGUE.setup_matches()
     current_data = datetime.now() 
     if current_data.day >= START_DAY_BEST_LEAGUE and current_data.day <= END_DAY_BEST_LEAGUE:
         await best_club_league.start_best_league()
@@ -38,9 +48,14 @@ async def init_leagues():
     if current_data.day >= START_DAY_BEST_20_CLUB_LEAGUE and current_data.day <= END_DAY_BEST_20_CLUB_LEAGUE:
         await best_20_club_league.start_best_league()
         
+async def init_schedulers_league():
+    await scheduler_default_league.start_scheduler()
+    await scheduler_best_league.start_scheduler()
+    await scheduler_best_20_club_league.start_scheduler()
 
 async def start_utils():
     await init_leagues()
+    await init_schedulers_league()
     await energy_listener.start_listener()
     await exp_listener.start_listener()
     
@@ -71,9 +86,11 @@ reminder_buy_energy       = ReminderBuyEnergy()
 reminder_go_to_training   = ReminderTraning()
 reminder_vip_pass         = VipPassSchedulerService()
 
-league_service = LeagueService()
-
 core_duel    = CoreDuel()
-core_league  = CORE_LEAGUE(league_service)
+DEFAULT_LEAGUE  = StartDefaultLeague()
 
 league_ranking_update = UpdateLeagueRaiting()
+
+scheduler_best_league = SchedulerBestClubtLeague()
+scheduler_best_20_club_league = SchedulerBest20ClubLeague()
+scheduler_default_league = SchedulerDefaultLeague()

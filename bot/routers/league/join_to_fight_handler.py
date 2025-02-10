@@ -15,7 +15,7 @@ from bot.callbacks.league_callbacks import  JoinToFight, ViewCharacterRegistered
 from bot.keyboards.gym_keyboard import alert_leave_from_gym
 
 
-from league.club_fight import ClubMatchManager
+from league.process_match.club_fight import ClubMatchManager
 
 
 join_to_fight_router = Router()

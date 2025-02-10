@@ -1,6 +1,6 @@
 from database.models.match_character import MatchCharacter
 from database.models.character import Character
-from league.club_in_match import ClubsInMatch
+from league.process_match.club_in_match import ClubsInMatch
 
 from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError

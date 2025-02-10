@@ -1,8 +1,6 @@
 from database.models.club import Club
 
-from league.core_leauge import LeagueService
-
-from typing import Generator
+from league.utils import LeagueService
 
 def generate_matches_club(clubs: list[Club]) -> list[list[Club]]:
     matchs = LeagueService.generate_round_robin_schedule(

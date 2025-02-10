@@ -8,8 +8,6 @@ from datetime import datetime
 
 load_dotenv()
 
-
-
 DB_HOST     = quote(os.getenv("DB_HOST"))
 DB_PASSWORD = quote(os.getenv("DB_PASSWORD"))
 DB_LOGIN    = quote(os.getenv("DB_LOGIN"))
@@ -24,7 +22,7 @@ CALLBACK_URL_WEBHOOK_VIP_PASS = os.getenv("CALLBACK_URL_WEBHOOK_VIP_PASS")
 CALLBACK_URL_WEBHOOK_MONEY    = os.getenv("CALLBACK_URL_WEBHOOK_MONEY")
 CALLBACK_URL_WEBHOOK_CHANGE_POSITION = os.getenv("CALLBACK_URL_WEBHOOK_CHANGE_POSITION")
 
-
+MAIN_CHAT_GROUP_ID = os.getenv("MAIN_CHAT_GROUP_ID")
 
 WEBAPP_HOST = os.getenv("WEBAPP_HOST")
 WEBAPP_PORT = os.getenv("WEBAPP_PORT")

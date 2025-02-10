@@ -23,6 +23,7 @@ async def start_command_handler(message: Message, state: FSMContext, user: UserB
     if command.args:
         await register_referal(user=user, referal=command.args)
 
+
     video_start = FSInputFile("src\start_video.MP4",filename="video_start") if not VIDEO_ID else VIDEO_ID
 
     await state.clear()

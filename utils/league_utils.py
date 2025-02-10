@@ -1,7 +1,7 @@
 from database.models.club import Club
 from database.models.league_fight import LeagueFight
 
-from league.club_fight import ClubMatchManager, ClubMatch
+from league.process_match.club_fight import ClubMatchManager, ClubMatch
 from datetime import datetime
 
 from services.character_service import CharacterService
@@ -11,7 +11,7 @@ from services.best_20_club_league_service import Best20ClubLeagueService
 from services.best_club_league import BestLeagueService
 from services.club_service  import ClubService
 
-from league.club_in_match import ClubsInMatch
+from league.process_match.club_in_match import ClubsInMatch
 
 from bot.routers.league.utils import get_characters_club_in_match
 

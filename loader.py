@@ -13,10 +13,6 @@ from config import (
     ADMINS, 
 )
 
-
-
-
-
 async def init_bot_command():
     commands = [
         BotCommand(command="send_message", description="Отправить сообщение всем пользователям")]

@@ -1,5 +1,6 @@
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
+from apscheduler.triggers.cron import CronTrigger
 
 from datetime import datetime
 
@@ -8,7 +9,9 @@ from best_club_league.service.get_best_league_match import BestClubLeagueMatchSe
 from database.models.league_fight import LeagueFight
 
 from league.user_sender import UserSender
-from league.club_fight import ClubMatch
+from league.process_match.club_fight import ClubMatch
+
+from constants import START_DAY_BEST_LEAGUE
 
 class BestClubLeague:
     
@@ -61,3 +64,15 @@ class BestClubLeague:
             trigger = DateTrigger(time_start_match),
             misfire_grace_time = 10
         )
+        
+class SchedulerBestClubtLeague:
+    def __init__(self):
+        self.scheduler = AsyncIOScheduler()
+
+    async def start_scheduler(self):
+        self.scheduler.add_job(
+            func=BestClubLeague().start_best_league,
+            trigger=CronTrigger(day=START_DAY_BEST_LEAGUE, hour=8, minute=0),
+            misfire_grace_time=10
+        )
+        self.scheduler.start()

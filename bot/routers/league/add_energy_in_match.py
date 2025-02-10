@@ -15,13 +15,13 @@ from bot.callbacks.league_callbacks import EpizodeDonateEnergyToMatch
 from bot.states.league_match_state import DonateEnergyInMatch
 from bot.keyboards.gym_keyboard import no_energy_keyboard
 
-from league.club_fight import ClubMatch
+from league.process_match.club_fight import ClubMatch
 
 from utils.league_utils import count_energy_characters_in_match
 from utils.club_utils import send_message_characters_club
 
 
-from league.club_fight import ClubMatch, ClubMatchManager
+from league.process_match.club_fight import ClubMatch, ClubMatchManager
 from constants import TIME_FIGHT, KOEF_ENERGY_DONATE
 
 add_energy_in_match_router = Router()

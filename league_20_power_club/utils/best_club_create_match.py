@@ -1,6 +1,6 @@
 from database.models.club import Club
 
-from league.core_leauge import LeagueService
+from league.utils import LeagueService
 from services.club_service import ClubService
 
 from typing import Generator

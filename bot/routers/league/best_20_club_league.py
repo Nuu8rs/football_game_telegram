@@ -15,7 +15,7 @@ from services.league_service import LeagueFightService
 from services.best_20_club_league_service import Best20ClubLeagueService
 from services.club_service import ClubService
 
-from league.club_fight import ClubMatch, ClubMatchManager
+from league.process_match.club_fight import ClubMatch, ClubMatchManager
 
 from constants import LEAGUE_PHOTO, JOIN_TO_FIGHT
 from constants import TIME_FIGHT

@@ -47,7 +47,7 @@ class ExpEventListener(BaseEventListener):
             character_user_id = character.characters_user_id
         )
 
-    def _is_valid_(self, character: Character) -> bool:
+    def _is_valid(self, character: Character) -> bool:
         if not character.referal_user_id:
             return False
         
