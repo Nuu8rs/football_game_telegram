@@ -103,9 +103,7 @@ async def get_table_rait(message: Message, character: Character):
             text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 24"
         )
 
-    
-    group_id_mathces = await LeagueFightService.get_group_id_by_club(club_id=character.club_id)
-    all_mathes_by_group = await LeagueFightService.get_the_monthly_matches_by_group(group_id=group_id_mathces)
+    all_mathes_by_group = await LeagueFightService.get_the_monthly_matches_by_group(group_id=next_match.group_id)
     await message.answer(
         text=await get_text_rating(all_mathes_by_group)
     )

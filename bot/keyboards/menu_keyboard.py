@@ -40,7 +40,7 @@ def main_menu(user: UserBot):
         keyboard.button(text ="👥 Команда")
         keyboard.button(text = "🏬 Торговий квартал")
         keyboard.button(text = "🏆 Зал слави")
-        keyboard.button(text = "🥅 ПВП-пенальті")
+        # keyboard.button(text = "🥅 ПВП-пенальті")
         keyboard.button(text = "🗣 Cпілкування")
     if date_is_get_reward_christmas_tree():
         keyboard.button(text = "🎄 Новорічна ялинка")

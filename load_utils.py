@@ -13,6 +13,10 @@ from schedulers.scheduler_season_beast_league import SchedulerSesonBeastLeague
 from schedulers.scheduler_buy_energy import ReminderBuyEnergy
 from schedulers.scheduler_training import ReminderTraning
 from schedulers.scheduler_vip_pass import VipPassSchedulerService
+from schedulers.scheduler_reset_training_key import ResetTrainingKeyScheduler
+
+from training.timers.starter import SchedulerEveryDayStartTraining
+
 
 from pvp_duels.duel_core import CoreDuel
 from best_club_league.start_league import (
@@ -54,21 +58,25 @@ async def init_schedulers_league():
     await scheduler_best_20_club_league.start_scheduler()
 
 async def start_utils():
+    
     await init_leagues()
     await init_schedulers_league()
     await energy_listener.start_listener()
     await exp_listener.start_listener()
+    await scheduler_training.start_scheduler()
     
     await reset_energy_characters.start_reset_energy()
     await reset_aplied_energy_club.start_reset_energy()
     await education_reward_reminder.start_reminder()
     await gym_reminder.start_iniatialization_gym()
     await end_beast_league.wait_to_end_season_best_league()
-    await end_duel_season.wait_to_end_season_duel()
+    # await end_duel_season.wait_to_end_season_duel()
     await league_ranking_update.start()
     await reminder_buy_energy.start()
     await reminder_go_to_training.start()
     await reminder_vip_pass.start_timers()
+    await scheduler_reset_training_key.start()
+    
     asyncio.create_task(core_duel._waiting_users())
 
 
@@ -85,6 +93,7 @@ best_20_club_league       = Best20ClubLeague()
 reminder_buy_energy       = ReminderBuyEnergy()
 reminder_go_to_training   = ReminderTraning()
 reminder_vip_pass         = VipPassSchedulerService()
+scheduler_reset_training_key = ResetTrainingKeyScheduler()
 
 core_duel    = CoreDuel()
 DEFAULT_LEAGUE  = StartDefaultLeague()
@@ -94,3 +103,4 @@ league_ranking_update = UpdateLeagueRaiting()
 scheduler_best_league = SchedulerBestClubtLeague()
 scheduler_best_20_club_league = SchedulerBest20ClubLeague()
 scheduler_default_league = SchedulerDefaultLeague()
+scheduler_training = SchedulerEveryDayStartTraining()

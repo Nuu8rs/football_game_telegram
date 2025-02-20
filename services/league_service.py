@@ -106,6 +106,8 @@ class LeagueFightService:
                                 LeagueFight.second_club_id == club_id
                             )
                         )
+                        .where(LeagueFight.is_beast_league == False)
+                        .where(LeagueFight.is_top_20_club == False)
                         .order_by(LeagueFight.time_to_start.asc())
                     )
                     return league_fights.scalars().all()

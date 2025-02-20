@@ -307,4 +307,34 @@ class CharacterService:
                     .values(position=position)
                 )
                 await session.execute(stmt)
+                await session.commit()                
+                
+    @classmethod
+    async def add_trainin_key(
+        cls,
+        character_id: int,
+    ):
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Character)
+                    .where(Character.id == character_id)
+                    .values(training_key= Character.training_key + 1)
+                )
+                await session.execute(stmt)
+                await session.commit()
+                
+    @classmethod
+    async def remove_training_key(
+        cls,
+        character_id: int,
+    ):
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Character)
+                    .where(Character.id == character_id)
+                    .values(training_key= Character.training_key - 1)
+                )
+                await session.execute(stmt)
                 await session.commit()

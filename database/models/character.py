@@ -62,6 +62,7 @@ class Character(Base):
     boots = relationship("Item", foreign_keys=[boots_id], lazy="selectin")
 
     vip_pass_expiration_date = Column(DateTime, nullable=True)
+    training_key = Column(Integer, default=1, server_default="1", nullable=False)
 
     @property
     def character_name(self) -> str:

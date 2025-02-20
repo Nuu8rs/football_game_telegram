@@ -17,11 +17,6 @@ menu_character_router = Router()
 @menu_character_router.message(F.text == "⚽️ Мій футболіст")
 async def get_my_character(message: Message, state: FSMContext, character: Character):
 
-    from utils.vip_pass_title import ChannelTitelService
-    channel_title = ChannelTitelService(character=character)
-    await channel_title.get_title()
-
-
     await state.clear()
     await message.answer_photo(
         photo=get_photo_character(character),

@@ -85,7 +85,8 @@ BANK_PHOTO       = FSInputFile("src/bank_photo.jpg")
 CHANGE_POSITION_PHOTO = FSInputFile("src/change_position_photo.jpg")
 END_VIP_PASS_PHOTO = FSInputFile("src/end_vip_pass_photo.jpg")
 LOW_ENERGY_PHOTO = FSInputFile("src/low_energy_photo.jpg")
-
+BUY_TRAINING_KEY = FSInputFile("src/buy_key_training.jpg")
+NEED_TRAINING_KEY = FSInputFile("src/need_training_key.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 
@@ -203,3 +204,4 @@ lootboxes = {
 }
 
 PRICE_CHANGE_POSITION = 150
+PRICE_TRAINING_KEY = 49

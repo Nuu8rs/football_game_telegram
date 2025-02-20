@@ -11,7 +11,11 @@ from .communication.router import communication_main_router
 from .commands.admins_functional.newsletter import admin_newsletter_commands
 from .commands.admins_functional.info_new_members import admin_info_new_member_router
 from .сhristmas_tree.router import christmas_tree_router
-
+from bot.training.routers.answer_stage import answer_etap_router
+from bot.training.routers.joined_in_training import join_trainig_router
+from bot.training.routers.qte_stage import qte_router
+from bot.training.routers.end_training import end_training_router
+from bot.training.routers.buy_training_key import buy_training_key_router
 
 main_router = Router()
 main_router.include_routers(
@@ -26,5 +30,10 @@ main_router.include_routers(
     communication_main_router,
     admin_newsletter_commands,
     admin_info_new_member_router,
-    christmas_tree_router
+    christmas_tree_router,
+    join_trainig_router,
+    answer_etap_router,
+    qte_router,
+    end_training_router,
+    buy_training_key_router
 )
