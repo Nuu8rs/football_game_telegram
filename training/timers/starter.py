@@ -22,8 +22,6 @@ class StartTraining:
         "16:00"
     ]    
 
-    
-    
     def __init__(self) -> None:
         self.scheduler = AsyncIOScheduler()
         self.sender_message: RegisterInTrainingSender = None
@@ -51,9 +49,13 @@ class StartTraining:
             await TrainingService.register_training_timer(
                 time_start = time_training 
             )
+            
+            
     async def start_training(self):
+        
         time_traning = self.time_training
-        await self._register_timer_training(time_traning)        
+        await self._register_timer_training(time_traning)      
+          
         self.sender_message = RegisterInTrainingSender(
             end_time = time_traning
         )
@@ -65,15 +67,10 @@ class StartTraining:
     async def _start_shedulers(self, time_traning: datetime):
         
         await self._start_send_notification()
-        await self._start_preregiste_message(
-            time_traning = time_traning
-        )
-        await self._start_traning(
-            time_traning = time_traning
-        )
-        await self._end_training(
-            time_traning = time_traning
-        )
+        
+        await self._start_preregiste_message(time_traning = time_traning)
+        await self._start_traning(time_traning = time_traning)
+        await self._end_training(time_traning = time_traning)
         self.scheduler.start()
 
     async def _start_send_notification(self):

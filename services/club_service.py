@@ -19,6 +19,8 @@ class ClubService:
                 club = result.scalar_one_or_none()
                 return club
             
+                
+            
     @classmethod
     async def get_club_by_owner_id(cls, owner_id: int) -> Club:
         async for session in get_session():

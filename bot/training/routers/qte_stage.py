@@ -86,7 +86,7 @@ async def stop_qte(
     await query.message.edit_reply_markup(
         reply_markup=None
     )
-    if training.stage != Stage.STAGE_7:
+    if training.stage != Stage.STAGE_DUEL:
         training.update_stage(
                 stage = training.stage.next_stage()
             )
@@ -104,12 +104,12 @@ async def correct_direction(
     character: Character,
     training: Training
 ):
-    await query.answer(
-        text = "Правильний напрямок"
-    )
     
     points = calculate_qte_score(callback_data.timestamp)
     training.add_score_points(points = points)
+    await query.answer(
+        text = f"Правильний напрямок, ви отримали {points} очок."
+    )
     await TrainingService.update_score_user(
         user_id = character.characters_user_id,
         score = training.score

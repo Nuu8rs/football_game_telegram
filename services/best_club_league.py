@@ -1,5 +1,5 @@
+import calendar
 from datetime import datetime
-
 
 from database.models.league_fight import LeagueFight
 from database.session import get_session
@@ -91,9 +91,10 @@ class BestLeagueService:
     @classmethod
     async def get_best_league(cls) -> list[LeagueFight]:
         now = datetime.now()
-        start_date = now.replace(day=21, hour=0, minute=0, second=0, microsecond=0)
-        end_date = now.replace(day=30, hour=23, minute=59, second=59, microsecond=999999)
+        last_day = calendar.monthrange(now.year, now.month)[1]
 
+        start_date = now.replace(day=21, hour=0, minute=0, second=0, microsecond=0)
+        end_date = now.replace(day=last_day, hour=23, minute=59, second=59, microsecond=999999)
         
         async for session in get_session():
             async with session.begin():
@@ -113,8 +114,9 @@ class BestLeagueService:
         async for session in get_session():
             async with session.begin():             
                 now = datetime.now()
+                last_day = calendar.monthrange(now.year, now.month)[1]
                 start_date = now.replace(day=21, hour=0, minute=0, second=0, microsecond=0)
-                end_date = now.replace(day=30, hour=23, minute=59, second=59, microsecond=999999)
+                end_date = now.replace(day=last_day, hour=23, minute=59)
                 
                 stmt = select(LeagueFight).filter(
                     (LeagueFight.first_club_id == club_id) | 

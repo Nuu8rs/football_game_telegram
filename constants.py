@@ -179,7 +179,7 @@ lootboxes = {
         "max_money": 15,
         "min_exp": 1,
         "max_exp": 5,
-        "price": 150
+        "price": 75
     },
     "medium_box": {
         "name_lootbox": "Середній бокс футболіста",
@@ -189,7 +189,7 @@ lootboxes = {
         "max_money": 30,
         "min_exp": 5,
         "max_exp": 10,
-        "price": 290
+        "price": 145
     },
     "large_box": {
         "name_lootbox": "Преміум бокс",
@@ -199,7 +199,7 @@ lootboxes = {
         "max_money": 50,
         "min_exp": 10,
         "max_exp": 15,
-        "price": 590
+        "price": 245
     }
 }
 

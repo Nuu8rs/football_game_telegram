@@ -84,6 +84,7 @@ class RegisterInTrainingSender:
                 await self._edit_keyboard(message, count)
 
             self._last_count = count
+            
     @rate_limiter
     async def _edit_keyboard(self, message: Message, count: int):
         try:

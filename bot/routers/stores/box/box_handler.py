@@ -24,7 +24,7 @@ TEXT_TEMPLATE = """
 💰 <b>Монети</b>: {min_money} - {max_money} 💎  
 🎓 <b>Досвід</b>: {min_exp} - {max_exp} 📈  
 
-💸 <b>Ціна</b>: {price} UAH
+💸 <b>Ціна</b>: СКИДКА 50% <del>{old_price}</del> - <b>{price}</b> UAH
 """
 
 
@@ -34,10 +34,14 @@ async def select_box_handler(
     callback_data: SelectBox,
     character: Character
 ):
-    text_lootbox = TEXT_TEMPLATE.format(**lootboxes.get(callback_data.type_box))
     type_box = callback_data.type_box
-
     price_box = lootboxes[type_box]['price']
+    
+    text_lootbox = TEXT_TEMPLATE.format(
+        **lootboxes.get(callback_data.type_box), 
+        old_price = int(price_box*2)
+    )
+
     payment = CreatePayment(
         price=price_box,
         name_product=lootboxes[type_box]['name_lootbox'],

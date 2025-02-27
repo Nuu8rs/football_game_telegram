@@ -16,6 +16,7 @@ from bot.training.routers.joined_in_training import join_trainig_router
 from bot.training.routers.qte_stage import qte_router
 from bot.training.routers.end_training import end_training_router
 from bot.training.routers.buy_training_key import buy_training_key_router
+from bot.training.routers.duel_stage import training_duel_router
 
 main_router = Router()
 main_router.include_routers(
@@ -35,5 +36,6 @@ main_router.include_routers(
     answer_etap_router,
     qte_router,
     end_training_router,
-    buy_training_key_router
+    buy_training_key_router,
+    training_duel_router
 )

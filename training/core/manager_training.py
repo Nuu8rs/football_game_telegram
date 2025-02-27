@@ -1,8 +1,12 @@
 from typing import Dict, Optional
 from .training import Training
 from .end_training import EndTraining
+from training.duel.duel_manager import DuelManager
 
 from services.training_service import TrainingService   
+
+from logging_config import logger
+
 
 class TrainingManager:
     _trainings: Dict[int, Training] = {}
@@ -42,15 +46,18 @@ class TrainingManager:
             
     @classmethod
     async def start_user_training(cls, user_id: int, character_id: int) -> None:
-        training = cls.get_or_create_training(
-            user_id = user_id, 
-            character_id = character_id
-        )
-        await training.send_message_by_etap()
-
+        try:
+            training = cls.get_or_create_training(
+                user_id = user_id, 
+                character_id = character_id
+            )
+            await training.send_message_by_etap()
+        except Exception as E:
+            logger.error(f"Failed to start training for user {user_id}\nError: {E}")
 
     @classmethod
     async def end_all_trainings(cls) -> None:
+        await DuelManager.end_all_duels()
         for user_id, training in cls._trainings.items():
             end_training = EndTraining(
                 training = training

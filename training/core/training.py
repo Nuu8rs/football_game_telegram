@@ -5,7 +5,7 @@ from loader import bot
 
 from training.types import Stage, TextParamsTraning
 from training.utils.get_params_by_stage import GetParams
-from training.utils.text_stage import TextStage
+from training.utils.text_stage import TextStage, TEXT_TRAINING
 
 from bot.training.keyboard.training import next_stage_keyboard
 
@@ -36,7 +36,8 @@ class Training:
         return self.score
     
     async def send_message_by_etap(self) -> None:
-        
+        if self.stage == Stage.STAGE_1:
+            await self._send_start_training()
         text_params: TextParamsTraning = await GetParams.get_params_epizode(
             stage=self.stage,
         ) 
@@ -44,6 +45,8 @@ class Training:
         
     async def _send_mesaage_etap(self, text_params: TextParamsTraning):
         text_etap = TextStage.get_text(text_params)
+        text_etap += f"\n\nВаш поточний рахунок за тренування: <b>{self.score}</b> очок. ✴️"
+
         if text_params.patch_to_photo:
             return await self.__send_photo_etap(
                 text_params = text_params,
@@ -81,4 +84,10 @@ class Training:
                 current_stage = self.stage,
                 training_id = self.training_id
             )
+        )
+
+    async def _send_start_training(self):
+        await self._bot.send_message(
+            chat_id=self.user_id,
+            text=TEXT_TRAINING.TRAINING_REWARDS_INFO
         )

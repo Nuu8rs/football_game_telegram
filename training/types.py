@@ -13,6 +13,7 @@ class Stage(str, Enum):
     STAGE_5 = "stage_5"
     STAGE_6 = "stage_6"
     STAGE_7 = "stage_7"
+    STAGE_DUEL = "stage_DUEL"
     END_TRAINIG = "end_stage"
     
     def next_stage(self) -> "Stage":

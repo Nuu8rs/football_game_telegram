@@ -1,3 +1,4 @@
+from aiogram.types import FSInputFile
 from datetime import timedelta
 from .types import Stage
 
@@ -9,6 +10,9 @@ MAX_LIMIT_JOIN_CHARACTERS = 50
 DIRECTIONS = ["↖️", "⬆️", "↗️", "⬅️", "➡️", "↙️", "⬇️", "↘️"]
 
 QTE_STAGES = [Stage.STAGE_4, Stage.STAGE_6]
+DUEL_STAGE = [Stage.STAGE_DUEL]
+
+
 
 COUNT_QTE_STAGES = 5
 MAX_SCORE_QTE = 35
@@ -20,8 +24,33 @@ MIN_SCORE = 2  # Минимальный балл
 
 
 STAT_RANGES = {
-    range(70, 101): 3,
-    range(40, 70): 2,
-    range(20, 40): 1,
-    range(0, 20): 0
+    range(111, 150): 4,
+    range(71, 110): 3,
+    range(41, 70): 2,
+    range(0, 40): 1
 }
+ENERGY_RANGES = {
+    range(111, 150): 50,
+    range(71, 110): 40,
+    range(41, 70): 30,
+    range(0, 40): 20
+}
+
+#=======================PVP_CONSTANS=============================#
+MAX_SCORE_PVP_DUEL = 50
+PERIOD_STAGE = 2
+if PERIOD_STAGE // 2 == 0:
+    raise "PERIOD_STAGE ДОЛЖНО БЫТЬ КРАТНО 2"
+
+PERIOD_STAGE_FIGHT_DUEL = 3
+TIMES_SLEEP_ENTRY_DATA_DUEL = 15
+SCORE_WINNER_DUEL_STAGE = int(MAX_SCORE_PVP_DUEL/PERIOD_STAGE/PERIOD_STAGE_FIGHT_DUEL)
+
+
+FORWARD_LOSS_GOAL       = FSInputFile("src/loss_goal_forward_duel.jpg")
+GOALKEPEER_LOSS_GOAL    = FSInputFile("src/loss_goal_goalkepeer_duel.jpg")
+
+FORWARD_GOAL            = FSInputFile("src/goal_forward_duel.jpg")
+GOALKEPEER_GOAL         = FSInputFile("src/goal_goalkepeer_duel.jpg")
+
+#==============================PVP_DUEL_CONSTANS=============================#

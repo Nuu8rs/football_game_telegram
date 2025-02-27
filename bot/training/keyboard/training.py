@@ -37,7 +37,10 @@ def next_stage_keyboard(
     training_id: int
 ):
     keyboard = InlineKeyboardBuilder()
-    random_points = random.sample(range(-5, 6), 3)
+    positive_points = random.sample(range(1, 6), 2)
+    negative_point = random.choice(range(-5, 0))
+    random_points = positive_points + [negative_point]
+    random.shuffle(random_points)
     emoji_points = dict(zip(["1️⃣", "2️⃣", "3️⃣"], random_points))
 
     for emj, score in emoji_points.items():

@@ -1,6 +1,7 @@
 from aiogram.filters.callback_data import CallbackData
 
 from training.types import Stage
+from training.duel.types import PositionAngle
 
 
 class NextStage(CallbackData, prefix="next_etap"):
@@ -22,3 +23,9 @@ class QTECallback(CallbackData, prefix="qte"):
 class SelectStat(CallbackData, prefix = "select_stat"):
     stat: str
     count_stat: int
+    
+
+class SelectAngleTrainingDuel(CallbackData, prefix = "select_angle"):
+    angle: PositionAngle
+    training_id: int
+    duel_id: str
