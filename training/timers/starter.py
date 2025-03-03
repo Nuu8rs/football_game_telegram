@@ -15,7 +15,7 @@ from services.training_service import TrainingService
 class StartTraining:
     _time_from_presell = TIME_REGISTER_TRAINING
     START_TAIMERS = [
-        "13:23"
+        "14:00"
     ]
     # START_TAIMERS = [
     #     "13:00",
