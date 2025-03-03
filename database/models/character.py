@@ -24,13 +24,14 @@ class Character(Base):
     exp   = Column(Integer, default=0, server_default="0", insert_default=0, nullable=False)
     money = Column(Integer, default=0, server_default="0", insert_default=0, nullable=False)
     
+    current_energy  = Column(Integer, default=0)
+    
     name            = Column(String(255), index=True)
     technique       = Column(Integer, default=0)
     kicks           = Column(Integer, default=0)
     ball_selection  = Column(Integer, default=0)
     speed           = Column(Integer, default=0)
     endurance       = Column(Integer, default=0)
-    current_energy  = Column(Integer, default=0)
     position        = Column(String(255))
     gender          = Column(String(255))
     

@@ -3,12 +3,14 @@ import logging
 from aiogram import Bot
 from aiogram.types import Message, CallbackQuery, ErrorEvent, User
 
+from database.models.user_bot import UserBot
+
 from typing import Any, Awaitable, Callable, Dict
 from services.user_service import UserService
 
 from loader import dp
 
-async def get_user(user_bot: User):
+async def get_user(user_bot: User) -> tuple[UserBot, bool]:
     try:
         user = await UserService.get_user(user_id=user_bot.id)
         if not user:
@@ -36,7 +38,9 @@ async def message_middleware(
     event: Message|CallbackQuery,
     data: Dict[str, Any]
 ) -> Any:
-    user = await get_user(event.from_user)
+    user  = await get_user(event.from_user)
+    
+    
     character = user.characters[0] if user.characters else []
     data.update({"user":user, "character":character})
     result = await handler(event, data)

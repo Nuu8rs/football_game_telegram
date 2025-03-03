@@ -1,9 +1,17 @@
+from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from ..callbacks.character_callbacks import SelectGender,SelectPositionCharacter, CreateCharacter
+
+from bot.routers.register_user.callbacks.create_character_callbacks import (
+    SelectGender,
+    SelectPositionCharacter, 
+    CreateCharacter
+)
+
 from constants import Gender, PositionCharacter
+
 from database.models.character import Character
 
-def set_gender_keyboard():
+def set_gender_keyboard() -> InlineKeyboardMarkup:
     return (InlineKeyboardBuilder()
             .button(text = "👨🏼‍🦱 Чоловік", callback_data = SelectGender(gender=Gender.MAN))
             .button(text = "👩🏼‍🦰 Жінка", callback_data = SelectGender(gender=Gender.WOMAN))
@@ -13,7 +21,7 @@ def set_gender_keyboard():
 
 
 
-def select_role_character(gender_character: Gender):
+def select_role_character(gender_character: Gender) ->InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     
     keyboard.button(
@@ -38,11 +46,13 @@ def select_role_character(gender_character: Gender):
     )
     return keyboard.adjust(2,2,1).as_markup()
 
-def create_character(character: Character):
+def create_character(character: Character) -> InlineKeyboardMarkup:
     return (InlineKeyboardBuilder()
-            .button(text = "Вибрати цього персонажа", 
+            .button(text = "✅ Вибрати цього персонажа", 
                     callback_data = CreateCharacter(gender=character.gender_enum,
                                                     position=character.position_enum))
+            .button(text = "🔄 Вибрати іншу позицію",
+                    callback_data = "select_other_position")
             .adjust(1)
             .as_markup()
             )

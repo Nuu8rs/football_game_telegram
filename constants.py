@@ -24,6 +24,7 @@ class ItemCategory(PyEnum):
 
 chance_add_point = {
     timedelta(seconds = 5)   : 90,
+    timedelta(minutes = 5)  : 100,
     timedelta(minutes = 30)  : 35,
     timedelta(minutes = 60)  : 45,
     timedelta(minutes = 90)  : 55,
@@ -123,7 +124,7 @@ CONST_PRICE_ENERGY = {
     900  : 670
 }
 
-START_DAY_DEFAULT_LEAGUE = 11
+START_DAY_DEFAULT_LEAGUE = 1
 
 DUEL_START_DAY_SEASON = 21
 DUEL_END_DAY_SEASON   = 28
@@ -205,3 +206,5 @@ lootboxes = {
 
 PRICE_CHANGE_POSITION = 150
 PRICE_TRAINING_KEY = 49
+
+

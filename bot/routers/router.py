@@ -17,10 +17,12 @@ from bot.training.routers.qte_stage import qte_router
 from bot.training.routers.end_training import end_training_router
 from bot.training.routers.buy_training_key import buy_training_key_router
 from bot.training.routers.duel_stage import training_duel_router
+from bot.routers.register_user.router import register_user_router
 
 main_router = Router()
 main_router.include_routers(
     commands_router,
+    register_user_router,
     character_router,
     gym_main_router,
     club_router,

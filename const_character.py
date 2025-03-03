@@ -1,11 +1,13 @@
 from datetime import datetime
 from database.models.character import Character
-from enum import Enum as PyEnum
 from constants import PositionCharacter
+
+
 
 def create_defender() -> Character:
     return Character(
         name="",
+        position = PositionCharacter.DEFENDER,
         technique=3,
         kicks=4,
         ball_selection=7,
@@ -20,6 +22,7 @@ def create_defender() -> Character:
 def create_midfielder() -> Character:
     return Character(
         name="",
+        position = PositionCharacter.MIDFIELDER,
         technique=4,
         kicks=3,
         ball_selection=8,
@@ -34,6 +37,7 @@ def create_midfielder() -> Character:
 def create_goalkeeper() -> Character:
     return Character(
         name="",
+        position = PositionCharacter.GOALKEEPER,
         technique=2,
         kicks=5,
         ball_selection=5,
@@ -48,6 +52,7 @@ def create_goalkeeper() -> Character:
 def create_attacker() -> Character:
     return Character(
         name="",
+        position = PositionCharacter.ATTACKER,
         technique=3,
         kicks=7,
         ball_selection=2,

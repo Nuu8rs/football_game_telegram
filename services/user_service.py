@@ -1,7 +1,7 @@
-from database.models.user_bot import UserBot
+from database.models.user_bot import UserBot, STATUS_USER_REGISTER
 from database.session import get_session
+
 from sqlalchemy import select, update
-from config import DatabaseType
 
 class UserService:
 
@@ -45,3 +45,17 @@ class UserService:
                 except Exception as e:
                     raise e
         
+    @classmethod
+    async def edit_status_register(cls, user_id: int, status: STATUS_USER_REGISTER):
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    stmt = (
+                        update(UserBot)
+                        .where(UserBot.user_id == user_id)
+                        .values(status_register = status)
+                    )
+                    await session.execute(stmt)
+                    await session.commit()
+                except Exception as e:
+                    raise e

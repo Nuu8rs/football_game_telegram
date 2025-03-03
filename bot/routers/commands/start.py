@@ -5,8 +5,9 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import CommandStart, Command
 
 from bot.keyboards.menu_keyboard import main_menu
+from bot.routers.register_user.start_register_user import StartRegisterUser
 
-from database.models.user_bot import UserBot
+from database.models.user_bot import UserBot, STATUS_USER_REGISTER
 from services.user_service import UserService
 from loader import bot
 
@@ -15,11 +16,21 @@ from config import VIDEO_ID
 
 start_router = Router()
 
-from database.models.character import Character
-
-
 @start_router.message(CommandStart())
-async def start_command_handler(message: Message, state: FSMContext, user: UserBot, command: Command):
+async def start_command_handler(
+    message: Message, 
+    state: FSMContext, 
+    user: UserBot, 
+    command: Command    
+):
+    if not user.end_register:
+        if user.status_register == STATUS_USER_REGISTER.PRE_RIGSTER_STATUS:
+            start_register = StartRegisterUser(
+                user = user
+            )
+            return await start_register.start_register_user()
+        return
+    
     if command.args:
         await register_referal(user=user, referal=command.args)
 
@@ -49,7 +60,6 @@ async def start_command_handler(message: Message, state: FSMContext, user: UserB
         caption=text,
         reply_markup=main_menu(user)
     )
-    print(message.video.file_id)
 
 async def register_referal(user: UserBot, referal: str):
     if not "ref_" in referal:
@@ -65,6 +75,8 @@ async def register_referal(user: UserBot, referal: str):
             text=f"🎉 <b>У вас з'явився новий реферал!</b>\n\n{user.link_to_user}")
     except:
         pass
+    
+
 @start_router.message(F.text == "⬅️ Головна площа")
 async def plosha(message: Message, user: UserBot):
     await message.answer_photo(photo = PLOSHA_PEREMOGU, 

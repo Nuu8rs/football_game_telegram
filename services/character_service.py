@@ -1,8 +1,9 @@
 from database.models.character import Character
+from database.models.reminder_character import ReminderCharacter
 from database.models.item import Item
 
 from database.session import get_session
-from sqlalchemy import select, update
+from sqlalchemy import select, update, or_
 from config import CONST_ENERGY, CONST_VIP_ENERGY
 from datetime import datetime, timedelta
 from enum import Enum
@@ -25,11 +26,21 @@ class CharacterService:
 
     @classmethod
     async def get_all_users_not_bot(cls) -> list[Character]:
+        two_months_ago = datetime.now() - timedelta(days=60)
         async for session in get_session():
             async with session.begin():
-                result = await session.execute(
-                    select(Character).where(Character.is_bot == False)
+                stmt = (
+                    select(Character)
+                    .where(Character.is_bot == False)
+                    .join(ReminderCharacter)
+                    .where(
+                        or_(
+                            ReminderCharacter.education_reward_date >= two_months_ago,
+                            ReminderCharacter.time_to_join_club >= two_months_ago
+                        )
+                    )
                 )
+                result = await session.execute(stmt)
                 all_characters_not_bot = result.scalars().all()
                 return all_characters_not_bot
    

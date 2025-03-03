@@ -47,10 +47,13 @@ TIMES_SLEEP_ENTRY_DATA_DUEL = 15
 SCORE_WINNER_DUEL_STAGE = int(MAX_SCORE_PVP_DUEL/PERIOD_STAGE/PERIOD_STAGE_FIGHT_DUEL)
 
 
-FORWARD_LOSS_GOAL       = FSInputFile("src/loss_goal_forward_duel.jpg")
-GOALKEPEER_LOSS_GOAL    = FSInputFile("src/loss_goal_goalkepeer_duel.jpg")
+FORWARD_LOSS_GOAL       = FSInputFile("src/training/duel/forward_loss.jpg")
+GOALKEPEER_LOSS_GOAL    = FSInputFile("src/training/duel/goalkepper_loss_goal.jpg")
 
-FORWARD_GOAL            = FSInputFile("src/goal_forward_duel.jpg")
-GOALKEPEER_GOAL         = FSInputFile("src/goal_goalkepeer_duel.jpg")
+FORWARD_GOAL            = FSInputFile("src/training/duel/forward_goal.jpg")
+GOALKEPEER_GOAL         = FSInputFile("src/training/duel/goal_goalkepeer.jpg")
+
+PHOTO_GOALKEEPER        = FSInputFile("src/training/duel/PHOTO_GOALKEPPER.jpg")
+PHOTO_FORWARD           = FSInputFile("src/training/duel/PHOTO_FORWARD.jpg")
 
 #==============================PVP_DUEL_CONSTANS=============================#

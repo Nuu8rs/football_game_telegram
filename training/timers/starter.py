@@ -14,13 +14,15 @@ from services.training_service import TrainingService
 
 class StartTraining:
     _time_from_presell = TIME_REGISTER_TRAINING
-    
     START_TAIMERS = [
-        "13:00",
-        "14:00",
-        "15:00",
-        "16:00"
-    ]    
+        "13:23"
+    ]
+    # START_TAIMERS = [
+    #     "13:00",
+    #     "14:00",
+    #     "15:00",
+    #     "16:00"
+    # ]    
 
     def __init__(self) -> None:
         self.scheduler = AsyncIOScheduler()
@@ -108,10 +110,11 @@ class SchedulerEveryDayStartTraining:
         self.scheduler = AsyncIOScheduler()
 
     async def start_scheduler(self):
-        self.scheduler.add_job(
-            func=StartTraining().start_training,
-            trigger=CronTrigger(hour=12, minute=0),
-            misfire_grace_time=10
-        )
+        await StartTraining().start_training()
+        # self.scheduler.add_job(
+        #     func=StartTraining().start_training,
+        #     trigger=CronTrigger(hour=12, minute=0),
+        #     misfire_grace_time=10
+        # )
         
-        self.scheduler.start()
+        # self.scheduler.start()

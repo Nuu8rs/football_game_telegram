@@ -39,12 +39,14 @@ class TrainingTextTemplate:
 
 
 class GymScheduler:
+    
     def __init__(
         self,
         character_id: int,
         type_characteristic: Literal['technique', 'kicks', 'ball_selection', 'speed', 'endurance'],
         time_training: timedelta
     ) -> None:
+        
         self.character_id = character_id
         self.type_characteristic = type_characteristic
         self.time_training = time_training

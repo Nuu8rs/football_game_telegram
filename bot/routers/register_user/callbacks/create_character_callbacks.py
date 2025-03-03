@@ -7,7 +7,6 @@ class SelectGender(CallbackData, prefix="select_gender"):
 class SelectPositionCharacter(CallbackData, prefix="select_position"):
     position: PositionCharacter
 
-
 class CreateCharacter(CallbackData, prefix="create_character"):
     gender: Gender
     position: PositionCharacter

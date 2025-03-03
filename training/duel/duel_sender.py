@@ -8,7 +8,6 @@ from bot.training.keyboard.duel_training import (
     select_position_angle,
     end_duel_training
 )
-from constants import DUEL_PHOTO
 
 from training.types import Stage
 from training.core.training import Training
@@ -18,7 +17,9 @@ from training.constans import (
     GOALKEPEER_LOSS_GOAL,
     GOALKEPEER_GOAL,
     TIMES_SLEEP_ENTRY_DATA_DUEL,
-    SCORE_WINNER_DUEL_STAGE
+    SCORE_WINNER_DUEL_STAGE,
+    PHOTO_FORWARD,
+    PHOTO_GOALKEEPER
 )
 
 from loader import bot
@@ -125,6 +126,11 @@ class TEXT_DUEL:
 class DuelSender:
     _bot: Bot = bot
     
+    PHOTO_ROLES = {
+        RoleDuel.FORWARD : PHOTO_FORWARD,
+        RoleDuel.GOALKEEPER : PHOTO_GOALKEEPER
+    }
+    
     def __init__(
         self, 
         duel_data: DuelData,
@@ -144,7 +150,7 @@ class DuelSender:
             await self._send_message(
                 user = user,
                 text = text,
-                photo = DUEL_PHOTO
+                photo = self.PHOTO_ROLES[role]
             )
 
     async def send_message_select_angle(self):
