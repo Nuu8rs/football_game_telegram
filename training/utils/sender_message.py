@@ -1,9 +1,14 @@
 import asyncio
-from datetime import datetime
 import time
+
+from asyncio.queues import QueueEmpty
+from datetime import datetime
+from enum import Enum
+from typing import Optional, Tuple
 
 from aiogram import Bot
 from aiogram.types import Message
+from aiogram.exceptions import TelegramForbiddenError
 
 from bot.training.keyboard.training import keyboard_join_training
 
@@ -17,6 +22,11 @@ from logging_config import logger
 
 from .text_stage import TEXT_TRAINING
 
+
+class StatusSendMessage(Enum):
+    USER_IS_BLOCK = "USER_IS_BLOCK"
+    ERROR_SEND_MESSAGE = "ERROR_SEND_MESSAGE" 
+    SUCCESS_SEND_MESSAGE = "SUCCESS_SEND_MESSAGE"
 
 class RegisterInTrainingSender:
     _bot: Bot = bot
@@ -51,7 +61,7 @@ class RegisterInTrainingSender:
             await self.send_queue.put((character, 0 ))
     
     @rate_limiter
-    async def __send_message(self, character: Character) -> Message | None:
+    async def __send_message(self, character: Character) -> Tuple[Optional[Message],StatusSendMessage]:
         try:
             message = await self._bot.send_message(
                 chat_id=character.characters_user_id,
@@ -61,27 +71,25 @@ class RegisterInTrainingSender:
                     end_time_join=self._end_time,
                 ),
             )
-            return message
+            return message, StatusSendMessage.SUCCESS_SEND_MESSAGE
+        except TelegramForbiddenError:
+            return None, StatusSendMessage.USER_IS_BLOCK
+        
         except Exception as e:
-            logger.error(f"Ошибка отправки сообщения {character.characters_user_id}: {e}")
-            return None
+            return None, StatusSendMessage.ERROR_SEND_MESSAGE
 
     async def _worker_sender_message(self):  
         try:
-            while True:
-                character, attempt = await self.send_queue.get()
-                message = await self.__send_message(character)
-                if message:
-                    self.messages[character.characters_user_id] = message
-                elif attempt < self._max_retries:
-                    await asyncio.sleep(2 ** attempt)  
+            character, attempt = await self.send_queue.get_nowait()
+            message, status = await self.__send_message(character)
+            if message:
+                self.messages[character.characters_user_id] = message
+            elif attempt < self._max_retries:
+                if status == StatusSendMessage.ERROR_SEND_MESSAGE:
                     await self.send_queue.put((character, attempt + 1))
-                self.send_queue.task_done()
-        except asyncio.CancelledError:
-            logger.info("Sender worker cancelled")
-        except Exception as e:
-            logger.error(e)
-
+        except QueueEmpty:
+            await asyncio.sleep(1)
+ 
             
         
     async def _worker_edit_keyboard(self):

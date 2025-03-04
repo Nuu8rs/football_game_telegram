@@ -68,7 +68,7 @@ class StartTraining:
         
     async def _start_shedulers(self, time_traning: datetime):
         
-        await self._start_send_notification()
+        # await self._start_send_notification()
         
         await self._start_preregiste_message(time_traning = time_traning)
         await self._start_traning(time_traning = time_traning)
