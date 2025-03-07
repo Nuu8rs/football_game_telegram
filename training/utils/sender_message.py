@@ -72,6 +72,7 @@ class RegisterInTrainingSender:
                 ),
             )
             return message, StatusSendMessage.SUCCESS_SEND_MESSAGE
+        
         except TelegramForbiddenError:
             return None, StatusSendMessage.USER_IS_BLOCK
         
@@ -79,33 +80,36 @@ class RegisterInTrainingSender:
             return None, StatusSendMessage.ERROR_SEND_MESSAGE
 
     async def _worker_sender_message(self):  
-        try:
-            character, attempt = await self.send_queue.get_nowait()
-            message, status = await self.__send_message(character)
-            if message:
-                self.messages[character.characters_user_id] = message
-            elif attempt < self._max_retries:
-                if status == StatusSendMessage.ERROR_SEND_MESSAGE:
-                    await self.send_queue.put((character, attempt + 1))
-        except QueueEmpty:
-            await asyncio.sleep(1)
- 
-            
+        while True:
+            try:
+                character, attempt = await self.send_queue.get()
+                message, status = await self.__send_message(character)
+                if message:
+                    self.messages[character.characters_user_id] = message
+                elif attempt < self._max_retries:
+                    if status == StatusSendMessage.ERROR_SEND_MESSAGE:
+                        await self.send_queue.put((character, attempt + 1))
+            except Exception as E:
+                logger.error(E)
         
     async def _worker_edit_keyboard(self):
         while True:
-            await asyncio.sleep(60)    
-            count = await TrainingService.count_joinded_user()
-            if count == self._last_count:
-                continue
-            for message in self.messages.values():
-                await self._edit_keyboard(message, count)
-
-            self._last_count = count
-            
+            try:
+                count = await TrainingService.count_joinded_user()
+                if count == self._last_count:
+                    continue
+                for message in self.messages.values():
+                    await self._edit_keyboard(message, count)
+                self._last_count = count
+            except Exception as E:
+                logger.error(E)
+            finally:
+                await asyncio.sleep(60)
+    
     @rate_limiter
     async def _edit_keyboard(self, message: Message, count: int):
         try:
+            await asyncio.sleep(0.1)
             await message.edit_reply_markup(
                 reply_markup = keyboard_join_training(
                     count_users = count,
