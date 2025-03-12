@@ -2,9 +2,6 @@ from datetime import datetime
 
 from sqlalchemy import select, or_
 
-
-from database.models.club import Club
-from database.models.character import Character
 from database.models.league_fight import LeagueFight
 
 from database.session import get_session

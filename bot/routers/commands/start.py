@@ -23,7 +23,7 @@ async def start_command_handler(
     user: UserBot, 
     command: Command    
 ):
-
+        
     if not user.end_register:
         if user.status_register == STATUS_USER_REGISTER.PRE_RIGSTER_STATUS:
             start_register = StartRegisterUser(
@@ -34,7 +34,7 @@ async def start_command_handler(
     
     if command.args:
         await register_referal(user=user, referal=command.args)
-
+    
     
     video_start = FSInputFile("src\start_video.MP4",filename="video_start") if not VIDEO_ID else VIDEO_ID
 

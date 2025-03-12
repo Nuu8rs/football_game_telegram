@@ -13,7 +13,7 @@ from config import LEAGUES
 from loader import bot
 
 
-class UpdateLeagueRaiting:
+class UpdateLeagueRating:
 
     trigger = CronTrigger(day=1, hour=11, minute=26)
 

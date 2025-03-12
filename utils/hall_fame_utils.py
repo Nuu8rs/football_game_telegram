@@ -64,7 +64,7 @@ def get_top_club_by_power(all_clubs: list[Club], my_club: Club) -> str:
     return generate_rankings(all_clubs, my_club, 'club', 'total_power', 'total_power', 'силою')
 
 
-async def get_top_bomber_raiting(all_matches: list[MatchCharacter], my_character: Character):
+async def get_top_bomber_rating(all_matches: list[MatchCharacter], my_character: Character):
     total_goals_by_character = defaultdict(int)
     
     for match in all_matches:

@@ -3,6 +3,9 @@ from datetime import datetime, timedelta
 from database.models.league_fight import LeagueFight
 from database.models.club import Club
 
+from bot.club_infrastructure.distribute_points.add_points_from_league import AddPointsToClub
+from bot.club_infrastructure.distribute_points.scheduler_distribute_points import ShedulerdistributePoints
+
 from bot.utils.get_top_24_club_by_league import get_top_24_clubs
 from best_club_league.types import LeagueRanking
 from best_club_league.utils.league_create_match import (
@@ -11,6 +14,8 @@ from best_club_league.utils.league_create_match import (
 
 from services.best_club_league import BestLeagueService
 from services.league_service import LeagueFightService
+
+from league.service.types import TypeLeague
 
 from uuid import uuid4
 
@@ -64,7 +69,17 @@ class BestClubLeagueMatchService:
                 group           = group
             )
             start_date_match = start_date_match + timedelta(days=1)
-
+        else:
+            points_manager = AddPointsToClub(
+                group_ids      = [group],
+                type_league    = TypeLeague.BEST_LEAGUE,
+                league_ranking = group
+            )
+            sheduler = ShedulerdistributePoints(
+                time_distribute= start_date_match + timedelta(days=1, minutes = 5),
+                points_manager  = points_manager
+            )
+            await sheduler.start_wait_distribute_points()
             
         
     async def create_matches_day(

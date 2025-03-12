@@ -2,13 +2,13 @@ from .create_bots import BOTS
 
 from .constans import LIMIT_CLUBS_IN_GROUP
 
-class DestributeMatches:
+class DistributeMatches:
 
     def __init__(self, scores_clubs: dict[int, int]) -> None:    
         self.scores_clubs = scores_clubs
 
 
-    def destribute_group_clubs(self):
+    def distribute_group_clubs(self):
         clubs_ids = list(self.scores_clubs.keys())
 
         return [
@@ -36,6 +36,6 @@ class DestributeMatches:
         return groups
         
     async def get_groups(self) -> list[list[int]]:
-        destribute_group_clubs = self.destribute_group_clubs()
-        destribute_group_clubs = await self.validate_groups(destribute_group_clubs)
-        return destribute_group_clubs
+        distribute_group_clubs = self.distribute_group_clubs()
+        distribute_group_clubs = await self.validate_groups(distribute_group_clubs)
+        return distribute_group_clubs

@@ -1,10 +1,16 @@
-
 from dataclasses import dataclass, field
+
 from database.models.character import Character
 from database.models.match_character import MatchCharacter
+from database.models.club_infrastructure import ClubInfrastructure
+
+from bot.club_infrastructure.utils import calculate_bonus_by_infrastructure
+from bot.club_infrastructure.types import InfrastructureType
 
 from services.club_service import ClubService
 from services.character_service import CharacterService
+
+from services.club_infrastructure_service import ClubInfrastructureService
 
 from utils.randomaizer import check_chance
 
@@ -39,6 +45,14 @@ class ClubsInMatch:
     async def init_clubs(self):
         self.first_club  = await ClubService.get_club(club_id=self.first_club_id)
         self.second_club = await ClubService.get_club(club_id=self.second_club_id)
+        
+        self.first_club_infrastructure: ClubInfrastructure  = await ClubInfrastructureService.get_infrastructure(
+            club_id=self.first_club_id
+        )
+        self.second_club_infrastructure: ClubInfrastructure = await ClubInfrastructureService.get_infrastructure(
+            club_id=self.second_club_id
+        )
+        
         await self.add_characters_in_match()
 
 
@@ -101,14 +115,27 @@ class ClubsInMatch:
     def first_club_power(self) -> float:
         all_power = sum([character.full_power for character in self.first_club_characters]) + (self.donate_energy_first_club//KOEF_ENERGY_DONATE)
         koef_power_len_character = all_power * (self.percentage_club_stength_increase(len(self.first_club_characters))/100)
-        
-        return all_power + koef_power_len_character + self.epizode_energy_first_club
+        power = all_power + koef_power_len_character + self.epizode_energy_first_club 
+        power = calculate_bonus_by_infrastructure(
+            self.first_club_infrastructure,
+            InfrastructureType.ACADEMY_TALENT,
+            power
+        )
+        return power[0]
 
     @property
     def second_club_power(self) -> float:
         all_power = sum([character.full_power for character in self.second_club_characters]) + self.donate_energy_second_club//KOEF_ENERGY_DONATE
         koef_power_len_character = all_power * (self.percentage_club_stength_increase(len(self.second_club_characters))/100)
-        return all_power+koef_power_len_character + self.epizode_energy_second_club 
+        
+        power = all_power + koef_power_len_character + self.epizode_energy_second_club 
+        power = calculate_bonus_by_infrastructure(
+            self.second_club_infrastructure,
+            InfrastructureType.ACADEMY_TALENT,
+            power
+        )
+        return power[0]
+
 
     @property
     def calculate_chances(self):

@@ -5,6 +5,8 @@ from league.start_league import (
     StartDefaultLeague,
     SchedulerDefaultLeague
 )
+from bot.club_infrastructure.distribute_points.starter_waiter_distribute_points import Waiterdistributer
+
 from schedulers.scheduler_energy import EnergyResetScheduler, EnergyApliedClubResetScheduler
 from schedulers.scheduler_education import EducationRewardReminderScheduler
 from schedulers.scheduler_gym_rasks import GymStartReseter
@@ -29,7 +31,7 @@ from league_20_power_club.start_league import (
     SchedulerBest20ClubLeague
 )
 
-from schedulers.scheduler_league_rankings_update import UpdateLeagueRaiting
+from schedulers.scheduler_league_rankings_update import UpdateLeagueRating
 
 from constants import (
     START_DAY_BEST_LEAGUE, 
@@ -64,6 +66,7 @@ async def start_utils():
     await energy_listener.start_listener()
     await exp_listener.start_listener()
     await scheduler_training.start_scheduler()
+    await scheduler_distribute.start()
     
     await reset_energy_characters.start_reset_energy()
     await reset_aplied_energy_club.start_reset_energy()
@@ -98,9 +101,10 @@ scheduler_reset_training_key = ResetTrainingKeyScheduler()
 core_duel    = CoreDuel()
 DEFAULT_LEAGUE  = StartDefaultLeague()
 
-league_ranking_update = UpdateLeagueRaiting()
+league_ranking_update = UpdateLeagueRating()
 
 scheduler_best_league = SchedulerBestClubtLeague()
 scheduler_best_20_club_league = SchedulerBest20ClubLeague()
 scheduler_default_league = SchedulerDefaultLeague()
 scheduler_training = SchedulerEveryDayStartTraining()
+scheduler_distribute= Waiterdistributer()

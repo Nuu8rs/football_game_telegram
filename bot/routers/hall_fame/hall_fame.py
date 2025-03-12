@@ -15,7 +15,7 @@ from bot.keyboards.hall_fame_keyboard import menu_hall_fame
 from utils.hall_fame_utils import (get_top_characters_by_power,
                                    get_top_characters_by_level,
                                    get_top_club_by_power,
-                                   get_top_bomber_raiting,
+                                   get_top_bomber_rating,
                                    get_top_duelists_ranking,
                                    get_top_24_clubs_text
                                    )
@@ -74,7 +74,7 @@ async def menu_hall_of_fame(message: Message, character: Character):
     group_id_mathces = await LeagueFightService.get_group_id_by_club(club_id=character.club_id)
     all_matches_charaters = await MatchCharacterService.get_characters_by_group_id(group_id_mathces)
     await message.answer(
-        text=await get_top_bomber_raiting(
+        text=await get_top_bomber_rating(
             all_matches=all_matches_charaters,
             my_character=character
         )

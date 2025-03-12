@@ -1,5 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 
+from bot.club_infrastructure.callbacks.infrastructure_callbacks import SelectMenuInfrastructure
+
 from database.models.club import Club
 from database.models.character import Character
 
@@ -35,7 +37,9 @@ def main_menu_club(character: Character):
     
 def club_menu_keyboard(club: Club, character: Character):
     keyboard = InlineKeyboardBuilder()
-    if club.owner_id == character.characters_user_id:
+    _character_is_owner: bool = club.owner_id == character.characters_user_id
+    
+    if _character_is_owner:
         if not club.link_to_chat:
             keyboard.button(text="⚙️ Додати посилання на чат команди",  callback_data="change_club_chat")
         else:
@@ -50,6 +54,12 @@ def club_menu_keyboard(club: Club, character: Character):
         keyboard.button(text = "🎮 Схема команди", callback_data="view_schema_club")
         keyboard.button(text = "⬅️ Вийти з команди", callback_data="leave_club")
     keyboard.button(text="👥 Користувачі команди",callback_data=ViewCharatcerClub(club_id=club.id))
+    keyboard.button(
+        text = "🏢 Инфраструктура клуба", 
+        callback_data = SelectMenuInfrastructure(
+            character_is_owner = _character_is_owner
+        )
+    )
     
     return keyboard.adjust(1, repeat=True).as_markup()
 

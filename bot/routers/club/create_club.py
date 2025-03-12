@@ -7,6 +7,7 @@ from database.models.user_bot import UserBot
 
 from services.club_service import ClubService
 from services.character_service import CharacterService
+from services.club_infrastructure_service import ClubInfrastructureService
 
 from bot.states.club_states import CreateClub
 from bot.keyboards.club_keyboard import club_menu_keyboard, main_menu_club
@@ -35,6 +36,7 @@ async def get_name_club(message: Message, state: FSMContext, character: Characte
     )
     await CharacterService.update_character_club_id(character=character, club_id=club.id)
     club = await ClubService.get_club(club_id=club.id)
+    await ClubInfrastructureService.create_infrastructure(club_id=club.id)
     
     await message.answer_photo(
         photo=CLUB_PHOTO,

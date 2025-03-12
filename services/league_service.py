@@ -1,7 +1,6 @@
 from database.models.league_fight import LeagueFight
 from database.session import get_session
-from sqlalchemy import update
-from sqlalchemy import select, or_, and_, func
+from sqlalchemy import select, or_, and_, func, desc, over
 from datetime import datetime, timedelta
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -290,3 +289,38 @@ class LeagueFightService:
                 except SQLAlchemyError as e:
                     print(f"Ошибка при получении матчей для команды за прошлый месяц")
         return None
+    
+    @classmethod
+    async def get_latest_fights_from_current_month(cls) -> list[LeagueFight]:
+        today = datetime.now().date().replace(day=1)
+        next_month = today + timedelta(days=32)
+        next_month = next_month.replace(day=1)
+        async for session in get_session():
+            async with session.begin():
+                try:
+                    subquery = (
+                        select(
+                            LeagueFight.id,
+                            over(
+                                func.row_number(), 
+                                partition_by=LeagueFight.group_id,
+                                order_by=desc(LeagueFight.time_to_start)
+                            ).label("rank")
+                        )
+                        .where(
+                            LeagueFight.time_to_start >= today,
+                            LeagueFight.time_to_start < next_month
+                        )
+                        .subquery()
+                    )
+
+                    stmt = (
+                        select(LeagueFight)
+                        .join(subquery, LeagueFight.id == subquery.c.id)
+                        .where(subquery.c.rank == 1) 
+                    )
+                    result = await session.execute(stmt)
+                    return result.scalars().all()
+                except SQLAlchemyError as e:
+                    print(f"Ошибка при получении group_id для команды за текущий месяц: {e}")
+                    return None

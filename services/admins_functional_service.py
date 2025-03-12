@@ -1,5 +1,4 @@
 from database.models.character import Character
-from database.models.item import Item
 from database.models.duel import Duel
 
 from database.session import get_session

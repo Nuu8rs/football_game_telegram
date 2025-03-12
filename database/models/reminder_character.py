@@ -24,7 +24,6 @@ class ReminderCharacter(Base):
     time_to_join_club     = Column(DateTime, default=datetime(1970, 1, 1), server_default=text('\'1970-01-01 00:00:00\''), nullable=False)
 
     character = relationship("Character", back_populates="reminder", uselist=False)
-    # delta_chance_succes_training = Column(Integer, default=0, server_default="0")
 
     @property
     def time_training(self) -> timedelta | None:

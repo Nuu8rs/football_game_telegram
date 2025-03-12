@@ -42,3 +42,21 @@ class LeagueFight(Base):
             return 3
         else:
             return 0
+
+    @property
+    def winner(self) -> Club:
+        if self.goal_first_club == self.goal_second_club:
+            return [self.first_club, self.second_club]
+        elif self.goal_first_club > self.goal_second_club:
+            return self.first_club
+        else:
+            return self.second_club
+        
+    @property
+    def loser(self) -> Club:
+        if self.goal_first_club == self.goal_second_club:
+            return [self.first_club, self.second_club]
+        elif self.goal_first_club > self.goal_second_club:
+            return self.second_club
+        else:
+            return self.first_club

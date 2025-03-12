@@ -33,6 +33,7 @@ def select_type_gym():
             )
 def select_time_to_gym(gym_type: str):
     return (InlineKeyboardBuilder()
+            # .button(text="🕑 2 хвилини"  , callback_data=SelectTimeGym(gym_time=timedelta(minutes = 2) , gym_type = gym_type))
             # .button(text="🕑 5 секунд"  , callback_data=SelectTimeGym(gym_time=timedelta(seconds= 5) , gym_type = gym_type))
             .button(text="🕑 30 хвилин"  , callback_data=SelectTimeGym(gym_time=timedelta(minutes = 30) , gym_type = gym_type))
             .button(text="🕒 60 хвилин"  , callback_data=SelectTimeGym(gym_time=timedelta(minutes = 60) , gym_type = gym_type))

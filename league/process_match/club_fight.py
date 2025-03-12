@@ -3,20 +3,23 @@ import random
 
 from asyncio import Queue
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
+from bot.club_infrastructure.config import INFRASTRUCTURE_BONUSES
+from bot.club_infrastructure.types import InfrastructureType
 from constants import TIME_FIGHT, BUFFER_TIME, GET_RANDOM_NUMBER, PositionCharacter
 
 from database.models.character import Character
+from database.models.club_infrastructure import ClubInfrastructure
 
 from services.character_service import CharacterService
+from services.club_infrastructure_service import ClubInfrastructureService
 from services.league_service import LeagueFightService
 from services.match_character_service import MatchCharacterService
 
 from .club_in_match import ClubsInMatch
 from .fight_sender_v2 import ClubMatchSender
 
-from typing import Union
 
 from logging_config import logger
 
@@ -49,7 +52,7 @@ class ClubMatch:
         
         self.start_time  = start_time
         self.group_id    = group_id
-        self.total_goals = random.choice(range(2,9))
+        self.total_goals = random.choice(range(4,9))
         
         self.clubs_in_match = ClubsInMatch(
             first_club_id  = first_club_id,
@@ -225,8 +228,9 @@ class ClubMatch:
         winners_characters = self.clubs_in_match.determine_winner_users()    
         for winner_character in winners_characters:
             if not winner_character.is_bot:
-                exp,coins = GET_RANDOM_NUMBER(),GET_RANDOM_NUMBER()
-
+                
+                exp, coins = await self.calculation_bonus(winner_character)
+                
                 await CharacterService.add_exp_character(
                     character_id=winner_character.id,
                     amount_exp_add=exp
@@ -241,3 +245,25 @@ class ClubMatch:
                     money = coins 
                 )
                 
+    async def calculation_bonus(self, character: Character) -> tuple[int, int]:
+        TYPE_INFRASTRUCTURE = InfrastructureType.TRAINING_CENTER
+        exp   = GET_RANDOM_NUMBER()
+        coins = GET_RANDOM_NUMBER()
+
+        bonus_multiplier = 1
+        if character.club:
+            infrastructure: ClubInfrastructure = await ClubInfrastructureService.get_infrastructure(
+                club_id=character.club_id
+            )
+            bonus_multiplier += (
+                INFRASTRUCTURE_BONUSES[TYPE_INFRASTRUCTURE].get(
+                infrastructure.get_infrastructure_level(TYPE_INFRASTRUCTURE))
+                ) / 100
+            
+        exp, coins = apply_multiplier((exp, coins), bonus_multiplier)
+
+        return int(exp), int(coins)
+
+
+def apply_multiplier(rewards: tuple[int, int], multiplier: int) -> tuple[int, int]:
+    return tuple(value * multiplier for value in rewards)

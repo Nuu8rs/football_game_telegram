@@ -3,17 +3,22 @@ from aiogram.types import Message, CallbackQuery
 
 from datetime import datetime
 
-from database.models.user_bot import UserBot
 from database.models.character import Character
+from database.models.club_infrastructure import ClubInfrastructure
 
 from services.character_service import CharacterService
 from services.reminder_character_service import RemniderCharacterService
+from services.club_infrastructure_service import ClubInfrastructureService
 
 from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, no_energy_keyboard
 from bot.callbacks.gym_calbacks import SelectGymType, SelectTimeGym
+from bot.club_infrastructure.types import InfrastructureType
+from bot.club_infrastructure.config import INFRASTRUCTURE_BONUSES
+from bot.club_infrastructure.filters.get_club_and_infrastructure import GetClubAndInfrastructure
 
 from constants import GYM_PHOTO, const_name_characteristics, const_energy_by_time
 from schedulers.scheduler_gym_rasks import GymScheduler
+from datetime import timedelta
 
 gym_router = Router()
 
@@ -49,8 +54,18 @@ async def select_position_character(query: CallbackQuery):
         reply_markup=select_type_gym())
 
     
-@gym_router.callback_query(SelectTimeGym.filter())
-async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: UserBot, character: Character):
+@gym_router.callback_query(
+    SelectTimeGym.filter(),
+    GetClubAndInfrastructure()
+)
+async def start_gym(
+    query: CallbackQuery,
+    callback_data:SelectTimeGym,
+    character: Character,
+    club_infrastructure: ClubInfrastructure
+):
+    _time_training = callback_data.gym_time
+    
     if character.reminder.character_in_training:
         return await query.message.reply("<b>Ваш персонаж і так уже тренується</b>")
     
@@ -63,19 +78,43 @@ async def start_gym(query: CallbackQuery, callback_data:SelectTimeGym, user: Use
         except:
             return
     
-    await query.message.edit_caption(caption="Починаю тренування характеристики - {type_gym}\n\n"\
-                                     "До завершення тренування - {end_time} хв.\n"\
-                                     "Тренування завершиться в {end_time_full}".format(
-                                         type_gym = const_name_characteristics[callback_data.gym_type],
-                                         end_time = int(callback_data.gym_time.total_seconds() / 60),
-                                         end_time_full = (datetime.now() + callback_data.gym_time).strftime("%d-%m-%Y, %H:%M")
-                                     )
-                                     ,reply_markup=None)
+    reduction_procent = INFRASTRUCTURE_BONUSES[InfrastructureType.SPORTS_MEDICINE].get(
+        level = club_infrastructure.get_infrastructure_level(InfrastructureType.SPORTS_MEDICINE)
+    )
+    reduction_time = (_time_training.total_seconds() * abs(reduction_procent)) // 100
+    reduction_time = _time_training.total_seconds() - reduction_time
+    end_time_training = datetime.now() + timedelta(seconds=reduction_time)
+
+    caption = """
+🚀 <b>Починаю тренування характеристики</b> - <u>{type_gym}</u>
+
+👟 До завершення тренування - {end_time} хв
+💡 Завдяки покращенням інфраструктури клубу, фактичний час тренування скорочено до {update_time} хв!
+
+⏰ Тренування завершиться в <b>{end_time_full}</b>
+""".format(
+        type_gym = const_name_characteristics[callback_data.gym_type],
+        end_time = int(_time_training.total_seconds() / 60),
+        update_time = int(reduction_time / 60),
+        end_time_full = end_time_training.strftime("%Y-%m-%d %H:%M")
+    
+)
+    await query.message.edit_caption(
+        caption=caption
+        ,reply_markup=None
+    )
   
+    club_infrastructure = None
+    if character.club_id:
+        club_infrastructure = await ClubInfrastructureService.get_infrastructure(
+            club_id=character.club_id,        
+        )
+        
     gym_scheduler = GymScheduler(
-        character_id        = character.id,
+        character        = character,
         type_characteristic = callback_data.gym_type,
-        time_training       = callback_data.gym_time 
+        time_training       = callback_data.gym_time,
+        club_infrastructure = club_infrastructure
     )
     gym_scheduler.start_training()
     await RemniderCharacterService.update_training_info(

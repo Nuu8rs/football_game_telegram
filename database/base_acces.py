@@ -15,4 +15,6 @@ def get_base():
     from database.models.payment.money_payment import MoneyPayment
     from database.models.payment.payments import Payment
     from database.models.training import TrainingTimer, CharacterJoinTraining
+    from database.models.club_infrastructure import ClubInfrastructure
+    
     return Base

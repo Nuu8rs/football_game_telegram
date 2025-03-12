@@ -24,7 +24,7 @@ class Club(Base):
     
     energy_applied = Column(Integer, default=0, server_default='0')
     
-    custom_url_photo_stadion = Column(String(255), nullable = False, default = "src\fight_club_menu.jpg", server_default= "src\fight_club_menu.jpg")
+    custom_url_photo_stadion = Column(String(255), nullable = False, default = "src/fight_club_menu.jpg", server_default= "src/fight_club_menu.jpg")
     custom_name_stadion  = Column(String(255), nullable = False, default = "Стадіон", server_default= "Стадіон")
     
     owner          = relationship("UserBot", back_populates="clubs", lazy="selectin")

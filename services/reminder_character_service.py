@@ -35,15 +35,15 @@ class RemniderCharacterService:
     @classmethod
     async def anulate_character_training_status(cls, character_id: int) -> None:
         async for session in get_session():
-            async with session as sess:
+            async with session.begin():
                 try:
                     stmt = (
                         update(ReminderCharacter)
                         .where(ReminderCharacter.character_id == character_id)
                         .values(character_in_training = False)
                     )
-                    await sess.execute(stmt)
-                    await sess.commit()
+                    await session.execute(stmt)
+                    await session.commit()
                 except Exception as E:
                     logger.error(f"Не смог анулировать статус тренировки для {character_id} err : {E}")
             

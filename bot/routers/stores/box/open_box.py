@@ -72,9 +72,9 @@ class OpenBoxService:
                     text=frame
                 )
                 await asyncio.sleep(0.35)
-        await self._destribute_reward()
+        await self._distribute_reward()
             
-    async def _destribute_reward(self):
+    async def _distribute_reward(self):
         await CharacterService.add_exp_character(
             character_id = self.character.id,
             amount_exp_add = self.open_box_exp.winner_item.count_item

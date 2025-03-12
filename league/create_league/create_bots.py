@@ -4,6 +4,7 @@ from database.models.user_bot import UserBot
 from database.models.character import Character
 
 from services import user_service,club_service, character_service
+from services.club_infrastructure_service import ClubInfrastructureService
 from constants import MAX_LEN_MEMBERS_CLUB, Gender, PositionCharacter
 
 import random
@@ -57,14 +58,19 @@ class BOTS:
             user_id=user_id
         )
     
-    async def __create_club(self, user: UserBot):
-        return await club_service.ClubService.create_club(
+    async def __create_club(self, user: UserBot) -> Club:
+        club =  await club_service.ClubService.create_club(
             name_club=generate_team_names(),
             owner_id=user.user_id,
             fake_club=True,
             league=self.name_league
             
         )
+        await ClubInfrastructureService.create_infrastructure(
+            club_id=club.id
+        )
+        return club
+        
     async def __create_characters(self, club: Club, user: UserBot):
         
         average_power = int(self.average_club_strength / 5)  

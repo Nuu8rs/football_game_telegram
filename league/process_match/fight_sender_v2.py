@@ -200,6 +200,7 @@ class ClubMatchSender:
         return template.format(**context)
     
     async def send_start_match(self):
+        
         text_fisrt_club = self._format_message(
             TextsMatch.TEMPLATE_FIGHT,
             extra_context = {
@@ -213,15 +214,19 @@ class ClubMatchSender:
                 }
         )
         await self._send_messages(
-            characters = self.clubs_in_match.first_club_characters,
-            text       = text_fisrt_club,
-            photo      = self.clubs_in_match.first_club.custom_photo_stadion
-        )
+                characters = self.clubs_in_match.first_club_characters,
+                text       = text_fisrt_club,
+                photo      = self.clubs_in_match.first_club.custom_photo_stadion
+            )
+
+        
+
         await self._send_messages(
-            characters = self.clubs_in_match.second_club.characters,
-            text  = text_second_club,
-            photo = self.clubs_in_match.second_club.custom_photo_stadion
-        )
+                characters = self.clubs_in_match.second_club.characters,
+                text  = text_second_club,
+                photo = self.clubs_in_match.second_club.custom_photo_stadion
+            )
+
         
     async def send_participants_characters(self) -> None:
         if self.clubs_in_match.first_club_characters:

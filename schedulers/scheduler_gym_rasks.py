@@ -2,14 +2,20 @@ import asyncio
 from aiogram.types import FSInputFile
 
 from datetime import datetime, timedelta
-from typing import Literal
+from typing import Literal, Optional
 from enum import Enum
+
+from bot.club_infrastructure.types import InfrastructureType
+from bot.club_infrastructure.config import INFRASTRUCTURE_BONUSES
 
 from database.models.character import Character
 from database.models.reminder_character import ReminderCharacter
+from database.models.club_infrastructure import ClubInfrastructure
 
 from services.character_service import CharacterService
 from services.reminder_character_service import RemniderCharacterService
+from services.club_infrastructure_service import ClubInfrastructureService
+
 from constants import (
     X2_REWARD_WEEKEND_START_DAY,
     X2_REWARD_WEEKEND_END_DAY,
@@ -39,19 +45,20 @@ class TrainingTextTemplate:
 
 
 class GymScheduler:
-    
+
     def __init__(
         self,
-        character_id: int,
+        character: Character,
         type_characteristic: Literal['technique', 'kicks', 'ball_selection', 'speed', 'endurance'],
-        time_training: timedelta
+        time_training: timedelta,
+        club_infrastructure: Optional[ClubInfrastructure] = None
     ) -> None:
         
-        self.character_id = character_id
+        self.character= character
         self.type_characteristic = type_characteristic
         self.time_training = time_training
+        self.club_infrastructure = club_infrastructure
         
-        self.character: Character = None
         self.result_training: ResultTraining = None
     
     @property
@@ -60,27 +67,44 @@ class GymScheduler:
         is_weekend = X2_REWARD_WEEKEND_START_DAY <= today <= X2_REWARD_WEEKEND_END_DAY
         return 2 if is_weekend else 1
 
-    def start_training(self) -> None:
-        asyncio.create_task(self._wait_training(self.time_training))
+    @property
+    def delta_time_training(self) -> int:
+        reduction_procent = INFRASTRUCTURE_BONUSES[InfrastructureType.SPORTS_MEDICINE].get(
+            level = self.club_infrastructure.get_infrastructure_level(InfrastructureType.SPORTS_MEDICINE)
+        )
+        reduction_time = (self.time_training.total_seconds() * abs(reduction_procent)) // 100
+        return self.time_training.total_seconds() - reduction_time
+    
+    
 
-    async def _wait_training(self, time_sleep: timedelta) -> None:
-        await asyncio.sleep(time_sleep.total_seconds())
+    def start_training(self) -> None:
+        asyncio.create_task(
+            self._wait_training(self.delta_time_training)
+        )
+
+    async def _wait_training(self, time_sleep: int) -> None:
+        await asyncio.sleep(time_sleep)
         await self._run_training()
 
     async def _run_training(self) -> None:
         try:
-            self.character = await CharacterService.get_character_by_id(self.character_id)
             chance = chance_add_point[self.time_training]
             
             if self.character.vip_pass_is_active:
                 chance += CHANCE_VIP_PASS
+                
+            if self.club_infrastructure:
+                infrastructure_bonus = INFRASTRUCTURE_BONUSES[InfrastructureType.TRAINING_BASE].get(
+                    level = self.club_infrastructure.get_infrastructure_level(InfrastructureType.TRAINING_BASE)
+                )
+                chance += infrastructure_bonus
                 
             success = check_chance(chance)
             self.result_training = ResultTraining.SUCCESS if success else ResultTraining.FAILURE
 
             if self.result_training == ResultTraining.SUCCESS:
                 await CharacterService.update_character_characteristic(
-                    character_id=self.character_id,
+                    character_id=self.character.id,
                     type_characteristic=self.type_characteristic,
                     amount_add_points=self.training_points
                 )
@@ -89,8 +113,8 @@ class GymScheduler:
         except Exception as e:
             logger.error(f"Ошибка при выполнении тренировки: {e}")
         finally:
-            await RemniderCharacterService.anulate_character_training_status(self.character_id)
-            await RemniderCharacterService.anulate_training_character(self.character_id)
+            await RemniderCharacterService.anulate_character_training_status(self.character.id)
+            await RemniderCharacterService.anulate_training_character(self.character.id)
 
     async def send_end_training_message(self) -> None:
         try:
@@ -128,27 +152,51 @@ class GymStartReseter:
                 await RemniderCharacterService.anulate_character_training_status(character_rem.character_id)
                 await RemniderCharacterService.anulate_training_character(character_rem.character_id)
                 continue
+            
+            character = await CharacterService.get_character_by_id(character_rem.character_id)
+            if character.club_id:
+                club_infrastructure = await ClubInfrastructureService.get_infrastructure(character.club_id)
+            
             gym_scheduler = GymScheduler(
-                character_id        = character_rem.character_id,
+                character           = character,
                 type_characteristic = character_rem.training_stats,
-                time_training       = timedelta(seconds = character_rem.time_training_seconds)
+                time_training       = timedelta(seconds = character_rem.time_training_seconds),
+                club_infrastructure = club_infrastructure
             )
-            if cls.has_training_ended(character_rem):
+            if cls.has_training_ended(character_rem, club_infrastructure):
                 await gym_scheduler._run_training()
             else:
                 asyncio.create_task(
                     gym_scheduler._wait_training(
-                        cls.time_left(character_rem)
-                                                )
-                                    )
+                        cls.time_left(
+                            character_rem=character_rem,
+                            club_infrastructure=club_infrastructure 
+                        )
+                    )
+            )
 
             
     @staticmethod
-    def has_training_ended(character_rem: ReminderCharacter) -> bool:
-        return GymStartReseter.time_left(character_rem) < timedelta(seconds=0)
+    def has_training_ended(
+        character_rem: ReminderCharacter, 
+        club_infrastructure: ClubInfrastructure
+    ) -> bool:
+        return GymStartReseter.time_left(character_rem, club_infrastructure) < 0
     
     @staticmethod
-    def time_left(character_rem: ReminderCharacter) -> timedelta:
+    def time_left(
+        character_rem: ReminderCharacter,
+        club_infrastructure: ClubInfrastructure
+    ) -> timedelta:
         time_end = character_rem.time_start_training + timedelta(seconds=character_rem.time_training_seconds)
-        return time_end - datetime.now()
-            
+        
+        if club_infrastructure:
+            reduction_procent = INFRASTRUCTURE_BONUSES[InfrastructureType.SPORTS_MEDICINE].get(
+                level=club_infrastructure.get_infrastructure_level(InfrastructureType.SPORTS_MEDICINE)
+            )
+            reduction_time = (character_rem.time_training_seconds * abs(reduction_procent)) // 100
+            time_end: datetime = time_end - timedelta(seconds=reduction_time)
+        
+        return (time_end - datetime.now()).total_seconds()
+
+    

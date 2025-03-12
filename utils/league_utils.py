@@ -11,7 +11,6 @@ from services.best_20_club_league_service import Best20ClubLeagueService
 from services.best_club_league import BestLeagueService
 from services.club_service  import ClubService
 
-from league.process_match.club_in_match import ClubsInMatch
 
 from bot.routers.league.utils import get_characters_club_in_match
 

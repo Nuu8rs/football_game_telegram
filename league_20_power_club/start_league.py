@@ -52,8 +52,6 @@ class Best20ClubLeague:
             ]
         )
         await sender_end_match.send_info_to_clubs()
-        
-
 
         send_congratulation = SendCongratulationEndMatch()
         self.scheduler_best_league.add_job(

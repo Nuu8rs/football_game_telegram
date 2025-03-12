@@ -18,6 +18,7 @@ from bot.training.routers.end_training import end_training_router
 from bot.training.routers.buy_training_key import buy_training_key_router
 from bot.training.routers.duel_stage import training_duel_router
 from bot.routers.register_user.router import register_user_router
+from bot.club_infrastructure.router_infrastructure import router_infrastructure
 
 main_router = Router()
 main_router.include_routers(
@@ -35,6 +36,7 @@ main_router.include_routers(
     admin_info_new_member_router,
     christmas_tree_router,
     join_trainig_router,
+    router_infrastructure,
     answer_etap_router,
     qte_router,
     end_training_router,

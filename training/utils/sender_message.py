@@ -82,6 +82,7 @@ class RegisterInTrainingSender:
     async def _worker_sender_message(self):  
         while True:
             try:
+                await asyncio.sleep(0.1)
                 character, attempt = await self.send_queue.get()
                 message, status = await self.__send_message(character)
                 if message:

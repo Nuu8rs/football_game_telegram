@@ -14,6 +14,8 @@ from services.league_service import LeagueFightService
 from bot.callbacks.league_callbacks import EpizodeDonateEnergyToMatch
 from bot.states.league_match_state import DonateEnergyInMatch
 from bot.keyboards.gym_keyboard import no_energy_keyboard
+from bot.club_infrastructure.utils import calculate_bonus_by_character
+from bot.club_infrastructure.types import InfrastructureType
 
 from league.process_match.club_fight import ClubMatch
 
@@ -121,6 +123,12 @@ async def donate_epizode_energy(
         return
     
     new_power = energy*10
+    new_power = await calculate_bonus_by_character(
+        character, 
+        InfrastructureType.STADIUM,
+        new_power
+    )
+    new_power = new_power[0]
     
     chance_first_club_before  = match.calculate_chances 
     chance_second_club_before = 100 - chance_first_club_before 
@@ -131,7 +139,7 @@ async def donate_epizode_energy(
     chance_second_club_after = 100 - chance_first_club_after
     
     text = f"""
-⚽️ <b>{character.character_name} додав {new_power}💪 сил команді {my_club.name_club}!</b> ⚽️  
+⚽️ <b>{character.character_name} додав {energy}🔋 до сил команді {my_club.name_club}!</b> ⚽️  
 
 🔥 <b>Зміни шансів на гол:</b>  
 - ⚽️ Команда: {match.first_club.name_club} - <b>{chance_first_club_before:.2f}%</b> → <b>{chance_first_club_after:.2f}%</b>  
@@ -145,6 +153,7 @@ async def donate_epizode_energy(
         my_character = None,
         text = text
     )
+    
     
     
     

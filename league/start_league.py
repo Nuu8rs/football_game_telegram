@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
@@ -11,6 +11,9 @@ from league.process_match.club_fight import ClubMatch
 from league.user_sender import UserSender
 from league.create_league.create_league_match import CreateDefaultLeagueMatches
 from constants import START_DAY_DEFAULT_LEAGUE
+from datetime import timedelta
+
+TEST = False
 
 class StartDefaultLeague:
     
@@ -27,13 +30,47 @@ class StartDefaultLeague:
         
         self.scheduler_league.start()
             
-    async def _start_match(
-        self, 
-        matches: list[LeagueFight]
-    ) -> None:
-    
+    async def _start_match(self, matches: list[LeagueFight]) -> None:
+        START_TEST = False
         for match in matches:
-            await self.schedule_match_start(match)
+            if TEST:
+                if self._is_my_club_test(match) and not START_TEST:
+                    START_TEST = True
+                    await self.schedule_match_start_test(match)
+            else:
+                await self.schedule_match_start(match)
+
+    def _is_my_club_test(self, match: LeagueFight) -> bool:
+        my_id = 6790393255
+        first_characters_id = [character.characters_user_id for character in match.first_club.characters]
+        second_characters_id = [character.characters_user_id for character in match.second_club.characters]
+        return my_id in first_characters_id or my_id in second_characters_id
+        
+    async def schedule_match_start_test(self, match: LeagueFight):
+        
+        start_time_fight = datetime.now() + timedelta(minutes=1)
+        start_time_sender = datetime.now()
+        
+    
+        club_match = ClubMatch(
+            first_club_id  = match.first_club.id  ,
+            second_club_id = match.second_club.id ,
+            start_time     = start_time_fight,
+            match_id       = match.match_id,
+            group_id       = match.group_id
+        )
+        
+        user_sender = UserSender(match_id=club_match.clubs_in_match.match_id)
+
+        self.scheduler_league.add_job(user_sender.send_messages_to_users, 
+                                      trigger=DateTrigger(start_time_sender),
+                                      misfire_grace_time = 10,
+                                      
+                                      )
+        self.scheduler_league.add_job(club_match.start_match, 
+                                      trigger=DateTrigger(start_time_fight),
+                                      misfire_grace_time = 10
+                                      )
             
             
     async def schedule_match_start(self, match: LeagueFight):

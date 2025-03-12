@@ -1,18 +1,20 @@
-from aiogram import Router, Bot, F
+from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from aiogram.fsm.context import FSMContext
 
-from datetime import datetime, timedelta
+from datetime import datetime
+
+from bot.keyboards.gym_keyboard import menu_education_cernter
+from bot.club_infrastructure.types import InfrastructureType
+from bot.club_infrastructure.utils import calculate_bonus_by_character
+
+from constants import GET_RANDOM_NUMBER, DELTA_TIME_EDUCATION_REWARD, EDUCATION_CENTER
+from constants import X2_REWARD_WEEKEND_START_DAY, X2_REWARD_WEEKEND_END_DAY
 
 from database.models.character import Character
 
 from services.character_service import CharacterService
 
-from bot.keyboards.gym_keyboard import menu_education_cernter
 from schedulers.scheduler_education import EducationRewardReminderScheduler
-from constants import GET_RANDOM_NUMBER, DELTA_TIME_EDUCATION_REWARD, EDUCATION_CENTER
-from constants import X2_REWARD_WEEKEND_START_DAY, X2_REWARD_WEEKEND_END_DAY
-
 
 from utils.club_utils import get_text_education_center_reward
 
@@ -26,8 +28,7 @@ async def go_to_gym(message: Message):
         )
     
 @education_center_router.callback_query(F.data == "get_rewards_education_center")
-async def get_rewards_education_cernter(query: CallbackQuery, character: Character, user):
-    
+async def get_rewards_education_cernter(query: CallbackQuery, character: Character):
     
     if not datetime.now() > character.reminder.education_reward_date:
         time_to_get_reward = character.reminder.education_reward_date - datetime.now()
@@ -36,20 +37,7 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
 
         return query.message.answer(f"<b>Залишилося часу до отримання нагороди годин {hours} і {minutes} хвилин</b>")
     
-    
-    exp, coins, energy = GET_RANDOM_NUMBER(1,3), GET_RANDOM_NUMBER(5,10), GET_RANDOM_NUMBER(30,50)
-    current_day = datetime.now().day
-    
-    if current_day >= X2_REWARD_WEEKEND_START_DAY and current_day <= X2_REWARD_WEEKEND_END_DAY:
-        exp = exp * 2
-        coins = coins * 2
-        energy = energy * 2
-    else:
-        if character.vip_pass_is_active:
-            exp = exp * 2
-            coins = coins * 2
-            energy = energy * 2
-        
+    exp, coins, energy = await calculation_bonus(character)
 
     await CharacterService.edit_character_energy(
         character_id = character.id,
@@ -75,9 +63,40 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
         character=character,
         time_get_reward=datetime.now() + DELTA_TIME_EDUCATION_REWARD
     ) 
-    await query.message.answer(get_text_education_center_reward(
-        exp = exp,
-        coins=coins,
-        energy= energy,
-        delta_time_education_reward=DELTA_TIME_EDUCATION_REWARD
-    ))
+    await query.message.answer(
+        get_text_education_center_reward(
+            exp = exp,
+            coins=coins,
+            energy= energy,
+            delta_time_education_reward=DELTA_TIME_EDUCATION_REWARD
+        )
+    )
+    
+    
+async def calculation_bonus(character: Character) -> tuple[int, int, int]:
+
+    exp = GET_RANDOM_NUMBER(1, 3)
+    coins = GET_RANDOM_NUMBER(5, 10)
+    energy = GET_RANDOM_NUMBER(30, 50)
+
+    bonus_multiplier = 1
+    exp, coins, energy = await calculate_bonus_by_character(
+        character,
+        InfrastructureType.TRAINING_CENTER,
+        exp,
+        coins,
+        energy
+    )
+    if (
+        X2_REWARD_WEEKEND_START_DAY <= datetime.now().day <= X2_REWARD_WEEKEND_END_DAY
+        or character.vip_pass_is_active
+    ):
+        bonus_multiplier *= 2
+
+    exp, coins, energy = apply_multiplier((exp, coins, energy), bonus_multiplier)
+
+    return int(exp), int(coins), int(energy)
+
+
+def apply_multiplier(rewards: tuple[int, int, int], multiplier: int) -> tuple[int, int, int]:
+    return tuple(value * multiplier for value in rewards)

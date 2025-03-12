@@ -5,7 +5,12 @@ from uuid import uuid4
 from services.club_service import ClubService
 from services.league_service import LeagueFightService
 
-from .destribute_group_clubs import DestributeMatches
+from bot.club_infrastructure.distribute_points.add_points_from_league import AddPointsToClub
+from bot.club_infrastructure.distribute_points.scheduler_distribute_points import ShedulerdistributePoints
+
+from league.service.types import TypeLeague
+
+from .distribute_group_clubs import DistributeMatches
 from .score_clubs import ScoreClub
 from constants import START_DAY_DEFAULT_LEAGUE
 
@@ -23,7 +28,7 @@ class CreateDefaultLeagueMatches:
 
         all_clubs = await ClubService.get_all_clubs()
         score_clubs = await ScoreClub(all_clubs).get_score_clubs()
-        groups_club_ids = await DestributeMatches(score_clubs).get_groups()
+        groups_club_ids = await DistributeMatches(score_clubs).get_groups()
         await self.create_matches_group(groups_club_ids)
     
     async def create_matches_group(self, groups_club_ids:list[int]): 
@@ -60,3 +65,14 @@ class CreateDefaultLeagueMatches:
                     time_to_start=start_time_fight,
                     group_id = group_id
                 )
+        else:
+            points_manager = AddPointsToClub(
+                group_ids   = [group_id],
+                type_league = TypeLeague.DEFAULT_LEAGUE,
+            )
+            sheduler = ShedulerdistributePoints(
+                time_distribute = start_time_fight + timedelta(minutes = 5),
+                points_manager  = points_manager
+            )
+            await sheduler.start_wait_distribute_points()
+            
