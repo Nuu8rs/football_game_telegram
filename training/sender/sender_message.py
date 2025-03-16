@@ -1,7 +1,6 @@
 import asyncio
 import time
 
-from asyncio.queues import QueueEmpty
 from datetime import datetime
 from enum import Enum
 from typing import Optional, Tuple
@@ -20,8 +19,8 @@ from utils.rate_limitter import rate_limiter
 from loader import bot
 from logging_config import logger
 
-from .text_stage import TEXT_TRAINING
-
+from training.utils.text_stage import TEXT_TRAINING
+from training.constans import TIME_REGISTER_TRAINING, TIME_TRAINING
 
 class StatusSendMessage(Enum):
     USER_IS_BLOCK = "USER_IS_BLOCK"
@@ -33,8 +32,9 @@ class RegisterInTrainingSender:
     _text_register = TEXT_TRAINING.REGISTER_IN_TRAINING_MESSAGE
     _max_retries = 4
     
-    def __init__(self, end_time: datetime) -> None:
-        self.end_time = end_time 
+    def __init__(self, end_time_register: datetime) -> None:
+        self.end_time_register = end_time_register 
+        self.start_time_register = end_time_register - TIME_REGISTER_TRAINING
         
         self.messages: dict[int, Message] = {}
         self.send_queue: asyncio.Queue[tuple[Character, int]] = asyncio.Queue()
@@ -52,8 +52,12 @@ class RegisterInTrainingSender:
         )
          
     @property
-    def _end_time(self) -> int:
-        return int(self.end_time.timestamp())
+    def _end_time_register(self) -> int:
+        return int(self.end_time_register.timestamp())
+            
+    @property
+    def _end_time_training(self) -> int:
+        return int((self.end_time_register + TIME_TRAINING).timestamp())
             
     async def start_send_message(self):
         all_characters = await CharacterService.get_all_users_not_bot()
@@ -68,15 +72,17 @@ class RegisterInTrainingSender:
                 text=self._text_register,
                 reply_markup=keyboard_join_training(
                     count_users=0,
-                    end_time_join=self._end_time,
+                    end_time_health=self._end_time_training,
                 ),
             )
             return message, StatusSendMessage.SUCCESS_SEND_MESSAGE
         
         except TelegramForbiddenError:
+            logger.error(f"User {character.characters_user_id} blocked the bot")
             return None, StatusSendMessage.USER_IS_BLOCK
         
         except Exception as e:
+            logger.error(f"Error sending message to {character.characters_user_id}: {e}")
             return None, StatusSendMessage.ERROR_SEND_MESSAGE
 
     async def _worker_sender_message(self):  
@@ -96,7 +102,10 @@ class RegisterInTrainingSender:
     async def _worker_edit_keyboard(self):
         while True:
             try:
-                count = await TrainingService.count_joinded_user()
+                joined_users = await TrainingService.get_joined_users(
+                    [self.start_time_register, self.end_time_register]
+                )
+                count = len(joined_users)
                 if count == self._last_count:
                     continue
                 for message in self.messages.values():
@@ -114,7 +123,7 @@ class RegisterInTrainingSender:
             await message.edit_reply_markup(
                 reply_markup = keyboard_join_training(
                     count_users = count,
-                    end_time_join = self._end_time
+                    end_time_health = self._end_time_training
                 )
             )  
         except Exception as E:
@@ -122,7 +131,7 @@ class RegisterInTrainingSender:
 
     async def _worker_close(self):
         current_time = time.time()
-        time_sleep = self._end_time - current_time
+        time_sleep = self._end_time_register - current_time
         await asyncio.sleep(time_sleep)
         self._task_worker_edit.cancel()
         self._task_worker_sender.cancel()

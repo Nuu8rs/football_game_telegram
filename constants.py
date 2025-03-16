@@ -24,7 +24,7 @@ class ItemCategory(PyEnum):
 
 chance_add_point = {
     timedelta(seconds = 5)   : 90,
-    timedelta(minutes = 2)   : 50,
+    timedelta(minutes = 5)   : 100, #ПЕРВАЯ ТРЕНИРОВКА
     timedelta(minutes = 30)  : 35,
     timedelta(minutes = 60)  : 45,
     timedelta(minutes = 90)  : 55,
@@ -89,6 +89,8 @@ END_VIP_PASS_PHOTO = FSInputFile("src/end_vip_pass_photo.jpg")
 LOW_ENERGY_PHOTO = FSInputFile("src/low_energy_photo.jpg")
 BUY_TRAINING_KEY = FSInputFile("src/buy_key_training.jpg")
 NEED_TRAINING_KEY = FSInputFile("src/need_training_key.jpg")
+HALL_FAME_POSITION_PHOTO = FSInputFile("src/hall_fame_position_photo.jpg")
+
 
 MAX_LEN_MEMBERS_CLUB = 11
 

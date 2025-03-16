@@ -17,6 +17,7 @@ class ShedulerdistributePoints:
         self.scheduler.add_job(
             func=self.points_manager.add_points,
             trigger=trigger,
+            misfire_grace_time=20
         )
         self.scheduler.start()
     

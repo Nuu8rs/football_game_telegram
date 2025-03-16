@@ -156,7 +156,7 @@ class DuelSender:
     async def send_message_select_angle(self):
         markup = select_position_angle(
             duel_id=self.duel_data.duel_id,
-            training_id = self.training.training_id
+            end_time_health = self.training.end_time_from_keyboard
         )
         for role in RoleDuel:
             user = self.duel_data.get_user_by_role(role)
@@ -196,7 +196,7 @@ class DuelSender:
     async def send_end_training_duel(self):
         try:
             keyboard = end_duel_training(
-                training_id = self.training.training_id,
+                end_time_health = self.training.end_time_from_keyboard,
                 count_score = self.training.score,
                 next_stage = Stage.END_TRAINIG
             )

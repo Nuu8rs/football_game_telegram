@@ -17,7 +17,7 @@ from schedulers.scheduler_training import ReminderTraning
 from schedulers.scheduler_vip_pass import VipPassSchedulerService
 from schedulers.scheduler_reset_training_key import ResetTrainingKeyScheduler
 
-from training.timers.starter import SchedulerEveryDayStartTraining
+from training.timers.starter_taimers import SchedulerRegisterTraining
 
 
 from pvp_duels.duel_core import CoreDuel
@@ -65,12 +65,11 @@ async def start_utils():
     await init_schedulers_league()
     await energy_listener.start_listener()
     await exp_listener.start_listener()
-    await scheduler_training.start_scheduler()
-    await scheduler_distribute.start()
     
+    await scheduler_distribute.start()
     await reset_energy_characters.start_reset_energy()
     await reset_aplied_energy_club.start_reset_energy()
-    await education_reward_reminder.start_reminder()
+    # await education_reward_reminder.start_reminder()
     await gym_reminder.start_iniatialization_gym()
     await end_beast_league.wait_to_end_season_best_league()
     # await end_duel_season.wait_to_end_season_duel()
@@ -79,8 +78,9 @@ async def start_utils():
     await reminder_go_to_training.start()
     await reminder_vip_pass.start_timers()
     await scheduler_reset_training_key.start()
+    await scheduler_training.start()
     
-    asyncio.create_task(core_duel._waiting_users())
+    # asyncio.create_task(core_duel._waiting_users())
 
 
 
@@ -106,5 +106,5 @@ league_ranking_update = UpdateLeagueRating()
 scheduler_best_league = SchedulerBestClubtLeague()
 scheduler_best_20_club_league = SchedulerBest20ClubLeague()
 scheduler_default_league = SchedulerDefaultLeague()
-scheduler_training = SchedulerEveryDayStartTraining()
+scheduler_training = SchedulerRegisterTraining()
 scheduler_distribute= Waiterdistributer()

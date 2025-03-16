@@ -28,7 +28,7 @@ class TextReminder:
 
 class ReminderBuyEnergy:
     
-    task_times = ["09:00", "12:00", "15:00", "18:00", "21:00"]
+    task_times = ["09:00", "12:00", "18:00", "21:00"]
     default_trigger_start = CronTrigger(hour=8)
 
     def __init__(self) -> None:

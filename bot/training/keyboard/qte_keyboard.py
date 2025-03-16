@@ -8,7 +8,7 @@ from training.constans import DIRECTIONS
 
 def get_qte_keyboard(
     correct_direction: str,
-    training_id: int,
+    end_time_health: int,
     shuffle: bool = False,
     stage: int = 1
 ):
@@ -25,7 +25,7 @@ def get_qte_keyboard(
             correct_direction=correct_direction,
             stage = stage,
             timestamp = timestamp,
-            training_id = training_id
+            end_time_health = end_time_health
         )
         keyboard.button(text=direction, callback_data=callback)
     keyboard.adjust(3)

@@ -74,13 +74,14 @@ class EndTraining:
         except Exception as E:
             logger.error(f"Failed to send message to {self.training.user_id}\nError: {E}")
 
-    async def _send_reinvite_training(self, character):
+    async def _send_reinvite_training(self, character: Character):
         await asyncio.sleep(5)
         await self.__send_message(
             text = TEXT_TRAINING.TRAINING_RE_INVITE.format(
                     count_key = character.training_key
                 ),
             keyboard = re_join_training(
-                character = character
+                character = character,
+                end_time_health = self.training.end_time_from_keyboard
             )
         )

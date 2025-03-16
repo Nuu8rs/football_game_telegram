@@ -56,7 +56,7 @@ async def start_qte_training(
             correct_direction=correct_direction,
             shuffle = False,
             stage = 1,
-            training_id = TrainingManager.training_id
+            end_time_health = training.end_time_from_keyboard
         )
     )
     
@@ -90,7 +90,7 @@ async def stop_qte(
         training.update_stage(
                 stage = training.stage.next_stage()
             )
-    await training.send_message_by_etap()
+    await training.send_message_by_stage()
 
 
 @qte_router.callback_query(
@@ -122,7 +122,7 @@ async def correct_direction(
             correct_direction=current_direction,
             shuffle = True,
             stage = callback_data.stage + 1,
-            training_id = TrainingManager.training_id
+            end_time_health = training.end_time_from_keyboard
         )
     )
     

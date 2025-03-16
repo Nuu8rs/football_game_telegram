@@ -29,6 +29,8 @@ async def buy_training_key_hander(
     query: CallbackQuery,
     character: Character
 ):
+    
+    PRICE_TRAINING_KEY = 1
     await query.message.edit_reply_markup(
         reply_markup = None
     )

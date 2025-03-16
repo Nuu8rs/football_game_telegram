@@ -1,4 +1,4 @@
-from uuid import uuid4
+from datetime import datetime
 
 from aiogram import Bot
 from loader import bot
@@ -18,15 +18,23 @@ class Training:
         self,
         user_id: int,
         character_id: int,
-        training_id: int
+        range_training_times: list[datetime, datetime]
     ) -> None:
         
-        self.training_id: int = training_id
-        self.user_id: int = user_id
-        self.character_id: int = character_id
+        self.user_id = user_id
+        self.character_id = character_id
+        
+        self.range_training_times = range_training_times 
+        self._start_time: datetime = range_training_times[0]
+        self._end_time: datetime = range_training_times[1]
+        
         
         self.stage: Stage = Stage.STAGE_1
         self.score: int = 0
+        
+    @property
+    def end_time_from_keyboard(self) -> int:
+        return int(self._end_time.timestamp())
         
     def update_stage(self, stage: Stage) -> None:
         self.stage = stage
@@ -35,29 +43,29 @@ class Training:
         self.score += points
         return self.score
     
-    async def send_message_by_etap(self) -> None:
+    async def send_message_by_stage(self) -> None:
         if self.stage == Stage.STAGE_1:
             await self._send_start_training()
         text_params: TextParamsTraning = await GetParams.get_params_epizode(
             stage=self.stage,
         ) 
-        await self._send_mesaage_etap(text_params=text_params)
+        await self._send_mesaage_stage(text_params=text_params)
         
-    async def _send_mesaage_etap(self, text_params: TextParamsTraning):
+    async def _send_mesaage_stage(self, text_params: TextParamsTraning):
         text_etap = TextStage.get_text(text_params)
         text_etap += f"\n\nВаш поточний рахунок за тренування: <b>{self.score}</b> очок. ✴️"
 
         if text_params.patch_to_photo:
-            return await self.__send_photo_etap(
+            return await self.__send_photo_stage(
                 text_params = text_params,
                 text_etap = text_etap
             )
             
-        return await self.__send_message_etap(
+        return await self.__send_message_stage(
             text_etap = text_etap
         )
         
-    async def __send_photo_etap(
+    async def __send_photo_stage(
         self, 
         text_params: TextParamsTraning,
         text_etap: str
@@ -68,12 +76,12 @@ class Training:
             caption=text_etap,
             reply_markup=next_stage_keyboard(
                 current_stage = self.stage,
-                training_id = self.training_id
+                end_time_health = self.end_time_from_keyboard
 
             )
         )
         
-    async def __send_message_etap(
+    async def __send_message_stage(
         self, 
         text_etap: str
     ):
@@ -82,7 +90,7 @@ class Training:
             text=text_etap,
             reply_markup=next_stage_keyboard(
                 current_stage = self.stage,
-                training_id = self.training_id
+                end_time_health = self.end_time_from_keyboard
             )
         )
 

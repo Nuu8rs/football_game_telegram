@@ -2,8 +2,18 @@ from aiogram.types import FSInputFile
 from datetime import timedelta
 from .types import Stage
 
-TIME_TRAINING = timedelta(minutes=30)
-TIME_REGISTER_TRAINING = timedelta(minutes=30)
+TIME_STARTER_TRAINING = [
+    "10:00",
+    "13:00",
+    "19:00"
+] # УЧЕТ ТОГО ЧТО НАДО ЗАРЕГАТЬСЯ НА ТРЕНЮ
+
+# TIMERS_REGISTER_TRAINING = [
+#     "23:46"
+# ]
+
+TIME_TRAINING = timedelta(minutes=30) #timedelta(minutes=10)#
+TIME_REGISTER_TRAINING = timedelta(minutes=30) #timedelta(minutes=1)
 
 MAX_LIMIT_JOIN_CHARACTERS = 50
 
@@ -14,7 +24,7 @@ DUEL_STAGE = [Stage.STAGE_DUEL]
 
 
 
-COUNT_QTE_STAGES = 5
+COUNT_QTE_STAGES = 5 #2
 MAX_SCORE_QTE = 35
 BASE_SCORE_QTE = MAX_SCORE_QTE / COUNT_QTE_STAGES
 
@@ -42,7 +52,7 @@ PERIOD_STAGE = 2
 if PERIOD_STAGE // 2 == 0:
     raise "PERIOD_STAGE ДОЛЖНО БЫТЬ КРАТНО 2"
 
-PERIOD_STAGE_FIGHT_DUEL = 3
+PERIOD_STAGE_FIGHT_DUEL = 3 #1
 TIMES_SLEEP_ENTRY_DATA_DUEL = 15
 SCORE_WINNER_DUEL_STAGE = int(MAX_SCORE_PVP_DUEL/PERIOD_STAGE/PERIOD_STAGE_FIGHT_DUEL)
 

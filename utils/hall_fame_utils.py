@@ -1,4 +1,4 @@
-from datetime import datetime
+from collections import defaultdict
 
 from bot.utils.get_top_24_club_by_league import get_top_24_clubs
 
@@ -8,9 +8,9 @@ from database.models.match_character import MatchCharacter
 from database.models.duel import Duel
 from database.models.league_fight import LeagueFight
 
-from collections import defaultdict
-
 from services.character_service import CharacterService
+
+from constants import PositionCharacter 
 
 def generate_rankings(entities, my_entity, entity_type, sorting_attribute, display_attribute, ranking_label):
     sorted_entities = sorted(entities, key=lambda entity: getattr(entity, sorting_attribute), reverse=True)
@@ -168,3 +168,29 @@ def get_top_24_clubs_text(fights: list[LeagueFight]) -> str:
     ranking_table += format_league_section(conference_league, "<b><u>Ліга Конференції</u></b>\n", "🌟")
 
     return ranking_table
+
+
+def get_top_characters_by_position(
+    all_characters: list[Character], 
+    my_character: Character, 
+    position: PositionCharacter
+) -> str:
+    characters_by_position = [char for char in all_characters if char.position_enum == position]
+    
+    sorted_characters = sorted(characters_by_position, key=lambda char: char.full_power, reverse=True)
+    
+    rankings = []
+    for index, char in enumerate(sorted_characters[:15]):
+        rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
+        rankings.append(f"{index + 1:>2}. <b>{char.character_name:<10}</b> - {char.full_power:>5.2f} силою {rank_icon}")
+    
+    top_15_header = f"Топ-15 персонажів на позиції {position.value} за силою 💪\n\n"
+    top_15_text = top_15_header + "\n".join(rankings)
+    
+    if my_character.position_enum == position:
+        my_character_id = my_character.id
+        my_position = next((i for i, char in enumerate(sorted_characters) if char.id == my_character_id), None)
+        if my_position is not None:
+            top_15_text += f"\n\nТи посідаєш {my_position + 1} місце 🏆"
+    
+    return top_15_text

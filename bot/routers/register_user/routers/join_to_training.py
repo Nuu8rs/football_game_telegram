@@ -22,7 +22,7 @@ from constants import const_name_characteristics
 from schedulers.scheduler_gym_rasks import GymScheduler
 from services.user_service import UserService
 from services.reminder_character_service import RemniderCharacterService
-
+from services.club_infrastructure_service import ClubInfrastructureService
 
 first_training_router = Router()
 
@@ -54,11 +54,13 @@ async def first_training_handler(
 ):
     gym_type = random.choice(list(const_name_characteristics.keys()))
     gym_time = timedelta(minutes=5) 
+    club_infrastructure = await ClubInfrastructureService.get_infrastructure(character.club_id)
     
     gym_scheduler = GymScheduler(
-        character_id        = character.id,
+        character        = character,
         type_characteristic = gym_type,
-        time_training       = gym_time
+        time_training       = gym_time,
+        club_infrastructure = club_infrastructure
     )
     gym_scheduler.start_training()
     await RemniderCharacterService.update_training_info(

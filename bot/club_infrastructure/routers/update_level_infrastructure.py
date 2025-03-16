@@ -20,9 +20,9 @@ update_level_infrastructure_router = Router()
 
 
 @update_level_infrastructure_router.callback_query(
-    CheckOwnerClub(),
+    UpdateInfrastructure.filter(),
     GetClubAndInfrastructure(),
-    UpdateInfrastructure.filter()
+    CheckOwnerClub()
 )
 async def update_level_infrastructure_handler(
     query: CallbackQuery,

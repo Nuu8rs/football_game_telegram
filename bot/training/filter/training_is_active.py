@@ -1,3 +1,5 @@
+import time
+
 from typing import Any, Union
 from aiogram.filters import BaseFilter
 from aiogram.types import CallbackQuery
@@ -15,15 +17,14 @@ ApprovedCallbacks = Union[JoinToTraining, QTECallback, NextStage]
 class TrainingIsActive(BaseFilter):
     
     async def __call__(self, query: CallbackQuery ,*arg, **kwg) -> Any:
+        current_time = time.time()
+        
         callback_data: ApprovedCallbacks = kwg.get('callback_data', None)
         if not callback_data:
             return False
-        training_id = callback_data.training_id
-        if training_id != TrainingManager.training_id:
-            await query.answer(
-                text = "Тренування вже не активне",
-                show_alert = True
-            )
+        
+        end_time_health = callback_data.end_time_health
+        if end_time_health < current_time:
             await query.message.edit_reply_markup(reply_markup = None)
             return False
         return True

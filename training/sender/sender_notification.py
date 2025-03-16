@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from aiogram import Bot
 
@@ -10,25 +10,40 @@ from utils.rate_limitter import rate_limiter
 from loader import bot
 from logging_config import logger
 
-from training.constans import TIME_REGISTER_TRAINING
-from .text_stage import TEXT_TRAINING
+from training.constans import (
+    TIME_REGISTER_TRAINING,
+    TIMERS_REGISTER_TRAINING,
+    TIME_TRAINING,
+    TIME_REGISTER_TRAINING
+)
+from training.utils.text_stage import TEXT_TRAINING
 
 
 class NotificationSender:
     _bot: Bot = bot
-    _text_notification = TEXT_TRAINING.START_TRAINING_MESSAGE
     _preregister_time = int(TIME_REGISTER_TRAINING.total_seconds() // 60)
+    _times_training = TIMERS_REGISTER_TRAINING
+    
+    _text_notification: str = TEXT_TRAINING.START_TRAINING_MESSAGE
+    _text_template_time_training: str = TEXT_TRAINING.TEMPLATE_TEXT_TIME_TRAINING
 
-    def __init__(self, start_time: datetime) -> None:
-        self.start_time = start_time
+    def __init__(self) -> None:
         self.send_queue = asyncio.Queue()
-
-    @property
-    def start_time_notification(self):
-        hours = self.start_time.hour
-        minutes = self.start_time.minute
-        return f"{hours:02d}:{minutes:02d}"
         
+    def _get_text_timers_training(self) -> str:
+        text = ""
+        for time in self._times_training:
+            start_time = datetime.strptime(time, "%H:%M") + TIME_REGISTER_TRAINING
+            end_time = start_time + TIME_TRAINING
+
+            text += self._text_template_time_training.format(
+                start_time=start_time.strftime("%H:%M"),
+                end_time=end_time.strftime("%H:%M")
+            )
+
+        return text
+        
+    
     async def send_notification(self):
         all_characters = await CharacterService.get_all_users_not_bot()
         for character in all_characters:
@@ -48,7 +63,7 @@ class NotificationSender:
             await self._bot.send_message(
                 chat_id=character.characters_user_id,
                 text=self._text_notification.format(
-                    time_start = self.start_time_notification,
+                    text_times_training = self._get_text_timers_training(),
                     preregister_time = self._preregister_time
                 ),
             )

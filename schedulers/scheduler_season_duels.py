@@ -19,7 +19,7 @@ from typing import List, Tuple
 class SchedulerSesonDuels:
     scheduler = AsyncIOScheduler()
     winners_count = 10
-    trigger = CronTrigger(day=DUEL_END_DAY_SEASON, hour=10, minute=0)
+    trigger = CronTrigger(day=DUEL_END_DAY_SEASON, hour=9, minute=0)
     
     rewards_top_user = {
         10: {'money': 10, 'energy': 0},

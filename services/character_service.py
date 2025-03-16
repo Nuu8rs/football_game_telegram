@@ -8,6 +8,8 @@ from config import CONST_ENERGY, CONST_VIP_ENERGY
 from datetime import datetime, timedelta
 from enum import Enum
 
+from constants import PositionCharacter
+
 from logging_config import logger
 
 
@@ -349,3 +351,22 @@ class CharacterService:
                 )
                 await session.execute(stmt)
                 await session.commit()
+                
+    @classmethod
+    async def get_characters_by_position(
+        cls,
+        position: PositionCharacter
+    ) -> list[Character]:
+        
+        async for session in get_session():
+            async with session.begin():
+                
+                stmt = (
+                    select(Character)
+                    .where(Character.position == position.value)
+                    .where(Character.is_bot == False)
+                )
+                
+                result = await session.execute(stmt)
+                characters = result.scalars().all()
+                return characters

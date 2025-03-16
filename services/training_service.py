@@ -1,3 +1,5 @@
+from typing import Optional
+
 from datetime import datetime, timedelta
 from sqlalchemy import select, update, func
 
@@ -48,38 +50,28 @@ class TrainingService:
                 )
                 result = await session.execute(query)
                 return result.scalar()
-          
-    @classmethod      
-    async def count_joinded_user(cls) -> list[CharacterJoinTraining]:
-        today_start = datetime.combine(datetime.now().date(), datetime.min.time())
-        today_end = today_start + timedelta(days=1)
-        async for session in get_session():
-            async with session as sess:
-                query = (
-                    select(func.count())
-                    .where(
-                        CharacterJoinTraining.time_join >= today_start,
-                        CharacterJoinTraining.time_join < today_end
-                    )
-                )
-                result = await session.execute(query)
-                return result.scalar()
             
     @classmethod
-    async def get_joined_users(cls) -> list[CharacterJoinTraining]:
-        today_start = datetime.combine(datetime.now().date(), datetime.min.time())
-        today_end = today_start + timedelta(days=1)
+    async def get_joined_users(
+        cls, 
+        range_training_times: list[datetime, datetime]
+    ) -> list[CharacterJoinTraining]:
+        
+        start_time = range_training_times[0]
+        end_time = range_training_times[1]
+        
         async for session in get_session():
             async with session as sess:
                 query = (
                     select(CharacterJoinTraining)
                     .where(
-                        CharacterJoinTraining.time_join >= today_start,
-                        CharacterJoinTraining.time_join < today_end
+                        CharacterJoinTraining.time_join >= start_time,
+                        CharacterJoinTraining.time_join < end_time
                     )
                 )
-                result = await session.execute(query)
+                result = await sess.execute(query)
                 return result.scalars().all()
+
             
     @classmethod
     async def end_user_training(cls, user_id: int) -> None:
@@ -112,16 +104,21 @@ class TrainingService:
                 await sess.commit()
                 
     @classmethod
-    async def user_is_join_to_training(cls, user_id: int) -> CharacterJoinTraining:
-        today_start = datetime.combine(datetime.now().date(), datetime.min.time())
-        today_end = today_start + timedelta(days=1)
+    async def user_is_join_to_training(
+        cls, 
+        user_id: int,
+        range_training_times: list[datetime]
+    ) -> Optional[CharacterJoinTraining]:
+        
+        start_time = range_training_times[0]
+        end_time = range_training_times[1]
         async for session in get_session():
             async with session as sess:
                 query = (
                     select(CharacterJoinTraining)
                     .where(CharacterJoinTraining.user_id == user_id)
-                    .where(CharacterJoinTraining.time_join >= today_start)
-                    .where(CharacterJoinTraining.time_join < today_end)
+                    .where(CharacterJoinTraining.time_join >= start_time)
+                    .where(CharacterJoinTraining.time_join < end_time)
                 )
                 result = await sess.execute(query)
                 return result.scalar()
@@ -133,7 +130,7 @@ class TrainingService:
             async with session as sess:
                 query = (
                     update(Character)
-                    .where(Character.training_key == 0)
+                    .where(Character.training_key <= 0)
                     .where(Character.is_bot == False)
                     .values(training_key = 1)
                 )

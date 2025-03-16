@@ -57,4 +57,4 @@ async def next_etap_handler(
         score = score
     )
     
-    await training.send_message_by_etap()
+    await training.send_message_by_stage()

@@ -7,18 +7,23 @@ from bot.training.callbacks.training_callbacks import JoinToTraining
 from database.models.character import Character
 from .buy_training_key import to_menu_buy_training_key
 
-def re_join_training(character: Character):
+def re_join_training(
+    character: Character,
+    end_time_health: int
+):
     if character.training_key:
-        return _join_to_training()
+        return join_to_training(end_time_health)
     else:
         return to_menu_buy_training_key()
     
-def _join_to_training():
+def join_to_training(end_time_health: int):
     return (
         InlineKeyboardBuilder()
         .button(
             text="Присоединиться к тренировке",
-            callback_data=JoinToTraining(end_time_join = 1)
+            callback_data=JoinToTraining(
+                end_time_health = end_time_health
+            )
         )
         .as_markup()
     )
