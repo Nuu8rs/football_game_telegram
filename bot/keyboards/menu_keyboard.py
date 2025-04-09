@@ -54,3 +54,7 @@ def menu_instruction(index_instruction: int):
     
 def remove_keyboard():
     return ReplyKeyboardRemove(remove_keyboard=True)
+
+def test():
+    return ReplyKeyboardBuilder().button(text="TEST").as_markup(resize_keyboard = True, is_persistent=True, selective=True)
+    

@@ -2,7 +2,7 @@ from aiogram.types import FSInputFile
 from datetime import timedelta
 from .types import Stage
 
-TIME_STARTER_TRAINING = [
+TIMERS_REGISTER_TRAINING = [
     "10:00",
     "13:00",
     "19:00"

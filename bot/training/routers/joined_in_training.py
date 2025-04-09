@@ -9,7 +9,7 @@ from bot.training.keyboard.buy_training_key import to_menu_buy_training_key
 
 from constants import NEED_TRAINING_KEY
 
-from training.constans import TIME_REGISTER_TRAINING, TIMERS_REGISTER_TRAINING
+from training.constans import TIME_REGISTER_TRAINING
 from training.core.manager_training import TrainingManager
 
 from database.models.character import Character

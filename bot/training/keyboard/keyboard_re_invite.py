@@ -20,7 +20,7 @@ def join_to_training(end_time_health: int):
     return (
         InlineKeyboardBuilder()
         .button(
-            text="Присоединиться к тренировке",
+            text="🎮 Приєднатися до тренування",
             callback_data=JoinToTraining(
                 end_time_health = end_time_health
             )

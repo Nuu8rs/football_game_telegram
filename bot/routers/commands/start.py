@@ -4,7 +4,7 @@ from aiogram.types import Message, FSInputFile
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import CommandStart, Command
 
-from bot.keyboards.menu_keyboard import main_menu
+from bot.keyboards.menu_keyboard import main_menu, test
 from bot.routers.register_user.start_register_user import StartRegisterUser
 
 from database.models.user_bot import UserBot, STATUS_USER_REGISTER
@@ -23,7 +23,9 @@ async def start_command_handler(
     user: UserBot, 
     command: Command    
 ):
-        
+               
+    if command.args:
+        await register_referal(user=user, referal=command.args) 
     if not user.end_register:
         if user.status_register == STATUS_USER_REGISTER.PRE_RIGSTER_STATUS:
             start_register = StartRegisterUser(
@@ -31,11 +33,7 @@ async def start_command_handler(
             )
             return await start_register.start_register_user()
         return
-    
-    if command.args:
-        await register_referal(user=user, referal=command.args)
-    
-    
+        
     video_start = FSInputFile("src\start_video.MP4",filename="video_start") if not VIDEO_ID else VIDEO_ID
 
     await state.clear()

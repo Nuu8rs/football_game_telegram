@@ -56,13 +56,11 @@ async def select_position_character(query: CallbackQuery):
     
 @gym_router.callback_query(
     SelectTimeGym.filter(),
-    GetClubAndInfrastructure()
 )
 async def start_gym(
     query: CallbackQuery,
     callback_data:SelectTimeGym,
     character: Character,
-    club_infrastructure: ClubInfrastructure
 ):
     _time_training = callback_data.gym_time
     

@@ -1,0 +1,3 @@
+MAX_EVENTS = 12
+MIN_GAP = 20
+
