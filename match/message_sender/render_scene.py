@@ -1,6 +1,6 @@
 import re
 import random
-from typing import Optional
+from typing import Optional, Literal
 
 from database.models.character import Character
 

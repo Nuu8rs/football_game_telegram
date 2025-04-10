@@ -47,11 +47,19 @@ class Match:
         await self.match_sender.start_match()
         await self.match_sender.send_participants_match()
         asyncio.create_task(self.event_watcher())
-    
+        await asyncio.sleep(TIME_FIGHT.total_seconds())        
+        
     async def event_watcher(self) -> None:
+        event_func: dict[TypeGoalEvent,callable] = {
+            TypeGoalEvent.NO_GOAL: self.no_goal_event,
+            TypeGoalEvent.PING_DONATE_ENERGY: self.ping_donate_energy_event,
+            TypeGoalEvent.GOAL: self.goal_event,
+        }
+        
         async for event in self.goal_generator.generate_goals():
-            ...
-            
+            await event_func[event]()
+        else:
+            await self.match_sender.send_end_match()    
 
     async def no_goal_event(self) -> None:
         first_character = self.match_data.first_club.get_character_by_power()
@@ -61,18 +69,22 @@ class Match:
             characters_scene = [first_character, second_character]
         )
         #ADD 0.25 POINT TO CHARACTERS
-        
-        
+          
     async def ping_donate_energy_event(self) -> None:
         await self.match_sender.send_ping_donate_energy()
         
     async def goal_event(self) -> None:
         goal_club = self.match_data.get_goal_club()
-        goal_character = goal_club.get_character_by_power()
+        character_goal = goal_club.get_character_by_power()
         assist_character = goal_club.get_character_by_power(
-            no_character=goal_character
+            no_character=character_goal
         )
-        await self.match_sender.send_event_scene()
+        await self.match_sender.send_event_scene(
+            goal_event = TypeGoalEvent.GOAL,
+            character_goal = character_goal,
+            character_assist = assist_character,
+        )
         ...
         
+    async def end_match(self) -> None:
         

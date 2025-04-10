@@ -40,7 +40,48 @@ NO_GOAL_EVENT_SCENES = [
     )
 ]
 
-
+GOAL_EVENT_SCENES = [
+    SceneTemplate(
+        text="<b>{assistant}</b> навішує у штрафний майданчик, <b>{scorer}</b> випереджає <b>{goalkeeper}</b> і головою відправляє м’яч у сітку! 🧠🥅",
+        required_positions=["assistant", "scorer", "goalkeeper"]
+    ),
+    SceneTemplate(
+        text="<b>{assistant}</b> тягне м'яч через усе поле, віддає пас п’ятою — <b>{scorer}</b> добиває! Вау! 😱🔥",
+        required_positions=["assistant", "scorer"]
+    ),
+    SceneTemplate(
+        text="<b>{midfielder}</b> елегантно відкриває фланг для <b>{assistant}</b>, той прострілює — <b>{scorer}</b> забиває у дотик! ⚡🎯",
+        required_positions=["midfielder", "assistant", "scorer"]
+    ),
+    SceneTemplate(
+        text="<b>{defender}</b> перехоплює передачу і миттєво запускає <b>{assistant}</b> у прорив. Після серії пасів <b>{scorer}</b> розстрілює ворота! 💥🏹",
+        required_positions=["defender", "assistant", "scorer"]
+    ),
+    SceneTemplate(
+        text="<b>{assistant}</b> виводить <b>{scorer}</b> один на один, і той холоднокровно переграє <b>{goalkeeper}</b>! ❄️⚽",
+        required_positions=["assistant", "scorer", "goalkeeper"]
+    ),
+    SceneTemplate(
+        text="<b>{midfielder}</b> тікає по флангу, обігрує суперника і віддає на <b>{scorer}</b>, який майстерно пробиває в нижній кут! 🎩🥅",
+        required_positions=["midfielder", "scorer"]
+    ),
+    SceneTemplate(
+        text="<b>{defender}</b> несподівано підключається до атаки і скидає на <b>{scorer}</b>, той пробиває без шансів для <b>{goalkeeper}</b>! 🚀🧤",
+        required_positions=["defender", "scorer", "goalkeeper"]
+    ),
+    SceneTemplate(
+        text="<b>{scorer}</b> самотужки проривається крізь оборону і потужно пробиває повз <b>{goalkeeper}</b>! 🦁💪",
+        required_positions=["scorer", "goalkeeper"]
+    ),
+    SceneTemplate(
+        text="<b>{scorer}</b> підбирає м’яч після рикошету, робить кілька фінтів і забиває фантастичний гол! 🎯🔥",
+        required_positions=["scorer"]
+    ),
+    SceneTemplate(
+        text="<b>{scorer}</b> несподівано підключається до атаки, обігрує трьох і кладе м'яч у дев’ятку! 🚀",
+        required_positions=["scorer"]
+    )
+]
 
 class TemplatesMatch(Enum):    
     START_MATCH = """
