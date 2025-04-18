@@ -76,11 +76,17 @@ async def start_gym(
         except:
             return
     
-    reduction_procent = INFRASTRUCTURE_BONUSES[InfrastructureType.SPORTS_MEDICINE].get(
-        level = club_infrastructure.get_infrastructure_level(InfrastructureType.SPORTS_MEDICINE)
+    club_infrastructure = await ClubInfrastructureService.get_infrastructure(
+        club_id=character.club_id
     )
-    reduction_time = (_time_training.total_seconds() * abs(reduction_procent)) // 100
-    reduction_time = _time_training.total_seconds() - reduction_time
+    if club_infrastructure:
+        reduction_procent = INFRASTRUCTURE_BONUSES[InfrastructureType.SPORTS_MEDICINE].get(
+            level = club_infrastructure.get_infrastructure_level(InfrastructureType.SPORTS_MEDICINE)
+        )
+        reduction_time = (_time_training.total_seconds() * abs(reduction_procent)) // 100
+        reduction_time = _time_training.total_seconds() - reduction_time
+    else:
+        reduction_time = _time_training.total_seconds()
     end_time_training = datetime.now() + timedelta(seconds=reduction_time)
 
     caption = """
@@ -101,13 +107,6 @@ async def start_gym(
         caption=caption
         ,reply_markup=None
     )
-  
-    club_infrastructure = None
-    if character.club_id:
-        club_infrastructure = await ClubInfrastructureService.get_infrastructure(
-            club_id=character.club_id,        
-        )
-        
     gym_scheduler = GymScheduler(
         character        = character,
         type_characteristic = callback_data.gym_type,
