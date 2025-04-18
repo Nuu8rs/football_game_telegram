@@ -258,7 +258,7 @@ class MatchSender:
         
         if winner_match_club:
             loser_club = self.match_data.get_opposite_club(
-                club = winner_match_club
+                club_id = winner_match_club.club_id
             )
             template = TemplatesMatch.TEMPLATE_END
             template_match_info = TemplatesMatch.WIN_LOSE_TEMPLATE

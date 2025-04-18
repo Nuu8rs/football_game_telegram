@@ -16,7 +16,7 @@ from league.create_league.create_league_match import CreateDefaultLeagueMatches
 from constants import START_DAY_DEFAULT_LEAGUE
 from datetime import timedelta
 
-TEST = True
+TEST = False
 
 class StartDefaultLeague:
     

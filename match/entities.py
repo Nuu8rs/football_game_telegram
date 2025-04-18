@@ -241,11 +241,11 @@ class MatchData:
         ]
         return random.choices(self.all_clubs, weights=values, k=1)[0]
 
-    def get_opposite_club(self, club: MatchClub) -> MatchClub:
+    def get_opposite_club(self, club_id: int) -> MatchClub:
 
         return (
             self.second_club 
-            if club.club_id == self.first_club.club_id 
+            if club_id == self.first_club.club_id 
             else self.first_club
         )
     
