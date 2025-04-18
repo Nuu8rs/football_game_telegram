@@ -7,13 +7,16 @@ from apscheduler.triggers.cron import CronTrigger
 from services.league_service import LeagueFightService
 from database.models.league_fight import LeagueFight
 
-from league.process_match.club_fight import ClubMatch
+from match.entities import MatchData, MatchClub
+from match.core.match import Match
+from match.core.manager import ClubMatchManager
+
 from league.user_sender import UserSender
 from league.create_league.create_league_match import CreateDefaultLeagueMatches
 from constants import START_DAY_DEFAULT_LEAGUE
 from datetime import timedelta
 
-TEST = False
+TEST = True
 
 class StartDefaultLeague:
     
@@ -51,23 +54,34 @@ class StartDefaultLeague:
         start_time_fight = datetime.now() + timedelta(minutes=1)
         start_time_sender = datetime.now()
         
-    
-        club_match = ClubMatch(
-            first_club_id  = match.first_club.id  ,
-            second_club_id = match.second_club.id ,
-            start_time     = start_time_fight,
-            match_id       = match.match_id,
-            group_id       = match.group_id
+        first_club = MatchClub(
+            club_id = match.first_club.id
+        )
+        second_club = MatchClub(
+            club_id = match.second_club.id
         )
         
-        user_sender = UserSender(match_id=club_match.clubs_in_match.match_id)
+        match_data = MatchData(
+            match_id = match.match_id,
+            group_id = match.group_id,
+            first_club = first_club,
+            second_club = second_club,
+            start_time = start_time_fight 
+        )
 
+        
+        user_sender = UserSender(match_id=match_data.match_id)
+        match_ = Match(
+            match_data = match_data,
+            start_time = start_time_fight,
+        )
+        ClubMatchManager.add_match(match_data)
         self.scheduler_league.add_job(user_sender.send_messages_to_users, 
                                       trigger=DateTrigger(start_time_sender),
                                       misfire_grace_time = 10,
                                       
                                       )
-        self.scheduler_league.add_job(club_match.start_match, 
+        self.scheduler_league.add_job(match_.start_match, 
                                       trigger=DateTrigger(start_time_fight),
                                       misfire_grace_time = 10
                                       )
@@ -83,22 +97,36 @@ class StartDefaultLeague:
         if start_time_fight < datetime.now():
             return
         
-        club_match = ClubMatch(
-            first_club_id  = match.first_club.id  ,
-            second_club_id = match.second_club.id ,
-            start_time     = start_time_fight,
-            match_id       = match.match_id,
-            group_id       = match.group_id
+        first_club = MatchClub(
+            club_id = match.first_club.id
+        )
+        second_club = MatchClub(
+            club_id = match.second_club.id
         )
         
-        user_sender = UserSender(match_id=club_match.clubs_in_match.match_id)
+        match_data = MatchData(
+            match_id = match.match_id,
+            group_id = match.group_id,
+            first_club = first_club,
+            second_club = second_club,
+            start_time = start_time_fight 
+        )
 
+        
+        user_sender = UserSender(match_id=match_data.match_id)
+        match_ = Match(
+            match_data = match_data,
+            start_time = start_time_fight,
+        )
+        
+        user_sender = UserSender(match_id=match_data.match_id)
+        ClubMatchManager.add_match(match_data)
         self.scheduler_league.add_job(user_sender.send_messages_to_users, 
                                       trigger=DateTrigger(start_time_sender),
                                       misfire_grace_time = 10,
                                       
                                       )
-        self.scheduler_league.add_job(club_match.start_match, 
+        self.scheduler_league.add_job(match_.start_match, 
                                       trigger=DateTrigger(start_time_fight),
                                       misfire_grace_time = 10
                                       )

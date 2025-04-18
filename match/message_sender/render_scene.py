@@ -8,17 +8,21 @@ from match.entities import MatchData
 from match.enum import TypeGoalEvent
 
 from .types import SceneTemplate
-from .templates import NO_GOAL_EVENT_SCENES
+from .templates import (
+    NO_GOAL_EVENT_SCENES,
+    GOAL_EVENT_SCENES
+)
 
 POSITION_MAP = {
     "goalkeeper": "Воротар",
     "defender": "Захисник",
     "midfielder": "Півзахисник",
-    "striker": "Нападник"
+    "attacker": "Нападник"
 }
 
 EVENT_SCENES = {
     TypeGoalEvent.NO_GOAL : NO_GOAL_EVENT_SCENES, 
+    TypeGoalEvent.GOAL: GOAL_EVENT_SCENES
 }
 
 
@@ -51,7 +55,7 @@ class SceneRenderer:
                 continue
 
             for eng_pos, position in POSITION_MAP.items():
-                if club.is_character_in_position(character, position):
+                if character.position == position:
                     mapping[prefix + eng_pos] = character
 
         if self.scorer:
@@ -62,9 +66,6 @@ class SceneRenderer:
         return mapping
 
     def _get_club_and_prefix(self, character: Character) -> tuple[Optional[object], str]:
-        """
-        Определить, к какому клубу принадлежит персонаж, и вернуть префикс.
-        """
         if self.match_data.first_club.is_character_in_club(character):
             return self.match_data.first_club, ""
         elif self.match_data.second_club.is_character_in_club(character):

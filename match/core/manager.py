@@ -3,16 +3,14 @@ from typing import Tuple
 from match.entities import MatchData
 
 class ClubMatchManager:
-    all_matches: dict[str, MatchData] = []
+    all_matches: dict[str, MatchData] = {}
 
     @classmethod
-    def add_match(cls, match: MatchData) -> None:
-        """Add a match to the manager."""
-        cls.all_matches[match.id] = match
+    def add_match(cls, match_data: MatchData) -> None:
+        cls.all_matches[match_data.match_id] = match_data
         
     @classmethod
     def get_match(cls, match_id: str) -> MatchData | None:
-        """Get a match by its ID."""
         return cls.all_matches.get(match_id, None)
     
     @classmethod

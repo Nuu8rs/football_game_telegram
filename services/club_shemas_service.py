@@ -10,7 +10,13 @@ from services.character_service import CharacterService
 class SchemaSerivce(SchemaClub):
     
     @classmethod
-    async def character_is_enough_room(cls, club: Club, match_id: str, my_character: Character) -> bool:
+    async def character_is_enough_room(
+        cls, 
+        club: Club, 
+        match_id: str, 
+        my_character: Character
+    ) -> bool:
+        
         characters_in_match = await MatchCharacterService.get_charaters_club_in_match(
             match_id=match_id,
             club_id=club.id)

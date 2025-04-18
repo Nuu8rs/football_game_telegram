@@ -1,8 +1,5 @@
-from sqlalchemy import Column, BigInteger, String, ForeignKey, Boolean, Integer
-from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, BigInteger, String, ForeignKey, Float, Integer
 
-from config import LEAGUES
 from database.model_base import Base
 
 
@@ -18,3 +15,4 @@ class MatchCharacter(Base):
     
     club_id      = Column(Integer, nullable=False)
     goals_count  = Column(Integer, nullable=False, default=0, server_default='0')
+    count_score  = Column(Float, nullable=False, default=0, server_default='0')

@@ -15,7 +15,7 @@ from bot.callbacks.league_callbacks import  JoinToFight, ViewCharacterRegistered
 from bot.keyboards.gym_keyboard import alert_leave_from_gym
 
 
-from league.process_match.club_fight import ClubMatchManager
+from match.core.manager import ClubMatchManager
 
 
 join_to_fight_router = Router()
@@ -30,15 +30,15 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
             reply_markup = alert_leave_from_gym() 
         )
     
-    fight_instance = ClubMatchManager.get_fight_by_id(
+    match_data = ClubMatchManager.get_match(
         match_id=callback_data.match_id
     )
-    if not fight_instance:
+    if not match_data:
         return await query.answer("Не зміг знайти матч", show_alert= True)
     
     
     current_time = datetime.now()
-    if current_time > fight_instance.start_time:
+    if current_time > match_data.start_time:
         await query.answer(
             text="❌ Даний матч уже закінчився"
         )
@@ -49,8 +49,10 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
     
     
     character_in_match = await MatchCharacterService.get_character_in_match(
-        character=character,
-        club_in_match=fight_instance.clubs_in_match
+        match_id = match_data.match_id,
+        club_id  = character.club_id,
+        character_id = character.id,
+        group_id = match_data.group_id
     )
     
     if character_in_match:
@@ -58,7 +60,7 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
     
     character_is_join_schema = await SchemaSerivce.character_is_enough_room(
         club=character.club,
-        match_id=fight_instance.clubs_in_match.match_id,
+        match_id=match_data.match_id,
         my_character=character
     )
     if not character_is_join_schema:
@@ -67,8 +69,10 @@ async def join_to_match(query: CallbackQuery, callback_data: JoinToFight, charac
 
         
     await MatchCharacterService.add_character_in_match(
-        club_in_match = fight_instance.clubs_in_match,
-        character=character
+        match_id = match_data.match_id,
+        club_id  = character.club_id,
+        group_id = match_data.group_id,
+        character_id = character.id,
     )
     await query.message.answer(text = "✅ <b>Ваш персонаж був доданий на матч</b>")
     await query.message.edit_reply_markup(reply_markup=None)
