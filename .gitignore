@@ -14,7 +14,7 @@ env/
 .env/
 .env
 .alembic.ini
-
+photos_info.json
 *.zip
 
 # Файлы с кэшированием

@@ -29,7 +29,7 @@ async def get_my_club_handler(message: Message, character: Character):
     
 @my_club_router.message(F.text == "👥 Моя команда")
 async def my_club(message: Message, character: Character):
-    if  not character.club_id:
+    if not character.club_id:
         return await message.answer("На жаль, у вас немає команди, ви можете створити свою команду, або приєднатися до вже реалізованої команди",
                                     reply_markup=main_menu_club(character))
         

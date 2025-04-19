@@ -16,6 +16,7 @@ from services.league_service import LeagueFightService
 from services.match_character_service import MatchCharacterService
 from services.character_service import CharacterService
 
+from logging_config import logger
 
 from .goal_generator import GoalGenerator
 from .utils import CalculateRewardMatch
@@ -54,22 +55,25 @@ class Match:
         
         if not self.match_data.clubs_have_characters():
             return await self.match_sender.send_no_characters_in_match()
-
+        
+        await self.goal_generator.start()
         await self.match_sender.start_match()
         await self.match_sender.send_participants_match()
-        asyncio.create_task(self.event_watcher())
-        await asyncio.sleep(TIME_FIGHT.total_seconds())        
+        await self.event_watcher()
         await self.end_match()
         await self.destribute_mvp_match()
-        
+    
     async def event_watcher(self) -> None:
-        event_func: dict[TypeGoalEvent,callable] = {
+        event_func: dict[TypeGoalEvent, callable] = {
             TypeGoalEvent.NO_GOAL: self.no_goal_event,
             TypeGoalEvent.PING_DONATE_ENERGY: self.ping_donate_energy_event,
             TypeGoalEvent.GOAL: self.goal_event,
         }
-        
+
         async for event in self.goal_generator.generate_goals():
+            if event is None:
+                break
+            logger.info(f"[{datetime.now()}] Event received: {event}")  # debug
             await event_func[event]()
             for club in self.match_data.all_clubs:
                 club.anulate_donate_energy()
@@ -79,9 +83,10 @@ class Match:
         
         first_character = self.match_data.first_club.get_character_by_power()
         second_character = self.match_data.second_club.get_character_by_power()
+        characters_scene = [character for character in [first_character, second_character] if character]
         await self.match_sender.send_event_scene(
             goal_event = TYPE_EVENT,
-            characters_scene = [first_character, second_character]
+            characters_scene = characters_scene
         )
         for character in [first_character, second_character]:  
             if not character:
@@ -145,25 +150,35 @@ class Match:
             winner_match_club
         )
     async def destribute_mvp_match(self):
+        first_character = None
+        second_character = None
+        
         mvp_first_club = await MatchCharacterService.get_match_mvp(
             match_id=self.match_data.match_id,
             club_id=self.match_data.first_club_id
-        )
-        first_character = await CharacterService.get_character_by_id(
-            character_id = mvp_first_club.character_id
         )   
         mvp_second_club = await MatchCharacterService.get_match_mvp(
             match_id=self.match_data.match_id,
             club_id=self.match_data.second_club_id
         )
-        second_character = await CharacterService.get_character_by_id(
-            character_id = mvp_second_club.character_id
-        )
+        if mvp_first_club is not None:
+            first_character = await CharacterService.get_character_by_id(
+                character_id = mvp_first_club.character_id
+            )
+        if mvp_second_club is not None:
+            second_character = await CharacterService.get_character_by_id(
+                character_id = mvp_second_club.character_id
+            )
+        
         await self.match_sender.send_congratulation_mvp(
-            first_mvp = [mvp_first_club, first_character],
-            second_mvp = [mvp_second_club, second_character]
+            first_mvp=[mvp_first_club, first_character] if mvp_first_club else None,
+            second_mvp=[mvp_second_club, second_character] if mvp_second_club else None
         )
+
         for character in [first_character, second_character]:
+            if not character:
+                continue
+
             await CharacterService.add_trainin_key(
                 character_id = character.id
             )

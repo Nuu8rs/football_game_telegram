@@ -44,7 +44,8 @@ async def donate_energy_from_match_handler(
         character: Character,
         state: FSMContext
     ):
-    if time.time() > callback_data.time_end_goal:
+
+    if int(time.time()) > callback_data.time_end_goal:
         await query.answer("Час для цього голу вже закінчився",
                                   show_alert= True)
         return await query.message.delete()

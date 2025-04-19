@@ -47,6 +47,9 @@ class Sender:
     ) -> Message:
         message_photo = None
         for character in characters:
+            if character.is_bot:
+                continue
+
             if photo:
                 message: Message = await self._send_photo(
                     photo = photo,
@@ -54,7 +57,7 @@ class Sender:
                     caption = text,
                     keyboard = keyboard
                 )
-                if message.photo and message.photo[0].file_id:
+                if message and message.photo and message.photo[0].file_id:
                     message_photo = message
             else:
                 await self._send_message(
@@ -323,14 +326,19 @@ class MatchSender:
     
     async def send_congratulation_mvp(
         self,
-        first_mvp: Union[MatchCharacter, Character],
-        second_mvp: Union[MatchCharacter, Character]
+        first_mvp: Union[MatchCharacter, Character] | None,
+        second_mvp: Union[MatchCharacter, Character] | None
     ) -> None:
+        
         
         text_mvp_characters = ""
         is_save, photo = await get_photo(MVP_PHOTO_PATCH)
 
-        for (match_character, character) in [first_mvp, second_mvp]:
+        for mvp in [first_mvp, second_mvp]:
+            if not mvp:
+                continue
+            match_character, character = mvp
+            
             template = TemplatesMatch.TEMPLATE_MVP_PLAYER_POINTS
             text_mvp_characters += self.getter_templates.format_message(
                 template = template,
@@ -343,7 +351,7 @@ class MatchSender:
         text = self.getter_templates.format_message(
             template = template,
             extra_context = {
-                "text_mvp_characters":text_mvp_characters,
+                "text_mvp_characters":text_mvp_characters or "Немає MVP",
             }
             
         )

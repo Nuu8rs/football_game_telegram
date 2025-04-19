@@ -48,7 +48,6 @@ class CalculateRewardMatch:
         self.club_infrastructure = await ClubInfrastructureService.get_infrastructure(
             club_id=self.club.club_id
         )
-
         
         for character in self.club.characters_in_match:
             exp, money = await self._destributive_reward(character)

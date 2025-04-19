@@ -19,7 +19,8 @@ class SchemaSerivce(SchemaClub):
         
         characters_in_match = await MatchCharacterService.get_charaters_club_in_match(
             match_id=match_id,
-            club_id=club.id)
+            club_id=club.id
+        )
 
         characters:list[Character] = []
         for character_match in characters_in_match:

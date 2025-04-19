@@ -14,7 +14,7 @@ class MatchCharacterService:
         self,
         match_id: str,
         group_id: str,
-        club_id: int,
+        club_id: int,   
         character_id: int
     ) -> MatchCharacter | None:
         
@@ -24,7 +24,7 @@ class MatchCharacterService:
                     select(MatchCharacter)
                     .where(MatchCharacter.match_id == match_id)
                     .where(MatchCharacter.group_id == group_id)
-                    .where(MatchCharacter.club_id  == character_id)
+                    .where(MatchCharacter.club_id  == club_id)
                     .where(MatchCharacter.character_id  == character_id)
                 )
                 result = await session.execute(stmt)

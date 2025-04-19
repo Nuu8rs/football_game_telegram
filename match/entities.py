@@ -195,7 +195,7 @@ class MatchData:
     def clubs_have_characters(self) -> bool:
         return (
                 bool(self.first_club.characters_in_match) 
-            and 
+            or 
                 bool(self.second_club.characters_in_match)
         )
     

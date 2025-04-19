@@ -22,7 +22,6 @@ class StartDefaultLeague:
     
     def __init__(self):
         self.scheduler_league = AsyncIOScheduler()
-
     
     async def setup_matches(self) -> None:
         matches = await LeagueFightService.get_league_fights_current_month()
@@ -60,7 +59,7 @@ class StartDefaultLeague:
         second_club = MatchClub(
             club_id = match.second_club.id
         )
-        
+
         match_data = MatchData(
             match_id = match.match_id,
             group_id = match.group_id,
@@ -119,8 +118,8 @@ class StartDefaultLeague:
             start_time = start_time_fight,
         )
         
-        user_sender = UserSender(match_id=match_data.match_id)
         ClubMatchManager.add_match(match_data)
+        user_sender = UserSender(match_id=match_data.match_id)
         self.scheduler_league.add_job(user_sender.send_messages_to_users, 
                                       trigger=DateTrigger(start_time_sender),
                                       misfire_grace_time = 10,
