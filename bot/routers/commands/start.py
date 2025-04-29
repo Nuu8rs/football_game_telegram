@@ -23,7 +23,18 @@ async def start_command_handler(
     user: UserBot, 
     command: Command    
 ):
-               
+    # from bot.routers.register_user.keyboard.get_new_member_bonus import new_member_bonus_keyboard
+    # from services.character_service import CharacterService
+    # await message.answer(
+    #     text = "Бонус для новачків",
+    #     reply_markup = new_member_bonus_keyboard()
+    # )
+    # characyter = await CharacterService.get_character(user.user_id)
+    # await CharacterService.add_exp_character(
+    #     character_id = characyter.id,
+    #     amount_exp_add = 1 
+    # )
+    
     if command.args:
         await register_referal(user=user, referal=command.args) 
     if not user.end_register:

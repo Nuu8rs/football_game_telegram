@@ -12,13 +12,14 @@ from services.duel_service import DuelService
 
 from bot.keyboards.hall_fame_keyboard import menu_hall_fame
 
-from utils.hall_fame_utils import (get_top_characters_by_power,
-                                   get_top_characters_by_level,
-                                   get_top_club_by_power,
-                                   get_top_bomber_rating,
-                                   get_top_duelists_ranking,
-                                   get_top_24_clubs_text
-                                   )
+from utils.hall_fame_utils import (
+    get_top_characters_by_power,
+    get_top_characters_by_level,
+    get_top_club_by_power,
+    get_top_bomber_rating,
+    get_top_duelists_ranking,
+    get_top_24_clubs_text
+)
 from constants import HALL_FAME_PHOTO, DUEL_END_DAY_SEASON, DUEL_START_DAY_SEASON
 
 from datetime import datetime

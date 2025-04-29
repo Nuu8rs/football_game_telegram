@@ -39,7 +39,7 @@ class GenerateLastMatchService:
     def end_match_time(self) -> datetime:
         return datetime.now().replace(
             day = END_DAY_BEST_20_CLUB_LEAGUE,
-            hour = 16,
+            hour = 19,
             minute = 0,
         )
     

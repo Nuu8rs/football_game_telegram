@@ -1,9 +1,13 @@
+from datetime import datetime
+
 from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer, Boolean
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, Mapped
 
 from database.model_base import Base
 from database.models.club import Club
+
+from constants import TIME_FIGHT
 
 class LeagueFight(Base):
     __tablename__ = "league_fight"
@@ -24,6 +28,10 @@ class LeagueFight(Base):
     
     is_beast_league: bool = Column(Boolean, nullable=False, server_default = "0")
     is_top_20_club: bool = Column(Boolean, nullable=False, server_default = "0")
+    
+    @property
+    def end_match_time(self) -> datetime:
+        return self.time_to_start + TIME_FIGHT
     
     @hybrid_property
     def total_points_first_club(self) -> int:

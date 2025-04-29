@@ -65,6 +65,8 @@ class Character(Base):
     vip_pass_expiration_date = Column(DateTime, nullable=True)
     training_key = Column(Integer, default=1, server_default="1", nullable=False)
 
+    time_get_member_bonus = Column(DateTime, nullable=True)
+
     @property
     def character_name(self) -> str:
         text = self.name

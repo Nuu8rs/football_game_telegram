@@ -370,3 +370,18 @@ class CharacterService:
                 result = await session.execute(stmt)
                 characters = result.scalars().all()
                 return characters
+            
+    @classmethod
+    async def update_get_new_member_bonus(
+        cls,
+        character_id: int,
+    ):
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Character)
+                    .where(Character.id == character_id)
+                    .values(time_get_member_bonus=datetime.now())
+                )
+                await session.execute(stmt)
+                await session.commit()

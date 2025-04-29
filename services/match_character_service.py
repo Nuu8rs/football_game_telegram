@@ -1,14 +1,18 @@
-from database.models.match_character import MatchCharacter
-from database.models.character import Character
-from league.process_match.club_in_match import ClubsInMatch
+from datetime import datetime, timedelta
+from typing import Optional 
 
-from sqlalchemy import select, delete, update
+from database.models.match_character import MatchCharacter
+from database.models.league_fight import LeagueFight
+from database.models.character import Character
+
+from sqlalchemy import and_, select, delete, update, func
 from sqlalchemy.exc import IntegrityError
 
 from database.session import get_session
 from logging_config import logger
 
 class MatchCharacterService:
+    
     @classmethod
     async def get_character_in_match(
         self,
@@ -161,3 +165,48 @@ class MatchCharacterService:
                 )
                 result = await session.execute(stmt)
                 return result.scalar_one_or_none()
+            
+    @classmethod
+    async def get_today_matches_by_character(
+        cls,
+        character_id: int
+    ) -> Optional[list[LeagueFight]]:
+        today = datetime.now().date()
+        async for session in get_session():
+            async with session.begin():
+
+                stmt = (
+                    select(LeagueFight)
+                    .join(MatchCharacter, MatchCharacter.match_id == LeagueFight.match_id)
+                    .where(
+                        MatchCharacter.character_id == character_id,
+                        func.date(LeagueFight.time_to_start) == today
+                    )
+                )
+                result = await session.execute(stmt)
+                return result.scalars().all()
+            
+        
+    @classmethod
+    async def get_match_characters_by_one_month(cls) -> Optional[list[MatchCharacter]]:
+        now = datetime.now()
+        first_day = now.replace(day=1)
+        last_day = (first_day + timedelta(days=32)).replace(day=1) - timedelta(days=1)
+
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    select(MatchCharacter)
+                    .join(Character, MatchCharacter.character_id == Character.id)
+                    .join(LeagueFight, MatchCharacter.match_id == LeagueFight.match_id)
+                    .where(
+                        and_(
+                            MatchCharacter.count_score > 0,
+                            Character.is_bot == False,
+                            LeagueFight.time_to_start >= first_day,
+                            LeagueFight.time_to_start <= last_day
+                        )
+                    )
+                )
+                result = await session.execute(stmt)
+                return result.scalars().all()

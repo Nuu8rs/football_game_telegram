@@ -9,7 +9,8 @@ from bot.club_infrastructure.distribute_points.starter_waiter_distribute_points 
 
 from schedulers.scheduler_energy import EnergyResetScheduler, EnergyApliedClubResetScheduler
 from schedulers.scheduler_education import EducationRewardReminderScheduler
-from schedulers.scheduler_gym_rasks import GymStartReseter
+# from schedulers.scheduler_gym_rasks import GymStartReseter
+from gym_character.core.scheduler import GymStartReseter
 from schedulers.scheduler_season_duels import SchedulerSesonDuels
 from schedulers.scheduler_season_beast_league import SchedulerSesonBeastLeague
 from schedulers.scheduler_buy_energy import ReminderBuyEnergy
@@ -42,7 +43,8 @@ from constants import (
 )
 from database.events.event_listener import (
     energy_listener,
-    exp_listener
+    exp_listener,
+    new_member_exp_listener
 )
 
 async def init_leagues():
@@ -65,14 +67,14 @@ async def start_utils():
     await init_schedulers_league()
     await energy_listener.start_listener()
     await exp_listener.start_listener()
+    await new_member_exp_listener.start_listener()
     
     await scheduler_distribute.start()
     await reset_energy_characters.start_reset_energy()
     await reset_aplied_energy_club.start_reset_energy()
-    # await education_reward_reminder.start_reminder()
+    await education_reward_reminder.start_reminder()    
     await gym_reminder.start_iniatialization_gym()
     await end_beast_league.wait_to_end_season_best_league()
-    # await end_duel_season.wait_to_end_season_duel()
     await league_ranking_update.start()
     await reminder_buy_energy.start()
     await reminder_go_to_training.start()
@@ -80,6 +82,7 @@ async def start_utils():
     await scheduler_reset_training_key.start()
     await scheduler_training.start()
     
+    # await end_duel_season.wait_to_end_season_duel()
     # asyncio.create_task(core_duel._waiting_users())
 
 

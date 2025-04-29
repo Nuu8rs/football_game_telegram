@@ -36,4 +36,5 @@ def pagination_keyboard(current_page: int, total_items: int, switcher: Switcher)
 def menu_plosha():
     keyboard = ReplyKeyboardBuilder()
     keyboard.button(text = "⬅️ Головна площа")
+    keyboard.adjust(1)
     return keyboard

@@ -1,7 +1,7 @@
-import asyncio
 import random
-from typing import Optional
+from asyncio import Semaphore
 from datetime import datetime, timedelta
+from typing import Optional
 
 from constants import TIME_FIGHT
 
@@ -21,6 +21,7 @@ from logging_config import logger
 from .goal_generator import GoalGenerator
 from .utils import CalculateRewardMatch
 
+semaphore_add_key = Semaphore(2)
 
 class Match:
     SCORE_POINTS_BY_EVENT = {
@@ -59,7 +60,7 @@ class Match:
         await self.goal_generator.start()
         await self.match_sender.start_match()
         await self.match_sender.send_participants_match()
-        await self.event_watcher()
+        # await self.event_watcher()
         await self.end_match()
         await self.destribute_mvp_match()
     
@@ -73,7 +74,6 @@ class Match:
         async for event in self.goal_generator.generate_goals():
             if event is None:
                 break
-            logger.info(f"[{datetime.now()}] Event received: {event}")  # debug
             await event_func[event]()
             for club in self.match_data.all_clubs:
                 club.anulate_donate_energy()
@@ -169,19 +169,19 @@ class Match:
             second_character = await CharacterService.get_character_by_id(
                 character_id = mvp_second_club.character_id
             )
+        async with semaphore_add_key:
+            for character in [first_character, second_character]:
+                if not character:
+                    continue
+
+                await CharacterService.add_trainin_key(
+                    character_id = character.id
+                )
         
         await self.match_sender.send_congratulation_mvp(
             first_mvp=[mvp_first_club, first_character] if mvp_first_club else None,
             second_mvp=[mvp_second_club, second_character] if mvp_second_club else None
         )
-
-        for character in [first_character, second_character]:
-            if not character:
-                continue
-
-            await CharacterService.add_trainin_key(
-                character_id = character.id
-            )
         
         
     async def award_distribution(

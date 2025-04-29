@@ -423,5 +423,117 @@
             "speed": 14,
             "endurance": 2
         }
+    },
+    {
+        "id": 35,
+        "name": "Футболка майстра поля",
+        "category": "T_SHIRT",
+        "level_required": 6,
+        "price": 1100,
+        "stats": {
+            "technique": 30,
+            "kicks": 32,
+            "ball_selection": 5,
+            "speed": 22,
+            "endurance": 24
+        }
+    },
+    {
+        "id": 36,
+        "name": "Шорти майстра поля",
+        "category": "SHORTS",
+        "level_required": 6,
+        "price": 920,
+        "stats": {
+            "technique": 5,
+            "kicks": 24,
+            "ball_selection": 24,
+            "speed": 24,
+            "endurance": 24
+        }
+    },
+    {
+        "id": 37,
+        "name": "Гетри майстра поля",
+        "category": "GAITERS",
+        "level_required": 6,
+        "price": 660,
+        "stats": {
+            "technique": 5,
+            "kicks": 19,
+            "ball_selection": 24,
+            "speed": 19,
+            "endurance": 5
+        }
+    },
+    {
+        "id": 38,
+        "name": "Бутси майстра поля",
+        "category": "BOOTS",
+        "level_required": 6,
+        "price": 1060,
+        "stats": {
+            "technique": 19,
+            "kicks": 38,
+            "ball_selection": 19,
+            "speed": 38,
+            "endurance": 5
+        }
+    },
+    {
+        "id": 31,
+        "name": "Футболка професіонала",
+        "category": "T_SHIRT",
+        "level_required": 5,
+        "price": 550,
+        "stats": {
+            "technique": 19,
+            "kicks": 20,
+            "ball_selection": 3,
+            "speed": 14,
+            "endurance": 15
+        }
+    },
+    {
+        "id": 32,
+        "name": "Шорти професіонала",
+        "category": "SHORTS",
+        "level_required": 5,
+        "price": 460,
+        "stats": {
+            "technique": 3,
+            "kicks": 15,
+            "ball_selection": 15,
+            "speed": 15,
+            "endurance": 15
+        }
+    },
+    {
+        "id": 33,
+        "name": "Гетри професіонала",
+        "category": "GAITERS",
+        "level_required": 5,
+        "price": 330,
+        "stats": {
+            "technique": 3,
+            "kicks": 12,
+            "ball_selection": 15,
+            "speed": 12,
+            "endurance": 3
+        }
+    },
+    {
+        "id": 34,
+        "name": "Бутси професіонала",
+        "category": "BOOTS",
+        "level_required": 5,
+        "price": 530,
+        "stats": {
+            "technique": 12,
+            "kicks": 24,
+            "ball_selection": 12,
+            "speed": 24,
+            "endurance": 3
+        }
     }
 ]

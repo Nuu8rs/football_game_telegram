@@ -120,3 +120,15 @@ class RemniderCharacterService:
                 )
                 characters_not_training = result.scalars().all()
                 return characters_not_training
+            
+        
+    @classmethod
+    async def character_in_training(cls, character_id: int) -> bool:
+        async for session in get_session():
+            async with session.begin():
+                result = await session.execute(
+                    select(ReminderCharacter)
+                    .where(ReminderCharacter.character_id == character_id)
+                )
+                character_in_training = result.scalars().first()
+                return character_in_training is not None

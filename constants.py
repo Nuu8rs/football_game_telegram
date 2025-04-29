@@ -90,7 +90,7 @@ LOW_ENERGY_PHOTO = FSInputFile("src/low_energy_photo.jpg")
 BUY_TRAINING_KEY = FSInputFile("src/buy_key_training.jpg")
 NEED_TRAINING_KEY = FSInputFile("src/need_training_key.jpg")
 HALL_FAME_POSITION_PHOTO = FSInputFile("src/hall_fame_position_photo.jpg")
-
+PHOTO_NEW_BONUS_MEMBER_HAR = FSInputFile("src/new_member_bonus_har.png")
 
 MAX_LEN_MEMBERS_CLUB = 11
 
@@ -145,7 +145,8 @@ END_MATCH_TOP_20_CLUB = CronTrigger(day = END_DAY_BEST_20_CLUB_LEAGUE,hour=8)
 
 SEND_GONGRATULATION_END_BEST_MATCH = CronTrigger(
     day = END_DAY_BEST_20_CLUB_LEAGUE,
-    hour=18
+    hour=19,
+    minute=30
 )
 
 
@@ -204,10 +205,20 @@ lootboxes = {
         "min_exp": 10,
         "max_exp": 15,
         "price": 245
-    }
+    },
+    "new_member_box" : {
+        "name_lootbox": "Бокс новачка",
+        "min_energy": 100,
+        "max_energy": 200,
+        "min_money": 20,
+        "max_money": 40,
+        "min_exp": 5,
+        "max_exp": 10,
+        "price": None
+    },
 }
 
 PRICE_CHANGE_POSITION = 150
 PRICE_TRAINING_KEY = 49
 
-
+TOTAL_POINTS_ADD_NEW_MEMBER = 300

@@ -54,5 +54,61 @@
             "speed": 8,
             "endurance": 7
         }
+    },
+    {
+        "id": 1001,
+        "name": "Футболка Елітного Гравця [S]",
+        "category": "T_SHIRT",
+        "level_required": 3,
+        "price": 2970,
+        "stats": {
+            "technique": 72,
+            "kicks": 72,
+            "ball_selection": 72,
+            "speed": 72,
+            "endurance": 72
+        }
+    },
+    {
+        "id": 1002,
+        "name": "Шорти Елітного Гравця [S]",
+        "category": "SHORTS",
+        "level_required": 3,
+        "price": 2228,
+        "stats": {
+            "technique": 72,
+            "kicks": 72,
+            "ball_selection": 58,
+            "speed": 58,
+            "endurance": 58
+        }
+    },
+    {
+        "id": 1003,
+        "name": "Гетри Елітного Гравця [S]",
+        "category": "GAITERS",
+        "level_required": 3,
+        "price": 1980,
+        "stats": {
+            "technique": 24,
+            "kicks": 72,
+            "ball_selection": 72,
+            "speed": 38,
+            "endurance": 48
+        }
+    },
+    {
+        "id": 1004,
+        "name": "Бутси Елітного Гравця [S]",
+        "category": "BOOTS",
+        "level_required": 3,
+        "price": 2613,
+        "stats": {
+            "technique": 96,
+            "kicks": 72,
+            "ball_selection": 58,
+            "speed": 38,
+            "endurance": 34
+        }
     }
 ]

@@ -65,7 +65,8 @@ class OpenBoxService:
             chat_id=self.character.characters_user_id,
             text="Відкриваю лутбокс..."
         )
-        
+        await asyncio.sleep(3)
+
         for num,frame in enumerate(self.get_frame_text()):
             if num % 2 == 0:
                 await message.edit_text(

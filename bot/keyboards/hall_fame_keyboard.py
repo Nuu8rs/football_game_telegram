@@ -20,13 +20,14 @@ def menu_hall_fame():
     keyboard.button(text = "🏆 Рейтинг команд за силою")
     keyboard.button(text = "🏃🏼 Рейтинг бомбардирів")
     keyboard.button(text = "📊 Клубний рейтинг")
+    keyboard.button(text = "👨‍👩‍👦‍👦 Рейтинг MVP")
     
     
-    if (datetime.now().day >= DUEL_START_DAY_SEASON) and (datetime.now().day <= DUEL_END_DAY_SEASON):
-        keyboard.button(text = "👥 Рейтинг ПВП-пеналті") 
+    # if (datetime.now().day >= DUEL_START_DAY_SEASON) and (datetime.now().day <= DUEL_END_DAY_SEASON):
+    #     keyboard.button(text = "👥 Рейтинг ПВП-пеналті") 
     
+    keyboard.adjust(2, repeat=True)
     keyboard.attach(menu_plosha())    
-    keyboard.adjust(2,2,1,1)
     return keyboard.as_markup(resize_keyboard = True)
     
     

@@ -4,7 +4,6 @@ from aiogram.types import Message, CallbackQuery
 from datetime import datetime
 
 from database.models.character import Character
-from database.models.club_infrastructure import ClubInfrastructure
 
 from services.character_service import CharacterService
 from services.reminder_character_service import RemniderCharacterService
@@ -14,10 +13,11 @@ from bot.keyboards.gym_keyboard import select_type_gym, select_time_to_gym, no_e
 from bot.callbacks.gym_calbacks import SelectGymType, SelectTimeGym
 from bot.club_infrastructure.types import InfrastructureType
 from bot.club_infrastructure.config import INFRASTRUCTURE_BONUSES
-from bot.club_infrastructure.filters.get_club_and_infrastructure import GetClubAndInfrastructure
+
+from gym_character.core.gym import Gym
+from gym_character.core.manager import GymCharacterManager
 
 from constants import GYM_PHOTO, const_name_characteristics, const_energy_by_time
-from schedulers.scheduler_gym_rasks import GymScheduler
 from datetime import timedelta
 
 gym_router = Router()
@@ -66,7 +66,7 @@ async def start_gym(
     
     if character.reminder.character_in_training:
         return await query.message.reply("<b>Ваш персонаж і так уже тренується</b>")
-    
+
     if character.current_energy < const_energy_by_time[callback_data.gym_time]:
         try:
             return await query.message.answer(
@@ -107,13 +107,17 @@ async def start_gym(
         caption=caption
         ,reply_markup=None
     )
-    gym_scheduler = GymScheduler(
+    gym_scheduler = Gym(
         character        = character,
         type_characteristic = callback_data.gym_type,
         time_training       = callback_data.gym_time,
         club_infrastructure = club_infrastructure
     )
-    gym_scheduler.start_training()
+    task_training = gym_scheduler.start_training()
+    GymCharacterManager.add_gym_task(
+        character_id = character.id,
+        task = task_training
+    )
     await RemniderCharacterService.update_training_info(
         character_id=character.id,
         training_stats=callback_data.gym_type,
@@ -122,9 +126,7 @@ async def start_gym(
     )
     await RemniderCharacterService.toggle_character_training_status(
         character_id=character.id,
-        
     )
-    
     await CharacterService.consume_energy(
         character_id=character.id,
         energy_consumed=const_energy_by_time[callback_data.gym_time]
@@ -133,6 +135,6 @@ async def start_gym(
 
 @gym_router.callback_query(F.data == "get_out_of_gym")
 async def leave_from_gym(query: CallbackQuery, character: Character):
-    await RemniderCharacterService.toggle_character_training_status(character_id=character.id)
-    await RemniderCharacterService.update_training_info(character_id=character.id)
+    await GymCharacterManager.remove_gym_task(character.id)
     await query.message.answer("Ви вийшли з тренування")
+
