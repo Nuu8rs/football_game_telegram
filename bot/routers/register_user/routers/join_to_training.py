@@ -76,8 +76,12 @@ async def first_training_handler(
     await query.message.delete()
 
     gym_type = random.choice(list(const_name_characteristics.keys()))
-    gym_time = timedelta(minutes=5) 
-    club_infrastructure = await ClubInfrastructureService.get_infrastructure(character.club_id)
+    gym_time = timedelta(minutes=5)
+     
+    club_infrastructure = None
+    
+    if character.club_id:
+        club_infrastructure = await ClubInfrastructureService.get_infrastructure(character.club_id)
     
     gym_scheduler = GymScheduler(
         character        = character,

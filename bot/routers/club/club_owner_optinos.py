@@ -9,13 +9,14 @@ from services.character_service import CharacterService
 from services.match_character_service import MatchCharacterService
 from services.league_service import LeagueFightService
 
-from bot.states.club_states import SendMessageMembers
+from bot.states.club_states import SendMessageMembers, EditDescriptionClub
 from bot.callbacks.club_callbacks import TransferOwner, DeleteClub, SelectSchema, KickMember
 from bot.keyboards.club_keyboard import (
     transfer_club_owner_keyboard, 
     definitely_delete_club_keyboard, 
     select_schema_keyboard, 
-    select_user_kick)
+    select_user_kick
+)
 
 from utils.club_utils import send_message_characters_club, get_text_schemas, text_schemas
 
@@ -205,3 +206,43 @@ async def select_user_from_kick_handler(query: CallbackQuery, character: Charact
     await query.message.answer(f"Ви вигнали користувача - {character_kick.character_name}")
     await query.bot.send_message(chat_id=character_kick.characters_user_id,
                                  text=f"Капітан прийняв рішення, ви більше не в команді [{club.name_club}]")
+    
+
+@owner_option_club_router.callback_query(
+    F.data == "description_club"
+)
+async def edit_description_club_handler(
+    query: CallbackQuery, 
+    character: Character,
+    state: FSMContext
+):
+    if not character.club_id:
+        return await query.answer("❌ Ви не перебуваєте в команді на даний момент")
+
+    club = await ClubService.get_club(club_id=character.club_id)
+    if club.owner_id != character.characters_user_id:
+        return await query.answer("❌ Ви не адмін команди")
+    
+    await state.set_state(EditDescriptionClub.send_new_description)
+    await query.message.answer("Введіть новий опис команди")
+
+@owner_option_club_router.message(EditDescriptionClub.send_new_description)
+async def edit_description_club_handler(
+    message: Message, 
+    state: FSMContext,
+    character: Character
+):
+    if not character.club_id:
+        return await message.answer("❌ Ви не перебуваєте в команді на даний момент")
+
+    club = await ClubService.get_club(club_id=character.club_id)
+    if club.owner_id != character.characters_user_id:
+        return await message.answer("❌ Ви не адмін команди")
+    
+    await ClubService.update_description_club(
+        club_id=club.id,
+        new_description=message.text
+    )
+    
+    await message.answer("Ви змінили опис команди, тепер він виглядає так🔽\n\n" + message.text)
+    await state.clear()

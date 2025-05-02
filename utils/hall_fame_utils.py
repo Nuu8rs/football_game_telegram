@@ -198,34 +198,41 @@ def get_top_characters_by_position(
 
 async def get_top_mvp_users_ranking(active_users: list[MatchCharacter], my_character: Character) -> str:
     total_scores_by_character = defaultdict(int)
-    
+
     for user in active_users:
         total_scores_by_character[user.character_id] += user.count_score
-    
+
     sorted_characters = sorted(total_scores_by_character.items(), key=lambda item: item[1], reverse=True)
-    
+
     rankings = []
-    all_real_characters = []
-    
     index = 0
-    for character_id, total_score in sorted_characters[:15]:
+    my_position = None
+
+    top_15_real_characters = []
+
+    for i, (character_id, total_score) in enumerate(sorted_characters):
         character = await CharacterService.get_character_by_id(character_id)
         if character.is_bot:
             continue
-        rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
-        rankings.append(f"{index + 1:>2}. <b>{character.character_name:<10}</b> - {total_score:>5} очков {rank_icon}")
-        
-        all_real_characters.append(character)
-        index += 1
-    
-    top_15_header = f"Топ-15 MVP гравців⚽\n\n"
-    top_15_text = top_15_header + "\n".join(rankings[:15])
 
-    my_character_id = my_character.id
-    my_total_score = total_scores_by_character.get(my_character_id, 0)
-    
-    if my_character_id in total_scores_by_character:
-        position = [i for i, character in enumerate(all_real_characters) if character.id == my_character_id][0] + 1
-        top_15_text += f"\n\nТи посідаєш {position} місце з {my_total_score} очками 🏆"
+        if index < 15:
+            rank_icon = "🥇" if index == 0 else "🥈" if index == 1 else "🥉" if index == 2 else "⚔️"
+            rankings.append(f"{index + 1:>2}. <b>{character.character_name:<10}</b> - {total_score:>5} очков {rank_icon}")
+            top_15_real_characters.append(character)
+
+        if character.id == my_character.id:
+            my_position = index + 1  # Позиция в общем реальном списке
+
+        index += 1
+
+    top_15_header = "Топ-15 MVP гравців⚽\n\n"
+    top_15_text = top_15_header + "\n".join(rankings)
+
+    my_total_score = total_scores_by_character.get(my_character.id, 0)
+
+    if my_position:
+        top_15_text += f"\n\nТи посідаєш {my_position} місце з {my_total_score} очками 🏆"
+    else:
+        top_15_text += f"\n\nТебе немає в топ-15. Ти набрав {my_total_score} очок 🏆"
 
     return top_15_text

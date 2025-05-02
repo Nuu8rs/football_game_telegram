@@ -15,3 +15,6 @@ class SendMessageMembers(StatesGroup):
     
 class SendCustomNameStadion(StatesGroup):
     send_name = State()
+    
+class EditDescriptionClub(StatesGroup):
+    send_new_description = State()

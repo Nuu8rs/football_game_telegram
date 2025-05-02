@@ -124,27 +124,27 @@ class TrainingService:
                 return result.scalar()
 
 
-@classmethod
-async def reset_training_keys(cls) -> None:
-    async for session in get_session():
-        async with session as sess:
-            query_increment = (
-                update(Character)
-                .where(Character.training_key < 3)
-                .where(Character.is_bot == False)
-                .values(training_key=Character.training_key + 1)
-            )
-            await sess.execute(query_increment)
+    @classmethod
+    async def reset_training_keys(cls) -> None:
+        async for session in get_session():
+            async with session as sess:
+                query_increment = (
+                    update(Character)
+                    .where(Character.training_key < 3)
+                    .where(Character.is_bot == False)
+                    .values(training_key=Character.training_key + 1)
+                )
+                await sess.execute(query_increment)
 
-            query_reset_negative = (
-                update(Character)
-                .where(Character.training_key < 0)
-                .where(Character.is_bot == False)
-                .values(training_key=1)
-            )
-            await sess.execute(query_reset_negative)
+                query_reset_negative = (
+                    update(Character)
+                    .where(Character.training_key <= 0)
+                    .where(Character.is_bot == False)
+                    .values(training_key=1)
+                )
+                await sess.execute(query_reset_negative)
 
-            await sess.commit()
+                await sess.commit()
                 
     @classmethod
     async def get_characters_how_not_have_key(cls) -> list[Character]:
@@ -152,7 +152,7 @@ async def reset_training_keys(cls) -> None:
             async with session as sess:
                 query = (
                     select(Character)
-                    .where(Character.training_key == 0)
+                    .where(Character.training_key < 3)
                     .where(Character.is_bot == False)
                 )
                 result = await sess.execute(query)

@@ -80,6 +80,8 @@ class MatchClub:
             character = await CharacterService.get_character_by_id(
                 character_id=match_character.character_id
             )
+            if character.club_id != self.club_id:
+                continue
             self.characters_in_match.add(character)
     
     @property

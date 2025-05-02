@@ -26,6 +26,7 @@ class GymStartReseter:
                 await RemniderCharacterService.anulate_training_character(character_rem.character_id)
                 continue
             
+            club_infrastructure = None
             character = await CharacterService.get_character_by_id(character_rem.character_id)
             if character.club_id:
                 club_infrastructure = await ClubInfrastructureService.get_infrastructure(character.club_id)

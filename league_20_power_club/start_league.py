@@ -34,10 +34,10 @@ class Best20ClubLeague:
     async def start_best_league(self):
         await self._start_league()
         
-        # self.scheduler_best_league.add_job(
-        #     func = self._start_end_match,
-        #     trigger = END_MATCH_TOP_20_CLUB
-        # )
+        self.scheduler_best_league.add_job(
+            func = self._start_end_match,
+            trigger = END_MATCH_TOP_20_CLUB
+        )
         await self._start_end_match()
         self.scheduler_best_league.start()
 
@@ -102,7 +102,7 @@ class Best20ClubLeague:
 
         
         time_start_match = match.time_to_start.replace(
-            hour = 19,
+            hour = 17,
             minute = 0
         )
         ClubMatchManager.add_match(match_data)
@@ -127,7 +127,6 @@ class SchedulerBest20ClubLeague:
         self.scheduler = AsyncIOScheduler()
 
     async def start_scheduler(self):
-        # await Best20ClubLeague().start_best_league()
         self.scheduler.add_job(
             func=Best20ClubLeague().start_best_league,
             trigger=CronTrigger(day=START_DAY_BEST_20_CLUB_LEAGUE, hour=8, minute=0),

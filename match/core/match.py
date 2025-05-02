@@ -60,7 +60,7 @@ class Match:
         await self.goal_generator.start()
         await self.match_sender.start_match()
         await self.match_sender.send_participants_match()
-        # await self.event_watcher()
+        await self.event_watcher()
         await self.end_match()
         await self.destribute_mvp_match()
     

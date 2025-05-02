@@ -234,7 +234,6 @@ class CharacterService:
 
                 character.exp += amount_exp_add
 
-                # Изменения автоматически отследятся и вызовут события
                 session.add(character)
                 await session.commit()
                 

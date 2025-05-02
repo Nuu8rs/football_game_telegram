@@ -44,6 +44,7 @@ async def get_club_text(club: Club, character: Character) -> str:
 🏆 Команда: {club.name_club}
 👑 Лідер: {text_leader}
 🏅 Дивізіон: {club.league}
+📝 Опис команди: {club.description}
 
 📊 Моє місце в рейтингу команді: {calculate_character_rank(
         my_character=character,

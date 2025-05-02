@@ -18,6 +18,7 @@ class Club(Base):
     link_to_chat   = Column(String(255), nullable=True)
     league         = Column(String(254), nullable=False, default=LEAGUES[0])
     is_fake_club   = Column(Boolean, default=False)
+    description    = Column(String(255), nullable=True, default="Не вказано", server_default="Не вказано")
     
     schema         = Column(String(255), nullable=False, default="sсhema_1", server_default="sсhema_1")
     time_edit_schema = Column(DateTime, default=datetime(1970, 1, 1), server_default=text('\'1970-01-01 00:00:00\''), nullable=False)

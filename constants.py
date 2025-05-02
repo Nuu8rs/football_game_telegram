@@ -23,6 +23,7 @@ class ItemCategory(PyEnum):
 
 
 chance_add_point = {
+    timedelta(minutes = 2)   : 60,
     timedelta(seconds = 5)   : 90,
     timedelta(minutes = 5)   : 100, #ПЕРВАЯ ТРЕНИРОВКА
     timedelta(minutes = 30)  : 35,

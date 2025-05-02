@@ -50,6 +50,7 @@ def club_menu_keyboard(club: Club, character: Character):
         keyboard.button(text = "❌ Видалити мій команду", callback_data="delete_my_club")
         keyboard.button(text = "🦶👤 Вигнати користувача", callback_data="kick_user")
         keyboard.button(text = "🏟 Налаштування виду стадіона", callback_data="custom_stadion")
+        keyboard.button(text = "📝 Опис команди", callback_data="description_club")
     else:
         keyboard.button(text = "🎮 Схема команди", callback_data="view_schema_club")
         keyboard.button(text = "⬅️ Вийти з команди", callback_data="leave_club")

@@ -33,9 +33,9 @@ class ResetTrainingKeyScheduler():
         
     async def reset_training_key(self) -> None:
         all_characters = await TrainingService.get_characters_how_not_have_key()
+        await TrainingService.reset_training_keys()
         for character in all_characters:
             await self.send_queue.put(character)
-        await TrainingService.reset_training_keys()
         asyncio.create_task(self._send_messages())
         
     async def _send_messages(self) -> None:
@@ -55,9 +55,10 @@ class ResetTrainingKeyScheduler():
             pass  
 
     async def start(self):
-        self.scheduler.add_job(
-            func=self.reset_training_key,
-            trigger=CronTrigger(hour=21, minute=30),
-            misfire_grace_time=10
-        )
-        self.scheduler.start()
+        await self.reset_training_key()
+        # self.scheduler.add_job(
+        #     func=self.reset_training_key,
+        #     trigger=CronTrigger(hour=21, minute=30),
+        #     misfire_grace_time=10
+        # )
+        # self.scheduler.start()

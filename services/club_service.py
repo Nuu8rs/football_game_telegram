@@ -223,3 +223,19 @@ class ClubService:
                 )
                 await session.execute(stmt)
                 await session.commit()  
+                
+    @classmethod
+    async def update_description_club(
+        cls, 
+        club_id: int,
+        new_description: str
+    ):
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Club)
+                    .where(Club.id == club_id)
+                    .values(description = new_description)
+                )
+                await session.execute(stmt)
+                await session.commit()

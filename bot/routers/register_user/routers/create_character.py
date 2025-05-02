@@ -62,13 +62,14 @@ async def save_name_handler(
         character_user_id=user.user_id
     )
     if character:
-        await message.answer(
+        return await message.answer(
             text = "Ви вже маєте персонажа!"
         )
 
     await state.update_data(
         name_character=message.text
     )
+    await state.set_state(RegisterUserState.select_gender)
     await message.answer(
         text = f"🔹 <b>Тренер:</b> Запам’ятай, <b>{message.text}</b>, твоє ім’я можуть скандувати тисячі фанатів, якщо покажеш, на що здатен!"
     )
@@ -79,7 +80,8 @@ async def save_name_handler(
     )
     
 @create_character_router.callback_query(
-    CreateCharacter.filter()
+    CreateCharacter.filter(),
+    RegisterUserState.select_gender
 )
 async def create_character_handler(
     query: CallbackQuery,
@@ -99,7 +101,21 @@ async def create_character_handler(
     const_character = CREATE_CHARACTER_CONST(
         position = callback_data.position
     )
-    
+    character_obj = await CharacterService.get_character(
+        character_user_id = user.user_id
+    )
+    if character_obj:
+        await state.clear()
+        await query.answer(
+            text = "Ви вже маєте персонажа!",
+        )
+        await join_to_club(
+            character=character_obj,
+            message = query.message,
+            state=state
+        )
+        return 
+
     character_obj = Character(
         current_energy = 150,
         characters_user_id = user.user_id,
@@ -113,6 +129,7 @@ async def create_character_handler(
         gender = callback_data.gender,
         club_id = None,
         is_bot = False,
+        referal_user_id = user.referal_user_id
         
     )
     
@@ -123,7 +140,7 @@ async def create_character_handler(
         character_user_id = user.user_id
     )
     await RemniderCharacterService.create_character_reminder(character_id=new_character_user.id)
-
+    await state.clear()
     await query.message.edit_caption(
         caption = f"""
 🔹 <b>Тренер</b>: Чудовий вибір, <b>{name_character}</b>! Запам’ятай: твоя позиція – це не просто місце на полі, а твоя роль у команді!    
