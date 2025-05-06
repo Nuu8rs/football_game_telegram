@@ -100,7 +100,7 @@ class Match:
            
     async def ping_donate_energy_event(self) -> None:
         goal_time = (
-            datetime.now() + timedelta(TIME_EVENT_DONATE_ENERGY)
+            datetime.now() + timedelta(seconds=TIME_EVENT_DONATE_ENERGY)
         ).timestamp()
         await self.match_sender.send_ping_donate_energy(int(goal_time))
         

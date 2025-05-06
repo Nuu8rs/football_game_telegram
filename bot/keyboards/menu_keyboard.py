@@ -41,7 +41,9 @@ def main_menu(user: UserBot):
         keyboard.button(text = "🏬 Торговий квартал")
         keyboard.button(text = "🏆 Зал слави")
         # keyboard.button(text = "🥅 ПВП-пенальті")
+        keyboard.button(text = "📊 Статистика")
         keyboard.button(text = "🗣 Cпілкування")
+        
     if date_is_get_reward_christmas_tree():
         keyboard.button(text = "🎄 Новорічна ялинка")
     return keyboard.adjust(2).as_markup(resize_keyboard = True)

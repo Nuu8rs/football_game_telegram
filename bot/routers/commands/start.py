@@ -6,9 +6,12 @@ from aiogram.filters import CommandStart, Command
 
 from bot.keyboards.menu_keyboard import main_menu, test
 from bot.routers.register_user.start_register_user import StartRegisterUser
+from bot.routers.register_user.routers.join_to_club import join_to_club
 
 from database.models.user_bot import UserBot, STATUS_USER_REGISTER
 from services.user_service import UserService
+from services.character_service import CharacterService
+
 from loader import bot
 
 from constants import PLOSHA_PEREMOGU
@@ -43,6 +46,16 @@ async def start_command_handler(
                 user = user
             )
             return await start_register.start_register_user()
+        if user.status_register == STATUS_USER_REGISTER.JOIN_TO_CLUB:
+            character = await CharacterService.get_character(
+                character_user_id = user.user_id
+            )
+            return await join_to_club(
+                message=message,
+                character=character,
+                state=state,
+                is_sleep=False
+            )
         return
         
     video_start = FSInputFile("src\start_video.MP4",filename="video_start") if not VIDEO_ID else VIDEO_ID

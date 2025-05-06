@@ -65,6 +65,17 @@ def club_menu_keyboard(club: Club, character: Character):
     return keyboard.adjust(1, repeat=True).as_markup()
 
 
+def register_join_club():
+    return (
+        InlineKeyboardBuilder()
+        .button(text="➕ Створити свою команду", callback_data="create_club_new_member")
+        .button(text="🕹 Приєднатися до команди", callback_data="join_club_new_member")
+        .adjust(1, repeat=True)
+        .as_markup()
+    )
+            
+
+
 def find_club(all_clubs: list[Club], page: int = 0 ):
     keyboard = InlineKeyboardBuilder()
     

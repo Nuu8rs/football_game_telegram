@@ -8,7 +8,6 @@ from config import PositionCharacter, Gender, CONST_ENERGY, POSITION_DECLENSIONS
 from database.models.reminder_character import ReminderCharacter
 
 
-
 from database.model_base import Base
 
 

@@ -93,18 +93,17 @@ class ClubService:
                 return merged_obj
             
     @classmethod
-    async def get_clubs_by_league(cls) -> Dict[str, List['Club']]:
+    async def get_clubs_by_league(cls, league: str) -> None | list[Club]:
         async for session in get_session(): 
             async with session.begin():
-                result = await session.execute(select(Club).order_by(Club.league))
+                result = await session.execute(
+                    select(Club)
+                    .where(Club.league == league)
+                    .where(Club.is_fake_club == False)
+                    .order_by(Club.league)
+                    )
                 clubs = result.scalars().all()
-                clubs = sorted(clubs, key=lambda club: club.is_fake_club)
-                clubs_by_league = {}
-                for club in clubs:
-                    if club.league not in clubs_by_league:
-                        clubs_by_league[club.league] = []
-                    clubs_by_league[club.league].append(club)
-                return clubs_by_league
+                return sorted(clubs, key=lambda club: club.total_power, reverse=True)    
             
     @classmethod
     async def donate_energy(cls, club: Club, count_energy: int) -> None:

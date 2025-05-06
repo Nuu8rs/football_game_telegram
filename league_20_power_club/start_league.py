@@ -21,7 +21,7 @@ from league.user_sender import UserSender
 from constants import (
     END_MATCH_TOP_20_CLUB, 
     SEND_GONGRATULATION_END_BEST_MATCH,
-    START_DAY_BEST_20_CLUB_LEAGUE
+    START_DAY_BEST_20_CLUB_LEAGUE   
 )
 
 class Best20ClubLeague:
@@ -38,7 +38,6 @@ class Best20ClubLeague:
             func = self._start_end_match,
             trigger = END_MATCH_TOP_20_CLUB
         )
-        await self._start_end_match()
         self.scheduler_best_league.start()
 
         

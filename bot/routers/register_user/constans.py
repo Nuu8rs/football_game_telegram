@@ -11,6 +11,6 @@ FIRST_TRAINING_PHOTO = FSInputFile("src/register_user/first_training.jpg")
 FORGOT_TRAINING_PHOTO = FSInputFile("src/register_user/forgot_training.jpg")
 SELECT_GENDER_PHOTO = FSInputFile("src/register_user/choise_gender.jpg")
 
-TIME_SLEEP_REGISTER_MESSAGE = 7 
+TIME_SLEEP_REGISTER_MESSAGE = 4
 TIME_FORGOT_MESSAGE = 60*4
 COUNT_FORGOT_MESSAGE = 3

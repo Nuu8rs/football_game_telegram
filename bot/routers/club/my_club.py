@@ -58,10 +58,9 @@ async def change_chat_link_clube(query: CallbackQuery, state: FSMContext, user: 
 async def edit_chat_link_club(message: Message, state: FSMContext, character: Character):
     def is_telegram_chat_link(link: str) -> bool:
         pattern = re.compile(
-            r'^(https:\/\/t\.me\/(?:\+[a-zA-Z0-9_]+|[a-zA-Z0-9_]+)|t\.me\/(?:\+[a-zA-Z0-9_]+|[a-zA-Z0-9_]+)|tg:\/\/join\?invite=[a-zA-Z0-9_]+)$',
+            r'^(https:\/\/t\.me\/(?:\+[\w-]+|[\w-]+)|t\.me\/(?:\+[\w-]+|[\w-]+)|tg:\/\/join\?invite=[\w-]+)$',
             re.IGNORECASE
         )
-        
         return bool(pattern.match(link))
     if not is_telegram_chat_link(message.text):
         return await message.answer("Надішліть коректне посилання на чат")

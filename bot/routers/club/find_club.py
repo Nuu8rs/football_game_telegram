@@ -54,12 +54,13 @@ async def find_clube_message(message: Message, state: FSMContext, character: Cha
     if not matching_clubs:
         return await message.answer(f"Команд за назвою - {message.text}, не знайдено")
     
-    await message.answer(f"Усі знайдені команди за назвою - {message.text}",
-                                            reply_markup=find_club(
-                                                all_clubs=matching_clubs,
-                                                page=0
-                                                )
-                                                )
+    await message.answer(
+        f"Усі знайдені команди за назвою - {message.text}",
+        reply_markup=find_club(
+            all_clubs=matching_clubs,
+            page=0
+        )
+    )
     
 @find_club_router.callback_query(SwitchClub.filter())
 async def switcher_select_club(query: CallbackQuery, callback_data: SwitchClub, state: FSMContext):

@@ -6,3 +6,4 @@ class RegisterUserState(StatesGroup):
     
 class JoinToClubState(StatesGroup):
     join_to_club = State()
+    send_name_new_club = State()

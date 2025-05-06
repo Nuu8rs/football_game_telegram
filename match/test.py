@@ -15,7 +15,7 @@ async def test():
         club_id = 78
     )
     second_club = MatchClub(
-        club_id = 94
+        club_id = 228
     )
     start_data = datetime.now() 
     match_data = MatchData(

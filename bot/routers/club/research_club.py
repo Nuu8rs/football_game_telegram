@@ -9,7 +9,7 @@ from services.club_service import ClubService
 from bot.keyboards.club_keyboard import view_club, view_character_club
 from bot.callbacks.club_callbacks import SelectClubToView
 
-from utils.club_utils import get_club_description, send_message_characters_club
+from utils.club_utils import get_club_description
 
 research_club_router = Router()
 
@@ -30,8 +30,10 @@ async def research_club_handler(message: Message, character: Character, state: F
                                )) 
     
 @research_club_router.callback_query(SelectClubToView.filter())
-async def view_other_club_handler(query: CallbackQuery, character: Character, callback_data: SelectClubToView):
-    
+async def view_other_club_handler(
+    query: CallbackQuery, 
+    callback_data: SelectClubToView
+):    
     club = await ClubService.get_club(club_id= callback_data.club_id)
     await query.message.answer(
         text=await get_club_description(club),

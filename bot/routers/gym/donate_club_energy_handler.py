@@ -33,12 +33,17 @@ async def training_facilities_handler(message: Message, character: Character, st
                              club_id=character.club_id
                          ))
 
-@donate_club_energy_router.callback_query(SelectCountDonateEnergy.filter(),
-                                           SelectCountDonateEnergyState.select_count_energy,
-                                           CheckTimeFilterMessage())
-async def select_count_donate_energy_callback_handler(query: CallbackQuery, state: FSMContext,
-                                                      character: Character, callback_data: SelectCountDonateEnergy
-                                                      ):
+@donate_club_energy_router.callback_query(
+    SelectCountDonateEnergy.filter(),
+    SelectCountDonateEnergyState.select_count_energy,
+    CheckTimeFilterMessage()
+)
+async def select_count_donate_energy_callback_handler(
+    query: CallbackQuery, 
+    state: FSMContext,
+    character: Character,
+    callback_data: SelectCountDonateEnergy
+):
     if not character.club_id == callback_data.club_id:
         return await query.answer("Ви вже не перебуваєте в той команді, щоб задонатити енергію")
         

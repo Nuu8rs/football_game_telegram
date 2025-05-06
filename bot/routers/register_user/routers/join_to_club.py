@@ -1,7 +1,6 @@
 import asyncio
-from datetime import datetime
 
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 
@@ -16,7 +15,10 @@ from bot.routers.register_user.config import (
 from bot.routers.register_user.state.register_user_state import JoinToClubState
 from bot.routers.register_user.routers.territory_academy import territory_academy
 
-from bot.keyboards.club_keyboard import find_club
+from bot.keyboards.club_keyboard import (
+    register_join_club,
+    find_club
+)
 from utils.club_utils import send_message_characters_club
 
 
@@ -32,24 +34,45 @@ join_to_club_router = Router()
 async def join_to_club(
     message: Message,
     character: Character,
-    state: FSMContext
+    state: FSMContext,
+    is_sleep: bool = True
 ):
+    current_state = await state.get_state()
+    if current_state == JoinToClubState.join_to_club:
+        return await message.answer("Ви вже у процесі приєднання до клубу")
+    
     new_status = STATUS_USER_REGISTER.JOIN_TO_CLUB
-    await asyncio.sleep(5)
+    if is_sleep:
+        await asyncio.sleep(5)
     await UserService.edit_status_register(
         user_id=character.characters_user_id,
         status=new_status
     )
     
-    all_clubs_to_join = await ClubService.get_all_clubs_to_join()
-    await state.update_data(all_clubs = all_clubs_to_join)
     await state.set_state(JoinToClubState.join_to_club)
     message_join_to_club = await message.answer_photo(
         photo=PHOTO_STAGE_REGISTER_USER[new_status],
         caption=TEXT_STAGE_REGISTER_USER[new_status],
-        reply_markup=find_club(all_clubs_to_join) 
+        reply_markup=register_join_club()
     )
     await state.update_data(message_join_to_club = message_join_to_club)
+
+@join_to_club_router.message(
+    F.data == "join_to_club",
+    JoinToClubState.join_to_club
+)
+async def _join_to_club_handler(
+    query: CallbackQuery,
+    state: FSMContext,
+    character: Character
+):
+    all_clubs_to_join = await ClubService.get_all_clubs_to_join()
+    await state.update_data(all_clubs = all_clubs_to_join)
+    await query.message.edit_text(
+        text = "Виберіть команду, до якої хочете приєднатися",
+        reply_markup = find_club(all_clubs_to_join)
+    )
+    
 
 @join_to_club_router.callback_query(
     JoinToClubState.join_to_club,

@@ -55,10 +55,10 @@ class ResetTrainingKeyScheduler():
             pass  
 
     async def start(self):
-        await self.reset_training_key()
-        # self.scheduler.add_job(
-        #     func=self.reset_training_key,
-        #     trigger=CronTrigger(hour=21, minute=30),
-        #     misfire_grace_time=10
-        # )
-        # self.scheduler.start()
+        # await self.reset_training_key()
+        self.scheduler.add_job(
+            func=self.reset_training_key,
+            trigger=CronTrigger(hour=21, minute=30),
+            misfire_grace_time=10
+        )
+        self.scheduler.start()

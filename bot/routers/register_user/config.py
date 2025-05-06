@@ -74,7 +74,7 @@ TEXT_STAGE_REGISTER_USER = {
 """,
 
     STATUS_USER_REGISTER.JOIN_TO_CLUB : """
-<b>Тренер</b>: А тепер найважливіше – обирай команду!    
+<b>Тренер</b>: А тепер найважливіше – обирай команду! Або створюй свою!    
 """,
 
     STATUS_USER_REGISTER.FIRST_TRAINING : """
