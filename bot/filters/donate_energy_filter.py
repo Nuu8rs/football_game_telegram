@@ -37,7 +37,10 @@ class CheckTimeDonateEnergyMatch(BaseFilter):
                     return True
             if (current_time - last_donate_time) < self._sleep_time:
                 await self._send_message(
-                    "Ти вже донатив енергію, почекайте трохи"
+                    f"""
+Ти вже донатив енергію, почекайте трохи
+Ти можешь донатити енергію не частіше ніж раз в <b>{self._sleep_time}</b> секунд
+                    """
                 )
                 return False
         self._last_donate_times[user_id] = current_time
