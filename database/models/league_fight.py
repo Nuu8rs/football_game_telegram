@@ -7,7 +7,9 @@ from sqlalchemy.orm import relationship, Mapped
 from database.model_base import Base
 from database.models.club import Club
 
+
 from constants import TIME_FIGHT
+from constants_leagues import TypeLeague
 
 class LeagueFight(Base):
     __tablename__ = "league_fight"
@@ -28,7 +30,17 @@ class LeagueFight(Base):
     
     is_beast_league: bool = Column(Boolean, nullable=False, server_default = "0")
     is_top_20_club: bool = Column(Boolean, nullable=False, server_default = "0")
-    
+    type_league: Mapped[TypeLeague] = Column(
+        String(255),
+        nullable=False,
+        server_default=(
+            "CASE "
+            "WHEN is_beast_league = 1 THEN 'BEST_LEAGUE' "
+            "WHEN is_top_20_club = 1 THEN 'TOP_20_CLUB_LEAGUE' "
+            "ELSE 'DEFAULT_LEAGUE' "
+            "END"
+        )
+    )
     @property
     def end_match_time(self) -> datetime:
         return self.time_to_start + TIME_FIGHT
