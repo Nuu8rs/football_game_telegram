@@ -10,6 +10,9 @@ from database.models.league_fight import LeagueFight
 
 from services.character_service import CharacterService
 
+from services.league_services.default_league_service import DefaultLeagueService
+from services.league_services.top_20_club_league_service import Top20ClubLeagueService
+
 from constants import PositionCharacter 
 
 def generate_rankings(entities, my_entity, entity_type, sorting_attribute, display_attribute, ranking_label):
@@ -148,8 +151,42 @@ def get_top_duelists_ranking(all_duels: list[Duel], my_character: Character):
     return top_15_text
 
 
-def get_top_24_clubs_text(fights: list[LeagueFight]) -> str:
-    sorted_rankings = get_top_24_clubs(fights)
+async def get_top_24_clubs_text() -> str:
+    default_fights = await DefaultLeagueService.get_month_league()
+    sorted_rankings_defaule = get_top_24_clubs(default_fights)
+    top_20_club_fights = await Top20ClubLeagueService.get_month_league()
+    sorted_rankings_top_20 = get_top_24_clubs(top_20_club_fights)
+
+    all_clubs = sorted_rankings_top_20 + sorted_rankings_defaule
+    club_data = defaultdict(lambda: {
+        'club': None,
+        'club_id': 0,
+        'club_name': '',
+        'points': 0,
+        'goals_scored': 0,
+        'goals_conceded': 0,
+        'goal_difference': 0,
+        'total_power': 0,
+    })
+
+    for entry in all_clubs:
+        club_id = entry['club_id']
+        data = club_data[club_id]
+
+        if data['club'] is None:
+            data['club'] = entry['club']
+            data['club_id'] = club_id
+            data['club_name'] = entry['club_name']
+            data['total_power'] = entry['total_power']
+
+        data['points'] += entry['points']
+        data['goals_scored'] += entry['goals_scored']
+        data['goals_conceded'] += entry['goals_conceded']
+        data['goal_difference'] += entry['goal_difference']
+    sorted_rankings = dict(
+        sorted(club_data.items(), key=lambda item: item[1]['points'], reverse=True)
+    )
+    sorted_rankings = [club for _, club in sorted_rankings.items()]
     champions_league = sorted_rankings[:8]
     europa_league = sorted_rankings[8:16]
     conference_league = sorted_rankings[16:24]

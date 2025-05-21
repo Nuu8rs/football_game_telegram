@@ -32,6 +32,11 @@ from league_20_power_club.start_league import (
     SchedulerBest20ClubLeague
 )
 
+from new_clubs_league.start_league import (
+    NewClubLeague,
+    SchedulerNewClubLeague
+)
+
 from schedulers.scheduler_league_rankings_update import UpdateLeagueRating
 
 from constants import (
@@ -41,6 +46,9 @@ from constants import (
     START_DAY_BEST_20_CLUB_LEAGUE,
     END_DAY_BEST_20_CLUB_LEAGUE
 )
+
+from constants_leagues import config_new_club_league
+
 from database.events.event_listener import (
     energy_listener,
     exp_listener,
@@ -56,10 +64,15 @@ async def init_leagues():
     if current_data.day >= START_DAY_BEST_20_CLUB_LEAGUE and current_data.day <= END_DAY_BEST_20_CLUB_LEAGUE:
         await best_20_club_league.start_best_league()
         
+    if current_data.day >= config_new_club_league.DAY_START and current_data.day <= config_new_club_league.DAY_END:
+        await new_club_league.start_league()
+        
 async def init_schedulers_league():
     await scheduler_default_league.start_scheduler()
     await scheduler_best_league.start_scheduler()
     await scheduler_best_20_club_league.start_scheduler()
+    await scheduler_new_legue.start_scheduler()
+    #TODO: add scheduler for new club league
 
 async def start_utils():
     
@@ -96,6 +109,7 @@ end_duel_season           = SchedulerSesonDuels()
 end_beast_league          = SchedulerSesonBeastLeague()
 best_club_league          = BestClubLeague()
 best_20_club_league       = Best20ClubLeague()
+new_club_league           = NewClubLeague()
 reminder_buy_energy       = ReminderBuyEnergy()
 reminder_go_to_training   = ReminderTraning()
 reminder_vip_pass         = VipPassSchedulerService()
@@ -111,3 +125,4 @@ scheduler_best_20_club_league = SchedulerBest20ClubLeague()
 scheduler_default_league = SchedulerDefaultLeague()
 scheduler_training = SchedulerRegisterTraining()
 scheduler_distribute= Waiterdistributer()
+scheduler_new_legue = SchedulerNewClubLeague()

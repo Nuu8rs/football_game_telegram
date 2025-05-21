@@ -18,7 +18,7 @@ class AdminFunctionalService:
                         Character.is_bot == False
                     )
                     result = await session.execute(stmt)
-                    return result.scalars().all()
+                    return result.unique().scalars().all()
                 except Exception as E:
                     print(E)
                     
@@ -34,7 +34,7 @@ class AdminFunctionalService:
                         .limit(count_members)
                     )
                     result = await session.execute(stmt)
-                    return result.scalars().all()
+                    return result.unique().scalars().all()
                 except Exception as E:
                     print(E)
                     
@@ -52,6 +52,6 @@ class AdminFunctionalService:
                             .limit(count_matches)
                         )
                     result = await session.execute(stmt)
-                    return result.scalars().all()
+                    return result.unique().scalars().all()
                 except Exception as E:
                     print(E)

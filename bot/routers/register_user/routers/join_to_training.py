@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 from aiogram import F, Router
 from aiogram.types import Message, CallbackQuery
 
-
 from database.models.user_bot import UserBot, STATUS_USER_REGISTER
 from database.models.character import Character
 from database.events.event_new_member_exp import EXP_CONSTANT
@@ -19,17 +18,18 @@ from bot.routers.register_user.keyboard.join_first_training import join_first_tr
 from bot.routers.register_user.keyboard.get_new_member_bonus import new_member_bonus_keyboard
 from bot.keyboards.menu_keyboard import main_menu
 
+from schedulers.scheduler_gym_rasks import GymScheduler
+from services.user_service import UserService
+from services.reminder_character_service import RemniderCharacterService
+from services.club_infrastructure_service import ClubInfrastructureService
+
 from constants import (
     const_name_characteristics,
     TOTAL_POINTS_ADD_NEW_MEMBER,
     PHOTO_NEW_BONUS_MEMBER_HAR
 )
 
-from schedulers.scheduler_gym_rasks import GymScheduler
-from services.user_service import UserService
-from services.reminder_character_service import RemniderCharacterService
-from services.club_infrastructure_service import ClubInfrastructureService
-
+from ..message_new_member import SendMessageNewMember
 
 first_training_router = Router()
 
@@ -74,15 +74,11 @@ async def first_training_handler(
     user: UserBot
 ):
     await query.message.delete()
-
     gym_type = random.choice(list(const_name_characteristics.keys()))
     gym_time = timedelta(minutes=5)
-     
     club_infrastructure = None
-    
     if character.club_id:
         club_infrastructure = await ClubInfrastructureService.get_infrastructure(character.club_id)
-    
     gym_scheduler = GymScheduler(
         character        = character,
         type_characteristic = gym_type,
@@ -99,7 +95,6 @@ async def first_training_handler(
     await RemniderCharacterService.toggle_character_training_status(
         character_id=character.id,   
     )
-    
     new_status = STATUS_USER_REGISTER.END_TRAINING    
     await UserService.edit_status_register(
         user_id=character.characters_user_id,
@@ -115,3 +110,4 @@ async def first_training_handler(
         text = TEXT_STAGE_REGISTER_USER[new_status],
         reply_markup = main_menu(user)
     )
+    await SendMessageNewMember.send_message(user_id=user.user_id)

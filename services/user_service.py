@@ -28,7 +28,7 @@ class UserService:
             async with session.begin(): 
                 stmt = select(UserBot)
                 result = await session.execute(stmt)
-                return result.scalars().all()
+                return result.unique().scalars().all()
             
     @classmethod
     async def add_referal_user_id(cls, my_user_id: int, referal_user_id: int):

@@ -130,7 +130,7 @@ class MatchSender:
             )
             message_photo = await self.sender.send_messages(
                 text = text,
-                characters = club.characters_in_match,
+                characters = club.club.characters,
                 photo = photo
             )
             if message_photo and not is_save:
@@ -212,7 +212,7 @@ class MatchSender:
             
         message_photo = await self.sender.send_messages(
             text = text_scene,
-            characters = self.match_data.all_characters,
+            characters = self.match_data.all_characters_in_clubs,
             photo = photo
         )
         if message_photo and not is_save:
@@ -241,7 +241,7 @@ class MatchSender:
             }
         )
         message_photo = await self.sender.send_messages(
-            characters = self.match_data.all_characters,
+            characters = self.match_data.all_characters_in_clubs,
             text = text,
             keyboard = keyboard,
             photo = photo
@@ -285,7 +285,7 @@ class MatchSender:
             text = self.getter_templates.format_message(template = template)
         
         message_photo = await self.sender.send_messages(
-            characters = self.match_data.all_characters,
+            characters = self.match_data.all_characters_in_clubs,
             text = text,
             photo = photo
         ) 
@@ -356,7 +356,7 @@ class MatchSender:
             
         )
         message_photo = await self.sender.send_messages(
-            characters = self.match_data.all_characters,
+            characters = self.match_data.all_characters_in_clubs,
             text = text,
             photo = photo
         )

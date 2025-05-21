@@ -6,8 +6,8 @@ from collections import defaultdict
 from database.models.club import Club
 from database.models.league_fight import LeagueFight
 
-from services.league_service import LeagueFightService
 from services.club_service import ClubService
+from services.league_services.league_service import LeagueService
 
 from config import LEAGUES
 from loader import bot
@@ -22,7 +22,7 @@ class UpdateLeagueRating:
     
     
     async def get_top_club_league(self):
-        all_fights_in_league: list[LeagueFight] = await LeagueFightService.get_league_matches_last_month()
+        all_fights_in_league: list[LeagueFight] = await LeagueService.get_league_matches_last_month()
         
         groups = defaultdict(list)
         for match in all_fights_in_league:

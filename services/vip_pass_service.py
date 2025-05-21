@@ -43,6 +43,6 @@ class VipPassService:
                     .where(Character.vip_pass_expiration_date >  datetime.now())
                 )
                 result = await session.execute(stmt)
-                return result.scalars().all()
+                return result.unique().scalars().all()
             except Exception as E:
                 logger.error(f"Failed to get vip pass characters\nError: {E}")

@@ -3,11 +3,9 @@ from database.session import get_session
 from sqlalchemy import update
 from sqlalchemy import select, or_, and_, func
 from datetime import datetime, timedelta
-from sqlalchemy.exc import SQLAlchemyError
 
-from constants import START_DAY_BEST_LEAGUE
+from constants_leagues import TypeLeague
 
-from .types import TypeLeague
 
 class CreateLeagueService:
     
@@ -40,19 +38,9 @@ class CreateLeagueService:
                         LeagueFight.time_to_start <= cls.last_day_last_month()
                     )
                 )
-                if type_league == TypeLeague.BEST_LEAGUE:
-                    query = query.filter(LeagueFight.is_beast_league == True)
-                    
-                elif type_league == TypeLeague.TOP_20_CLUB_LEAGUE:
-                    query = query.filter(LeagueFight.is_top_20_club == True)
-                    
-                elif type_league == TypeLeague.DEFAULT_LEAGUE:
-                    query = query.filter(
-                        and_(
-                            LeagueFight.is_beast_league == False,
-                            LeagueFight.is_top_20_club == False
-                        )
-                    )
-                    
+                query = query.filter(LeagueFight.type_league == type_league)
+                query = query.order_by(
+                    LeagueFight.time_to_start.desc()
+                )    
                 result = await session.execute(query)
-                return result.scalars().all()
+                return result.unique().scalars().all()

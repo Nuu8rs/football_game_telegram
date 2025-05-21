@@ -5,7 +5,7 @@ from database.models.league_fight import LeagueFight
 from database.models.club import Club
 
 from league.service.create_league_service import CreateLeagueService
-from league.service.types import TypeLeague
+from constants_leagues import TypeLeague
 
 class ScoreClub:
     def __init__(self, all_clubs: List[Club]):

@@ -4,10 +4,10 @@ from typing import Optional
 from database.models.league_fight import LeagueFight
 
 from best_club_league.types import LeagueRanking
-from services.league_service import LeagueFightService
+from services.league_services.league_service import LeagueService
 
 from logging_config import logger
-from league.service.types import TypeLeague
+from constants_leagues import TypeLeague
 
 from .add_points_from_league import AddPointsToClub
 from .scheduler_distribute_points import ShedulerdistributePoints
@@ -19,10 +19,10 @@ class Waiterdistributer:
         pass
     
     async def start(self) -> None:
-        all_groups_started = await LeagueFightService.get_latest_fights_from_current_month()
+        all_groups_started = await LeagueService.get_latest_fights_from_current_month()
         top_20_groups = []
         for group in all_groups_started:
-            if group.is_top_20_club:
+            if group.type_league == TypeLeague.TOP_20_CLUB_LEAGUE:
                 top_20_groups.append(group)
             else:
                 await self._distribute_groups(group)
@@ -70,7 +70,7 @@ class Waiterdistributer:
             
     
     def get_type_league(self, fight: LeagueFight) -> TypeLeague | Optional[LeagueRanking]:
-        if fight.is_beast_league:
+        if fight.type_league == TypeLeague.BEST_LEAGUE:
             if fight.group_id == "Ліга Чемпіонів":
                 return TypeLeague.BEST_LEAGUE, LeagueRanking.GROUP_A
             elif fight.group_id == "Ліга Європи":
@@ -78,7 +78,7 @@ class Waiterdistributer:
             elif fight.group_id == "Ліга Конференції":
                 return TypeLeague.BEST_LEAGUE, LeagueRanking.GROUP_C
         
-        if fight.is_top_20_club:
+        if fight.type_league == TypeLeague.TOP_20_CLUB_LEAGUE:
             return TypeLeague.TOP_20_CLUB_LEAGUE, None
         
         else:

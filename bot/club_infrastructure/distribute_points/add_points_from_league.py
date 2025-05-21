@@ -6,11 +6,11 @@ from bot.club_infrastructure.config import POINTS_FROM_DISTRIBUTE_FROM_LEAGUE
 from database.models.league_fight import LeagueFight
 from database.models.club import Club
 
-from services.league_service import LeagueFightService
-from services.best_20_club_league_service import Best20ClubLeagueService
 from services.club_infrastructure_service import ClubInfrastructureService
+from services.league_services.default_league_service import LeagueService
+from services.league_services.top_20_club_league_service import Top20ClubLeagueService
 
-from league.service.types import TypeLeague
+from constants_leagues import TypeLeague
 from best_club_league.types import LeagueRanking
 
 
@@ -39,14 +39,14 @@ class AddPointsToClub:
 
     async def add_points(self) -> None:
         for group_id in self.group_ids:
-            matches = await LeagueFightService.get_the_monthly_matches_by_group(
+            matches = await LeagueService.get_month_league_by_group(
                 group_id=group_id
             )
             self.matches.extend(matches)
         first_place_club_id = None
         second_place_club_id = None
         if self.type_league == TypeLeague.TOP_20_CLUB_LEAGUE:
-            last_match = await Best20ClubLeagueService.get_end_last_match()
+            last_match = await Top20ClubLeagueService.get_end_match()
             if last_match:
                 first_place_club_id = last_match.winner.id
                 second_place_club_id = last_match.loser.id

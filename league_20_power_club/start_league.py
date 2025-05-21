@@ -14,7 +14,8 @@ from match.entities import MatchData, MatchClub
 from match.core.match import Match
 from match.core.manager import ClubMatchManager
 
-from services.league_service import LeagueFightService
+from services.league_services.league_service import LeagueService
+
 
 from league.user_sender import UserSender
 
@@ -43,7 +44,7 @@ class Best20ClubLeague:
         
     async def _start_end_match(self):
         end_match: LeagueFight = await self.last_match_service.get_last_match()
-        end_match: LeagueFight = await LeagueFightService.get_league_fight(
+        end_match: LeagueFight = await LeagueService.get_league_fight(
             match_id = end_match.match_id
         )
         sender_end_match = SendEndMatch(

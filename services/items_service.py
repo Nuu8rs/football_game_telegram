@@ -34,7 +34,7 @@ class ItemService:
                 result = await session.execute(
                     select(Item).where(Item.owner_character_id==character_id)
                 )
-                all_characters_not_bot = result.scalars().all()
+                all_characters_not_bot = result.unique().scalars().all()
                 return all_characters_not_bot
    
     @classmethod

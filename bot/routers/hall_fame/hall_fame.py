@@ -5,10 +5,13 @@ from database.models.character import Character
 
 from services.character_service import CharacterService
 from services.club_service import ClubService
-from services.league_service import LeagueFightService
 from services.match_character_service import MatchCharacterService
 from services.duel_service import DuelService
 
+
+from services.league_services.default_league_service import DefaultLeagueService
+from services.league_services.league_service import LeagueService
+from services.league_services.top_20_club_league_service import Top20ClubLeagueService
 
 from bot.keyboards.hall_fame_keyboard import menu_hall_fame
 
@@ -72,7 +75,7 @@ async def menu_hall_of_fame(message: Message, character: Character):
     
 @hall_fame_router.message(F.text == "🏃🏼 Рейтинг бомбардирів")
 async def menu_hall_of_fame(message: Message, character: Character):
-    group_id_mathces = await LeagueFightService.get_group_id_by_club(club_id=character.club_id)
+    group_id_mathces = await LeagueService.get_group_id_by_club(club_id=character.club_id)
     all_matches_charaters = await MatchCharacterService.get_characters_by_group_id(group_id_mathces)
     await message.answer(
         text=await get_top_bomber_rating(
@@ -97,12 +100,8 @@ async def menu_hall_of_fame(message: Message, character: Character):
     )
     
 @hall_fame_router.message(F.text == "📊 Клубний рейтинг")
-async def menu_hall_of_fame_best_24_club(message: Message, character: Character):
-    fights_from_league = await LeagueFightService.get_league_fights_current_month()
-    
+async def menu_hall_of_fame_best_24_club(message: Message):
     await message.answer(
-        text = get_top_24_clubs_text(
-            fights_from_league
-        )
+        text = await get_top_24_clubs_text()
     )
     

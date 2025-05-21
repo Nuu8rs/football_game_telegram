@@ -12,7 +12,7 @@ from constants import TIME_FIGHT
 async def test():
     
     first_club = MatchClub(
-        club_id = 78
+        club_id = 83
     )
     second_club = MatchClub(
         club_id = 228

@@ -7,9 +7,11 @@ from datetime import datetime
 from services.character_service import CharacterService
 from services.league_service import LeagueFightService
 from services.match_character_service import MatchCharacterService
-from services.best_20_club_league_service import Best20ClubLeagueService
-from services.best_club_league import BestLeagueService
 from services.club_service  import ClubService
+from services.league_services.default_league_service import DefaultLeagueService
+from services.league_services.best_league_service import BestLeagueService
+from services.league_services.top_20_club_league_service import Top20ClubLeagueService
+from services.league_services.new_clubs_league_service import NewClubsLeagueService
 
 from match.core.manager import ClubMatchManager
 from match.entities import MatchData
@@ -28,7 +30,7 @@ def get_future_matches_by_club(club: Club) -> list[MatchData]:
     
 async def get_text_league(club: Club):
 
-    current_match = await LeagueFightService.get_next_league_fight_by_club(club_id=club.id)
+    current_match = await DefaultLeagueService.get_next_league_fight_by_club(club_id=club.id)
     if not current_match:
         return "⚽️ Твоя ліга: <b>{name_league}</b>\n\nМатчів немає, відпочивайте".format(name_league = club.league)
     
@@ -120,7 +122,7 @@ async def get_text_league_devision(club: Club):
 
 async def get_text_top_club_text(club: Club):
 
-    current_match = await Best20ClubLeagueService.get_next_top_20_league_fight_by_club(club_id=club.id)
+    current_match = await Top20ClubLeagueService.get_next_league_fight_by_club(club_id=club.id)
     if not current_match:
         return "⚽️ Твоя ліга: <b>{name_league}</b>\n\nМатчів немає, відпочивайте".format(name_league = club.league)
     
@@ -165,8 +167,8 @@ async def get_text_top_club_text(club: Club):
     )
      
 
-def get_text_calendar_matches(matches: list[LeagueFightService], club_id: int):
-    sorted_fights = sorted(matches, key=lambda fight: fight.time_to_start)
+def get_text_calendar_matches(matches: list[LeagueFight], club_id: int):
+    sorted_fights: list[LeagueFight] = sorted(matches, key=lambda fight: fight.time_to_start)
 
     schedule_table = "📅 <b>Розклад матчів</b>\n\n"
     
@@ -298,9 +300,6 @@ async def get_text_rating(fights: list[LeagueFight]):
     return ranking_table
 
 
-
-
-    
 async def count_energy_characters_in_match(match_id, my_club_id:str):
     all_characters_in_match = await MatchCharacterService.get_characters_from_match(
             match_id=match_id
@@ -316,4 +315,50 @@ async def count_energy_characters_in_match(match_id, my_club_id:str):
         power_character += character.full_power
         
     return power_character
+
+async def get_text_new_club_league(club: Club):
+
+    current_match = await NewClubsLeagueService.get_next_league_fight_by_club(club_id=club.id)
+    if not current_match:
+        return "⚽️ Твоя ліга: <b>{name_league}</b>\n\nМатчів немає, відпочивайте".format(name_league = club.league)
     
+    match_data = ClubMatchManager.get_match(match_id=current_match.match_id)
+    
+    enemy_club_id = match_data.second_club_id if club.id != match_data.second_club_id else match_data.first_club_id 
+    enemy_club = await ClubService.get_club(enemy_club_id)
+    
+    
+
+    characters_in_match = await get_characters_club_in_match(
+        club_id  = club.id,
+        match_id = current_match.match_id
+    )
+
+    enemy_characters_in_match = await get_characters_club_in_match(
+        club_id  = enemy_club.id,
+        match_id = current_match.match_id
+    )
+    
+    text = """
+⚽️ Вітаємо вашу команду із тим, що ви в <b>Лиги для новачків</b>
+
+⚔️ <b>Наступний матч</b> ⚔️
+
+🛑 <code>{first_name_club}</code> [{power_first_club:.2f}] ({count_characters_first_club}/11)
+<b>VS</b>
+✳️ <code>{second_name_club}</code> [{power_second_club:.2f}] ({count_characters_second_club}/11)
+
+⏰ Час початку: <b>{time_fight}</b>
+    """
+    
+    return text.format(
+        name_division     = match_data.group_id,
+        first_name_club   = club.name_club,
+        second_name_club  = enemy_club.name_club,
+        time_fight        = match_data.start_time.strftime("%d:%m:%Y - %H:%M"),
+        power_first_club  = sum([character.full_power for character in characters_in_match]),
+        power_second_club = sum([character.full_power for character in enemy_characters_in_match]),
+        count_characters_first_club  = len(characters_in_match),
+        count_characters_second_club = len(enemy_characters_in_match)
+    )
+     

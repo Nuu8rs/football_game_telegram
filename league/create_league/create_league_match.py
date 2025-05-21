@@ -3,12 +3,12 @@ from datetime import datetime, timedelta
 from uuid import uuid4
 
 from services.club_service import ClubService
-from services.league_service import LeagueFightService
+from services.league_services.league_service import LeagueService
 
 from bot.club_infrastructure.distribute_points.add_points_from_league import AddPointsToClub
 from bot.club_infrastructure.distribute_points.scheduler_distribute_points import ShedulerdistributePoints
 
-from league.service.types import TypeLeague
+from constants_leagues import TypeLeague
 
 from .distribute_group_clubs import DistributeMatches
 from .score_clubs import ScoreClub
@@ -58,12 +58,13 @@ class CreateDefaultLeagueMatches:
                 
                 start_time_fight = datetime.combine(match_date, datetime.min.time()).replace(hour=21)
                 
-                await LeagueFightService.create_league_fight(
+                await LeagueService.create_league_fight(
                     match_id=str(uuid4()),
                     first_club_id=first_club_id,
                     second_club_id=second_club_id,
                     time_to_start=start_time_fight,
-                    group_id = group_id
+                    group_id = group_id,
+                    type_league=TypeLeague.DEFAULT_LEAGUE
                 )
         else:
             points_manager = AddPointsToClub(

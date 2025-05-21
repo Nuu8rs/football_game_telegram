@@ -7,7 +7,7 @@ from database.models.character import Character
 from services.club_service import ClubService
 from services.character_service import CharacterService
 from services.match_character_service import MatchCharacterService
-from services.league_service import LeagueFightService
+from services.league_services.league_service import LeagueService
 
 from bot.states.club_states import SendMessageMembers, EditDescriptionClub
 from bot.callbacks.club_callbacks import TransferOwner, DeleteClub, SelectSchema, KickMember
@@ -156,17 +156,18 @@ async def select_schema(query: CallbackQuery, character: Character, callback_dat
     
 async def notification_switch_schema(club_id: int, my_character: Character):
     club = await ClubService.get_club(club_id)
-    current_match_today = await LeagueFightService.get_match_today(club_id=club.id)
+    current_matches_today = await LeagueService.get_match_today(club_id=club.id)
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=my_character,
         text="<b>Лідер команди змінив схему</b>\n\n"+get_text_schemas(club)
     )
-    for character in club.characters:
+    for current_match_today in current_matches_today:
+        for character in club.characters:
             await MatchCharacterService.delete_character_from_match(
-                character_id=character.id,
-                match_id=current_match_today.match_id
-            )
+                    character_id=character.id,
+                    match_id=current_match_today.match_id
+                )
 
     
 @owner_option_club_router.callback_query(F.data == "kick_user")

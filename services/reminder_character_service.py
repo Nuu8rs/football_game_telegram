@@ -29,7 +29,7 @@ class RemniderCharacterService:
                     select(ReminderCharacter)
                     .where(ReminderCharacter.character_in_training == True)
                 )
-                characters_in_training = result.scalars().all()
+                characters_in_training = result.unique().scalars().all()
                 return characters_in_training
             
     @classmethod
@@ -118,7 +118,7 @@ class RemniderCharacterService:
                     select(ReminderCharacter)
                     .where(ReminderCharacter.character_in_training == False)
                 )
-                characters_not_training = result.scalars().all()
+                characters_not_training = result.unique().scalars().all()
                 return characters_not_training
             
         

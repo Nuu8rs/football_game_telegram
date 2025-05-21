@@ -3,7 +3,7 @@ from aiogram.types import FSInputFile
 from dataclasses import dataclass
 from typing import Dict, Union, List
 
-from league.service.types import TypeLeague
+from constants_leagues import TypeLeague
 from best_club_league.types import LeagueRanking
 
 from .types import InfrastructureType, InfrastructureLevel

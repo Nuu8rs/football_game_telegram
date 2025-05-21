@@ -5,7 +5,7 @@ from bot.club_infrastructure.config import POINTS_FROM_DISTRIBUTE_FROM_LEAGUE
 from bot.club_infrastructure.constans import PHOTO_DESTRIBUTE_POINTS
 
 from best_club_league.types import LeagueRanking
-from league.service.types import TypeLeague
+from constants_leagues import TypeLeague
 
 info_desrtibute_points_router = Router()
 

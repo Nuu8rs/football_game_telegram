@@ -12,7 +12,7 @@ from database.models.league_fight import LeagueFight
 from database.models.club import Club
 
 from services.club_service import ClubService
-from services.best_club_league import BestLeagueService
+from services.league_services.best_league_service import BestLeagueService
 
 from collections import defaultdict
 from logging_config import logger
@@ -102,7 +102,7 @@ class SchedulerSesonBeastLeague:
     
     async def end_season_beast_league(self):
         logger.info("ОКАНЧИВАЮ СЕЗОН ЛИГИ МАТЧЕЙ")
-        matches = await BestLeagueService.get_best_league()
+        matches = await BestLeagueService.get_month_league()
         group_info = self.calculate_league_rankings(matches)
         for league_name, group_league in group_info.items():
             await self.send_congratulations_group_clubs(

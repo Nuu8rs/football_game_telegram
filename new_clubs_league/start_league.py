@@ -4,7 +4,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 from datetime import datetime
 
-from best_club_league.service.get_best_league_match import BestClubLeagueMatchService
+from .service.get_new_clubs_league import NewClubLeaguRepository
 
 from database.models.league_fight import LeagueFight
 
@@ -13,25 +13,21 @@ from match.entities import MatchData, MatchClub
 from match.core.match import Match
 from match.core.manager import ClubMatchManager
 
-from constants import START_DAY_BEST_LEAGUE
+from constants_leagues import config_new_club_league
 
-class BestClubLeague:
+class NewClubLeague:
     
     def __init__(self) -> None:
         self.scheduler_best_league =  AsyncIOScheduler()
-        self.best_league_service = BestClubLeagueMatchService()
-        
-    async def start_best_league(self):
-        await self._start_league()
-        
-    async def _start_league(self):
-        league_matchs = await self.best_league_service.get_matches()
+        self._service = NewClubLeaguRepository()
 
+    async def start_league(self):
+        league_matchs = await self._service.get_matches()
         for match in league_matchs:
             await self.start_match(match)
 
         self.scheduler_best_league.start()
-
+        
     async def start_match(self, match: LeagueFight) -> None:
         if match.time_to_start < datetime.now():
             return
@@ -54,13 +50,14 @@ class BestClubLeague:
             match_data = match_data,
             start_time = match.time_to_start
         )
+        time_start_match = match.time_to_start.replace(
+            hour = config_new_club_league.HOUR_TIME_START_MATCH,
+            minute = 0
+        )
+        
         time_send_join_match_text = match.time_to_start.replace(
             hour = 20,
             minute = 20
-        )
-        time_start_match = match.time_to_start.replace(
-            hour = 21,
-            minute = 0
         )
         
         user_sender = UserSender(
@@ -79,14 +76,14 @@ class BestClubLeague:
             misfire_grace_time = 10
         )
         
-class SchedulerBestClubtLeague:
+class SchedulerNewClubLeague:
     def __init__(self):
         self.scheduler = AsyncIOScheduler()
 
     async def start_scheduler(self):
         self.scheduler.add_job(
-            func=BestClubLeague().start_best_league,
-            trigger=CronTrigger(day=START_DAY_BEST_LEAGUE, hour=8, minute=0),
+            func=NewClubLeague().start_league,
+            trigger=config_new_club_league.TRIGGER_START_LEAGUE,
             misfire_grace_time=10
         )
         self.scheduler.start()

@@ -10,7 +10,8 @@ JOIN_TO_CLUB_PHOTO = FSInputFile("src/register_user/join_to_club.jpg")
 FIRST_TRAINING_PHOTO = FSInputFile("src/register_user/first_training.jpg") 
 FORGOT_TRAINING_PHOTO = FSInputFile("src/register_user/forgot_training.jpg")
 SELECT_GENDER_PHOTO = FSInputFile("src/register_user/choise_gender.jpg")
+ADITIONAL_INFO_PHOTO = FSInputFile("src/register_user/new_member_additional_information.jpg")
 
-TIME_SLEEP_REGISTER_MESSAGE = 4
+TIME_SLEEP_REGISTER_MESSAGE = 3
 TIME_FORGOT_MESSAGE = 60*4
 COUNT_FORGOT_MESSAGE = 3

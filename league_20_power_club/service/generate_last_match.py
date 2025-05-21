@@ -5,10 +5,11 @@ from uuid import uuid4
 from database.models.league_fight import LeagueFight
 from database.models.club import Club
 
-from services.best_20_club_league_service import Best20ClubLeagueService
-from services.league_service import LeagueFightService
+from services.league_services.league_service import LeagueService
+from services.league_services.top_20_club_league_service import Top20ClubLeagueService
 
 from constants import END_DAY_BEST_20_CLUB_LEAGUE
+from constants_leagues import TypeLeague
 
 class GenerateLastMatchService:
     
@@ -16,7 +17,7 @@ class GenerateLastMatchService:
         self.fight_top_20_club: list[LeagueFight] = []
     
     async def get_top_2_club(self) -> list[int]:
-        self.fight_top_20_club = await Best20ClubLeagueService.get_top_20_club_matches()
+        self.fight_top_20_club = await Top20ClubLeagueService.get_month_league()
         club_points = defaultdict(int)
         for match in self.fight_top_20_club:
             club_points[match.first_club_id] += match.total_points_first_club
@@ -26,13 +27,13 @@ class GenerateLastMatchService:
     async def get_last_match(self) -> LeagueFight:
         club_ids_winners: list[int] = await self.get_top_2_club()
         match_id = str(uuid4())
-        return await LeagueFightService.create_league_fight(
+        return await LeagueService.create_league_fight(
                 match_id = match_id,
                 first_club_id  = club_ids_winners[0],
                 second_club_id = club_ids_winners[1],
                 time_to_start = self.end_match_time,
                 group_id = "LAST_MATCH",
-                is_top_20_club = True
+                type_league= TypeLeague.TOP_20_CLUB_LEAGUE,
             )
         
     @property

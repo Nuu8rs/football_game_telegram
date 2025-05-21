@@ -36,11 +36,12 @@ class MatchClub:
     
     club: Optional[Club] = None
     characters_in_match: set[Character] = field(default_factory=set)
+    
     club_infrastructure: Optional[ClubInfrastructure] = None
     text_is_send_epizode_donate_energy: bool = False
     
     async def init_data(self):
-        self.club = await ClubService.get_club(
+        self.club: Club = await ClubService.get_club(
             club_id=self.club_id
         )
         self.club_infrastructure = await ClubInfrastructureService.get_infrastructure(
@@ -111,7 +112,7 @@ class MatchClub:
             character.id 
             for character in self.characters_in_match
         ]
-    
+        
     def get_charaters_by_position(
         self, 
         position: Literal[
@@ -214,6 +215,15 @@ class MatchData:
             character for club in self.all_clubs 
             for character in club.characters_in_match
         ]
+    
+    @property
+    def all_characters_user_ids_in_match(self) -> list[int]:
+        return [
+            character.characters_user_id 
+            for club in self.all_clubs 
+            for character in club.characters_in_match
+        ]
+    
     
     @property
     def all_characters_in_clubs(self) -> list[Character]:

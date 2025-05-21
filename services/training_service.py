@@ -70,7 +70,7 @@ class TrainingService:
                     )
                 )
                 result = await sess.execute(query)
-                return result.scalars().all()
+                return result.unique().scalars().all()
 
             
     @classmethod
@@ -156,7 +156,7 @@ class TrainingService:
                     .where(Character.is_bot == False)
                 )
                 result = await sess.execute(query)
-                return result.scalars().all()
+                return result.unique().scalars().all()
             
     @classmethod
     async def anulate_user_training(cls, user_id: int) -> None:

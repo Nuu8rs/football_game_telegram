@@ -68,3 +68,16 @@ def menu_national_cup_ukraine():
            .adjust(1,1,1,2,1)
            .as_markup(resize_keyboard = True)
            )
+    
+
+def menu_new_club_league():
+    return(ReplyKeyboardBuilder()
+           .button(text = "📝 Зареєструватися в матч Нових клубів")
+           .button(text = "📋 Таблиця Нових клубів")
+        #    .button(text = "🔋 Задонатити в матч Нових клубів")
+           .button(text = "📅 Календар Нових клубів")
+           .button(text = "📊 Результати Нових клубів")
+           .attach(menu_plosha())
+           .adjust(1,1,1,2,1)
+           .as_markup(resize_keyboard = True)
+           )

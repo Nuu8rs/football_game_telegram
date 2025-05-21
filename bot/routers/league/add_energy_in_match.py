@@ -47,9 +47,7 @@ async def donate_energy_from_match_handler(
         character: Character,
         state: FSMContext
     ):
-    # 1749993003
-    print(callback_data.time_end_goal)
-    print(int(time.time()))
+
     if int(time.time()) > callback_data.time_end_goal:
         await query.answer("Час для цього голу вже закінчився",
                                   show_alert= True)
@@ -65,6 +63,11 @@ async def donate_energy_from_match_handler(
     match_data = ClubMatchManager.get_match(callback_data.match_id)
     if not match_data:
         return
+    
+    if character.id not in match_data.all_characters_user_ids_in_match:
+        await query.answer("Ви не берете участь у цьому матчі", show_alert=True)
+        return await query.message.delete()
+    
     
     await state.update_data(match_data = match_data)
     await state.update_data(end_time = callback_data.time_end_goal)
@@ -135,7 +138,7 @@ async def donate_epizode_energy(
             )
             
             message_photo = await send_message_characters_club(
-                characters_club = match_data.all_characters,
+                characters_club = match_data.all_characters_in_clubs,
                 my_character = None,
                 text = text_epizode_donate,
                 photo = photo,
@@ -163,7 +166,7 @@ async def donate_epizode_energy(
     """
     await CharacterService.consume_energy(character_id=character.id, energy_consumed=energy)
     await send_message_characters_club(
-        characters_club = match_data.all_characters,
+        characters_club = match_data.all_characters_in_clubs,
         my_character = None,
         text = text
     )

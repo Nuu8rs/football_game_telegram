@@ -7,6 +7,7 @@ from bot.club_infrastructure.distribute_points.add_points_from_league import Add
 from bot.club_infrastructure.distribute_points.scheduler_distribute_points import ShedulerdistributePoints
 
 from constants import END_DAY_BEST_20_CLUB_LEAGUE
+from constants_leagues import TypeLeague
 
 from database.models.league_fight import LeagueFight
 from database.models.club import Club
@@ -18,18 +19,19 @@ from league_20_power_club.utils.best_club_create_match import (
     get_top_20_club
 ) 
 
-from services.best_20_club_league_service import Best20ClubLeagueService
-from services.league_service import LeagueFightService
+# from services.best_20_club_league_service import Best20ClubLeagueService
+from services.league_services.top_20_club_league_service import Top20ClubLeagueService
+from services.league_services.league_service import LeagueService
 
-from league.service.types import TypeLeague
+
 
 class BestClubLeagueMatchService:
  
     async def get_matches(self) -> list[LeagueFight]:    
-        best_top_20_club_league = await Best20ClubLeagueService.get_top_20_club_matches()
+        best_top_20_club_league = await Top20ClubLeagueService.get_month_league()
         if not best_top_20_club_league:
             await self.generate_top_20_club_matches()
-            best_top_20_club_league = await Best20ClubLeagueService.get_top_20_club_matches()
+            best_top_20_club_league = await Top20ClubLeagueService.get_month_league()
         
         return best_top_20_club_league
         
@@ -94,13 +96,13 @@ class BestClubLeagueMatchService:
         for match in clubs_match_day:
             match_id = str(uuid4())
             
-            await LeagueFightService.create_league_fight(
+            await LeagueService.create_league_fight(
                 match_id = match_id,
                 first_club_id  = match[0].id,
                 second_club_id = match[1].id,
                 time_to_start = date_match,
                 group_id = group.value,
-                is_top_20_club = True
+                type_league= TypeLeague.TOP_20_CLUB_LEAGUE,
             )
             
 

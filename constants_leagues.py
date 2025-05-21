@@ -51,24 +51,51 @@ class BaseConfigLeague(ABC):
             minute=0
         )
         
+    @property
+    def league_is_active(self) -> bool:
+        now = datetime.now()
+        return self.DAY_START <= now.day <= self.DAY_END
+        
         
 class ConfigNewClubLeague(BaseConfigLeague):
-    DAY_START = 11
-    DAY_END = 20
-    HOUR_TIME_START_MATCH = 15
+    DAY_START = 5
+    DAY_END = 15
+    HOUR_TIME_START_MATCH = 17
 
-    COUNT_GROUP = 2
-    COUNT_CLUB_IN_GROUP = 15
+    COUNT_GROUP = 4
+    COUNT_CLUB_IN_GROUP = 10
+    START_CLUB_INDEX = 21
+
+
+class ConfigDefaultLeague(BaseConfigLeague):
+    DAY_START = 1
+    DAY_END = 10
+    HOUR_TIME_START_MATCH = 21
+
+
+class ConfigTop20ClubLeague(BaseConfigLeague):
+    DAY_START = 3
+    DAY_END = 21
+    HOUR_TIME_START_MATCH = 21
+
+
+class ConfigBestLeague(BaseConfigLeague):
+    DAY_START = 21
+    DAY_END = 30
+    HOUR_TIME_START_MATCH = 21
 
 
 config_new_club_league = ConfigNewClubLeague()
+config_default_league = ConfigDefaultLeague()
+config_top_20_club_league = ConfigTop20ClubLeague()
+config_best_league = ConfigBestLeague()
 
 
 class GetConfig:
     configs: dict[TypeLeague, BaseConfigLeague] = {
-        # TypeLeague.BEST_LEAGUE: config_new_club_league,
-        # TypeLeague.DEFAULT_LEAGUE: config_new_club_league,
-        # TypeLeague.TOP_20_CLUB_LEAGUE: config_new_club_league,
+        TypeLeague.BEST_LEAGUE: config_best_league,
+        TypeLeague.TOP_20_CLUB_LEAGUE: config_top_20_club_league,
+        TypeLeague.DEFAULT_LEAGUE: config_default_league,
         TypeLeague.NEW_CLUB_LEAGUE: config_new_club_league,
     }
     

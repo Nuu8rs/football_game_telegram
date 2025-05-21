@@ -10,6 +10,7 @@ from constants import MAX_LEN_MEMBERS_CLUB
 from datetime import datetime
 
 class ClubService:
+    
     @classmethod
     async def get_club(cls, club_id: int) -> Club:
         async for session in get_session():
@@ -40,7 +41,7 @@ class ClubService:
                     .where(Club.is_fake_club == False)
                 )
                 result = await session.execute(stmt)
-                clubs = result.scalars().all()
+                clubs = result.unique().scalars().all()
                 return clubs
             
     @classmethod
@@ -67,7 +68,7 @@ class ClubService:
                     .where(subquery.c.characters_count < MAX_LEN_MEMBERS_CLUB)
                 )
                 result = await session.execute(stmt)
-                clubs = result.scalars().all()
+                clubs = result.unique().scalars().all()
                 return clubs
             
     @classmethod
@@ -102,7 +103,7 @@ class ClubService:
                     .where(Club.is_fake_club == False)
                     .order_by(Club.league)
                     )
-                clubs = result.scalars().all()
+                clubs = result.unique().scalars().all()
                 return sorted(clubs, key=lambda club: club.total_power, reverse=True)    
             
     @classmethod
@@ -205,7 +206,7 @@ class ClubService:
                     .where(Club.id.in_(club_ids))
                 )
                 result = await session.execute(stmt)
-                return result.scalars().all()
+                return result.unique().scalars().all()
             
     @classmethod
     async def update_rang_league(

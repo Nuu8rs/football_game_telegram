@@ -4,8 +4,9 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
 from apscheduler.triggers.cron import CronTrigger
 
-from services.league_service import LeagueFightService
 from database.models.league_fight import LeagueFight
+
+from constants import START_DAY_DEFAULT_LEAGUE
 
 from match.entities import MatchData, MatchClub
 from match.core.match import Match
@@ -13,8 +14,10 @@ from match.core.manager import ClubMatchManager
 
 from league.user_sender import UserSender
 from league.create_league.create_league_match import CreateDefaultLeagueMatches
-from constants import START_DAY_DEFAULT_LEAGUE
-from datetime import timedelta
+
+from services.league_services.default_league_service import DefaultLeagueService 
+
+
 
 TEST = False
 
@@ -24,10 +27,10 @@ class StartDefaultLeague:
         self.scheduler_league = AsyncIOScheduler()
     
     async def setup_matches(self) -> None:
-        matches = await LeagueFightService.get_league_fights_current_month()
+        matches = await DefaultLeagueService.get_month_league()
         if not matches:
             await CreateDefaultLeagueMatches().create_default_league_matches()
-            matches = await LeagueFightService.get_league_fights_current_month()
+            matches = await DefaultLeagueService.get_month_league()
         await self._start_match(matches)
         
         self.scheduler_league.start()

@@ -18,4 +18,3 @@ class CheckTimeChristmasTree(BaseFilter):
         return True
     
     
-#TODO CHECK TO GET REWARD

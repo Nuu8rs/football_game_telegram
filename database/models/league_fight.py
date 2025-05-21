@@ -1,6 +1,15 @@
 from datetime import datetime
 
-from sqlalchemy import Column, BigInteger, String, DateTime, ForeignKey, Integer, Boolean
+from sqlalchemy import (
+    Column,
+    BigInteger,
+    String,
+    Enum,
+    DateTime,
+    ForeignKey, 
+    Integer,
+    Boolean
+)
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, Mapped
 
@@ -22,25 +31,19 @@ class LeagueFight(Base):
     first_club_id    = Column(BigInteger, ForeignKey('clubs.id'), nullable=False)
     second_club_id   = Column(BigInteger, ForeignKey('clubs.id'), nullable=False)
     
-    first_club:Mapped["Club"]   = relationship("Club", foreign_keys=[first_club_id], lazy="selectin")
-    second_club:Mapped["Club"]  = relationship("Club", foreign_keys=[second_club_id], lazy="selectin")
+    first_club:Mapped["Club"]   = relationship("Club", foreign_keys=[first_club_id], lazy="subquery")
+    second_club:Mapped["Club"]  = relationship("Club", foreign_keys=[second_club_id], lazy="subquery")
     
     goal_first_club  = Column(Integer, default=0)
     goal_second_club = Column(Integer, default=0)
     
     is_beast_league: bool = Column(Boolean, nullable=False, server_default = "0")
     is_top_20_club: bool = Column(Boolean, nullable=False, server_default = "0")
+    
     type_league: Mapped[TypeLeague] = Column(
-        String(255),
-        nullable=False,
-        server_default=(
-            "CASE "
-            "WHEN is_beast_league = 1 THEN 'BEST_LEAGUE' "
-            "WHEN is_top_20_club = 1 THEN 'TOP_20_CLUB_LEAGUE' "
-            "ELSE 'DEFAULT_LEAGUE' "
-            "END"
-        )
+        Enum(TypeLeague)
     )
+    
     @property
     def end_match_time(self) -> datetime:
         return self.time_to_start + TIME_FIGHT

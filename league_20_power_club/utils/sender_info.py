@@ -4,7 +4,7 @@ from database.models.character import Character
 from database.models.club import Club
 
 from services.club_service import ClubService
-from services.best_20_club_league_service import Best20ClubLeagueService
+from services.league_services.top_20_club_league_service import Top20ClubLeagueService
 
 from loader import bot
 from utils.rate_limitter import rate_limiter
@@ -99,7 +99,7 @@ class SendCongratulationEndMatch(SendInformationToClub):
         self.winner_club: Club = None
         
     async def get_winner_club(self):
-        last_match = await Best20ClubLeagueService.get_end_last_match()
+        last_match = await Top20ClubLeagueService.get_end_match()
         if last_match.total_points_first_club > last_match.total_points_second_club:
             self.winner_club = last_match.first_club
         else:

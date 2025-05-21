@@ -12,9 +12,9 @@ from match.message_sender.match_sender import MatchSender
 
 from database.models.character import Character
 
-from services.league_service import LeagueFightService
 from services.match_character_service import MatchCharacterService
 from services.character_service import CharacterService
+from services.league_services.league_service import LeagueService
 
 from logging_config import logger
 
@@ -129,7 +129,7 @@ class Match:
             match_id = self.match_data.match_id,
             character_id = character_goal.id,
         )
-        await LeagueFightService.increment_goal(
+        await LeagueService.increment_goal(
             match_id=self.match_data.match_id,
             club_id=goal_club.club_id
             )

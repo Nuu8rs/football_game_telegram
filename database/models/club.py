@@ -28,8 +28,8 @@ class Club(Base):
     custom_url_photo_stadion = Column(String(255), nullable = False, default = "src/fight_club_menu.jpg", server_default= "src/fight_club_menu.jpg")
     custom_name_stadion  = Column(String(255), nullable = False, default = "Стадіон", server_default= "Стадіон")
     
-    owner          = relationship("UserBot", back_populates="clubs", lazy="selectin")
-    characters:Mapped[list['Character']]  = relationship("Character", back_populates="club", lazy="selectin")
+    owner          = relationship("UserBot", back_populates="clubs", lazy="subquery")
+    characters:Mapped[list['Character']]  = relationship("Character", back_populates="club", lazy="subquery")
 
     @hybrid_property
     def total_power(self) -> int:

@@ -81,7 +81,7 @@ class MatchCharacterService:
                         .where(MatchCharacter.match_id == match_id)
                         )
                 result = await session.execute(stmt)
-                return result.scalars().all()
+                return result.unique().scalars().all()
             
     
     @classmethod
@@ -94,7 +94,7 @@ class MatchCharacterService:
                         
                         )
                 result = await session.execute(stmt)
-                return result.scalars().all()
+                return result.unique().scalars().all()
             
             
     @classmethod
@@ -184,7 +184,7 @@ class MatchCharacterService:
                     )
                 )
                 result = await session.execute(stmt)
-                return result.scalars().all()
+                return result.unique().scalars().all()
             
         
     @classmethod
@@ -209,4 +209,4 @@ class MatchCharacterService:
                     )
                 )
                 result = await session.execute(stmt)
-                return result.scalars().all()
+                return result.unique().scalars().all()

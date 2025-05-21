@@ -21,7 +21,7 @@ class CharacterService:
                 result = await session.execute(
                     select(Character)
                 )
-                all_characters_not_bot = result.scalars().all()
+                all_characters_not_bot = result.unique().scalars().all()
                 return all_characters_not_bot
    
 
@@ -43,7 +43,7 @@ class CharacterService:
                     )
                 )
                 result = await session.execute(stmt)
-                all_characters_not_bot = result.scalars().all()
+                all_characters_not_bot = result.unique().scalars().all()
                 return all_characters_not_bot
    
     @classmethod
@@ -192,7 +192,7 @@ class CharacterService:
                         .where(Character.current_energy <= CONST_ENERGY) 
                         .where(Character.vip_pass_expiration_date <= datetime.now())
                     )
-                    all_characters_not_bot = result.scalars().all()
+                    all_characters_not_bot = result.unique().scalars().all()
                     return all_characters_not_bot
                 except Exception as e:
                     raise e
@@ -297,7 +297,7 @@ class CharacterService:
                     result = await session.execute(
                         select(Character)
                         .where(Character.referal_user_id == character_user_id))
-                    all_characters_not_bot = result.scalars().all()
+                    all_characters_not_bot = result.unique().scalars().all()
                     return all_characters_not_bot
                 except Exception as e:
                     raise e
@@ -367,7 +367,7 @@ class CharacterService:
                 )
                 
                 result = await session.execute(stmt)
-                characters = result.scalars().all()
+                characters = result.unique().scalars().all()
                 return characters
             
     @classmethod

@@ -3,7 +3,7 @@ import asyncio
 from database.models.club import Club
 from database.models.character import Character
 
-from services.league_service import LeagueFightService
+from services.league_services.league_service import LeagueService
 
 from logging_config import logger
 from loader import bot
@@ -29,7 +29,7 @@ class UserSender:
         self.second_club = None
         
     async def _post_init(self):
-        league_fight = await LeagueFightService.get_league_fight(self.match_id)
+        league_fight = await LeagueService.get_league_fight(self.match_id)
         self.first_club: Club = league_fight.first_club
         self.second_club: Club = league_fight.second_club
         self.characters = [character for character in (self.second_club.characters + self.first_club.characters) if not character.is_bot] 
