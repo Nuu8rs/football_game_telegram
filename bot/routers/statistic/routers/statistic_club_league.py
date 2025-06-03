@@ -19,7 +19,7 @@ from services.club_service import ClubService
 menu_choice_league_club_router = Router()
 
 @menu_choice_league_club_router.message(
-    F.text == "📊 Таблиця ліг"
+    F.text == "📊 Команди в лігах"
 )
 async def menu_statistic_handler(
     message: Message,

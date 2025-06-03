@@ -12,6 +12,13 @@ class TypeLeague(Enum):
     TOP_20_CLUB_LEAGUE = "TOP_20_CLUB_LEAGUE"
     NEW_CLUB_LEAGUE = "NEW_CLUB_LEAGUE"
 
+NAMES_LEAGUES: dict = {
+    TypeLeague.BEST_LEAGUE: "👑 ЕвроКубки",
+    TypeLeague.DEFAULT_LEAGUE: "⚽ Ліга",
+    TypeLeague.TOP_20_CLUB_LEAGUE: "💼 Кубок України",
+    TypeLeague.NEW_CLUB_LEAGUE: "🌱 Ліга Новачків"
+}
+
 
 class BaseConfigLeague(ABC):
     DAY_START: int
@@ -29,7 +36,7 @@ class BaseConfigLeague(ABC):
     def TRIGGER_SEND_MESSAGE_START(self) -> CronTrigger:
         return CronTrigger(
             day=self.DAY_START,
-            hour=9,
+            hour=7,
             minute=0
         )
     
@@ -38,7 +45,7 @@ class BaseConfigLeague(ABC):
         now = datetime.now()
         return now.replace(
             day=self.DAY_START, 
-            hour=0, 
+            hour=8, 
             minute=0
         )
     

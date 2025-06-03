@@ -40,6 +40,7 @@ def main_menu(user: UserBot):
         keyboard.button(text="⚽️ Створити персонажа")
     else:
         keyboard.button(text = "🏟 Стадіон")
+        keyboard.button(text = "🖲 Тренування")
         menu_best_league(keyboard)
         menu_best_20_club(keyboard)
         menu_new_club_league(keyboard)

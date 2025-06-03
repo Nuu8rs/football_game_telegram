@@ -86,6 +86,7 @@ class LeagueService(BaseLeagueService):
                     .where(
                         LeagueFight.group_id == group_id,
                         LeagueFight.time_to_start >= cls.first_day_month,
+                        LeagueFight.time_to_start < cls.start_next_month
                     )
                     .order_by(LeagueFight.time_to_start.asc())
                 )
@@ -97,6 +98,7 @@ class LeagueService(BaseLeagueService):
         cls,
         club_id: int
     ) -> Optional[list[LeagueFight]]:
+        print(cls.first_day_month)
         async for session in get_session():
             async with session.begin():
                 stmt = (
@@ -125,9 +127,32 @@ class LeagueService(BaseLeagueService):
                             LeagueFight.first_club_id == club_id,
                             LeagueFight.second_club_id == club_id
                         ),
-                        # Добавляем условие на дату
                         LeagueFight.time_to_start >= cls.first_day_month,
                         LeagueFight.time_to_start < cls.start_next_month
+                    )
+                    .limit(1)
+                )
+                group_id = league_fight.scalar()
+                return group_id
+
+    @classmethod
+    async def get_group_id_by_club_and_type_league(
+        cls,
+        club_id: int,
+        type_league: TypeLeague
+    ) -> str | None:
+        async for session in get_session():
+            async with session.begin():
+                league_fight = await session.execute(
+                    select(LeagueFight.group_id)
+                    .where(
+                        or_(
+                            LeagueFight.first_club_id == club_id,
+                            LeagueFight.second_club_id == club_id
+                        ),
+                        LeagueFight.time_to_start >= cls.first_day_month,
+                        LeagueFight.time_to_start < cls.start_next_month,
+                        LeagueFight.type_league == type_league
                     )
                     .limit(1)
                 )
@@ -276,3 +301,23 @@ class LeagueService(BaseLeagueService):
                     # await session.rollback()
                     print(f"Ошибка при создании битвы: {e}")
                     return None
+                
+    @classmethod
+    async def get_group_ids_by_league(
+        cls,
+        type_league: TypeLeague
+    ) -> list[int]:
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    select(LeagueFight.group_id)
+                    .where(
+                        LeagueFight.type_league == type_league,
+                        LeagueFight.time_to_start >= cls.first_day_month,
+                        LeagueFight.time_to_start < cls.start_next_month
+                    )
+                    .distinct()
+                )
+                result = await session.execute(stmt)
+                return result.unique().scalars().all()
+    

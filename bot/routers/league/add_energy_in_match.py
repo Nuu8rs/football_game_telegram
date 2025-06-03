@@ -64,7 +64,7 @@ async def donate_energy_from_match_handler(
     if not match_data:
         return
     
-    if character.id not in match_data.all_characters_user_ids_in_match:
+    if character.characters_user_id not in match_data.all_characters_user_ids_in_match:
         await query.answer("Ви не берете участь у цьому матчі", show_alert=True)
         return await query.message.delete()
     

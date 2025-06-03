@@ -103,7 +103,7 @@ class Best20ClubLeague:
         
         time_start_match = match.time_to_start.replace(
             hour = 17,
-            minute = 0
+            minute = 30
         )
         ClubMatchManager.add_match(match_data)
 

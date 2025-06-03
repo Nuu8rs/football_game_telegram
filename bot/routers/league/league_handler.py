@@ -67,7 +67,7 @@ async def get_calendar_matches(message: Message, character: Character):
             text="❌ Сезон ще на розпочався, очікуйте на початок подій. 1 числа кожного місяця а кубок стартує 24"
         )
 
-    all_matches = await LeagueService.get_month_league_by_club(
+    all_matches = await DefaultLeagueService.get_month_league_by_club(
         club_id=character.club_id
     )
     await message.answer(

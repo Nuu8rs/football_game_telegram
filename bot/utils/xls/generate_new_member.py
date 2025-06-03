@@ -9,6 +9,7 @@ class GenerateNewMemberXLS(BaseXLS):
         "ID користувача",
         "Нікнейм (@username)",
         "Ім'я персонажа",
+        "Дата регістрації",
         "Сила персонажа",
         "Позиція",
         "Кількість грошей",
@@ -17,6 +18,7 @@ class GenerateNewMemberXLS(BaseXLS):
         "Останнє тренування",
         "Запрошений (@username)",
         "VIP статус (до коли)",
+        
     ]
 
 
@@ -39,11 +41,12 @@ class GenerateNewMemberXLS(BaseXLS):
                 f"Активний до {member.vip_pass_expiration_date.strftime('%Y-%m-%d %H:%M:%S')}"
                 if member.vip_pass_is_active else "Неактивний"
             )
-
+            
             self.current_sheet.append([
                 member.characters_user_id,
                 f"@{user.user_name}" if user and user.user_name else "Невідомо",
                 member.character_name,
+                member.created_at,
                 member.full_power,
                 member.position_enum.value if member.position_enum else "Невідома",
                 member.money,
