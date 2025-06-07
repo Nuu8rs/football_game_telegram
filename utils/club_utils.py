@@ -73,6 +73,8 @@ async def get_club_description(club: Club) -> str:
 🏅 Дивізіон: {club.league}
 💪 Загальна сила команди: {club.total_power:.2f}
 👥 Кількість членів у команді: {len(club.characters)}
+
+🏢Опис: <i>{club.description}</i>
     """
     return text
 

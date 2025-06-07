@@ -57,8 +57,8 @@ async def join_to_club(
     )
     await state.update_data(message_join_to_club = message_join_to_club)
 
-@join_to_club_router.message(
-    F.data == "join_to_club",
+@join_to_club_router.callback_query(
+    F.data == "join_club_new_member",
     JoinToClubState.join_to_club
 )
 async def _join_to_club_handler(
@@ -68,8 +68,8 @@ async def _join_to_club_handler(
 ):
     all_clubs_to_join = await ClubService.get_all_clubs_to_join()
     await state.update_data(all_clubs = all_clubs_to_join)
-    await query.message.edit_text(
-        text = "Виберіть команду, до якої хочете приєднатися",
+    await query.message.edit_caption(
+        caption = "Виберіть команду, до якої хочете приєднатися",
         reply_markup = find_club(all_clubs_to_join)
     )
     

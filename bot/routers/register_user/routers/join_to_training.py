@@ -47,6 +47,35 @@ TEMPLATE_STARTER_POWER_POINTS = f"""
 <b>Твоя пригода тільки починається. Вперед до перемог!</b> 🔥
 """
 
+TEXT_LAST_STEP = """
+🔹 <b>Тренер:</b>
+— Ось і все, чемпіоне! Ти готовий до справжньої гри. ⚽️🔥
+Тепер головне — не зупиняйся:
+
+✅ <b>Вступай у матчі</b> — тисни кнопку <b>"Матчі"</b> → <b>"Матчі ліги"</b>, старт о 21:00 кожен день.
+✅ <b>Тренуйся щодня</b>, щоб покращувати свого гравця — кнопка <b>"Тренування"</b>
+✅ <b>І обов’язково приєднуйся до нашої спільноти:</b>
+👉 <a href="https://t.me/tgfootballchat/2">ЧАТ- Спільнота</a> — тут тобі завжди допоможуть, підкажуть і підтримають!
+
+<b>Удачі на полі! 💪</b>
+Пам’ятай: <i>справжні легенди виростають з першого матчу.</i>
+"""
+
+TEXT_SECOND_STEP = """
+✅ Останній крок перед грою!
+
+Ти вже майже на полі — залишилось зовсім трохи:
+
+⚽️ Зареєструйся в матч — сьогодні о 21:00
+📍 Матчі → Стадіон → Ліга
+
+💬 Приєднуйся до спільноти гравців:
+👉 Загальний чат та чат своєї команди — у розділі "Спілкування"
+
+🎯 Готово? Тепер ти повноцінний гравець. Вперед до першої перемоги! 💪
+"""
+
+
 async def join_to_training(
     message: Message,
     character: Character
@@ -100,14 +129,38 @@ async def first_training_handler(
         user_id=character.characters_user_id,
         status=new_status
     )
-    await query.message.answer_photo(
-        photo=PHOTO_NEW_BONUS_MEMBER_HAR,
-        caption = TEMPLATE_STARTER_POWER_POINTS,
-        reply_markup = new_member_bonus_keyboard()
-    )
     await asyncio.sleep(6)
+    asyncio.create_task(send_message_first_step(query.message))
+    asyncio.create_task(send_message_second_step(query.message))
+    asyncio.create_task(send_message_last_step(query.message))
     await query.message.answer(
         text = TEXT_STAGE_REGISTER_USER[new_status],
         reply_markup = main_menu(user)
     )
-    await SendMessageNewMember.send_message(user_id=user.user_id)
+    await SendMessageNewMember.send_message(character=character)
+    
+async def send_message_first_step(
+    message: Message
+):
+    await asyncio.sleep(15)
+    await message.answer_photo(
+        photo=PHOTO_NEW_BONUS_MEMBER_HAR,
+        caption = TEMPLATE_STARTER_POWER_POINTS,
+        reply_markup = new_member_bonus_keyboard()
+    )
+
+async def send_message_second_step(
+    message: Message
+):
+    await asyncio.sleep(45)
+    await message.answer(
+        text = TEXT_SECOND_STEP
+    )
+
+async def send_message_last_step(
+    message: Message
+):
+    await asyncio.sleep(310)
+    await message.answer(
+        text = TEXT_LAST_STEP
+    )

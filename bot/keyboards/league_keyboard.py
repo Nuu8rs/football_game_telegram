@@ -1,11 +1,54 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
+from constants_leagues import GetConfig, TypeLeague
+
+from .utils_keyboard import menu_plosha
+
 from ..callbacks.league_callbacks import (
     JoinToFight, 
     ViewCharacterRegisteredInMatch,
     EpizodeDonateEnergyToMatch
-                                        )
-from .utils_keyboard import menu_plosha
+)
 
+def menu_best_league(keyboard: ReplyKeyboardBuilder):
+    config = GetConfig.get_config(
+        type_league=TypeLeague.BEST_LEAGUE
+    )
+    if config.league_is_active:
+        keyboard.button(text = "🏆 Єврокубки")
+    
+
+def menu_best_20_club(keyboard: ReplyKeyboardBuilder):
+    config = GetConfig.get_config(
+        type_league=TypeLeague.TOP_20_CLUB_LEAGUE
+    )
+    if config.league_is_active:
+        keyboard.button(text = "🏆 Національний Кубок України")
+    
+
+def menu_new_club(keyboard: ReplyKeyboardBuilder):
+    config = GetConfig.get_config(
+        type_league=TypeLeague.NEW_CLUB_LEAGUE
+    )
+    if config.league_is_active:
+        keyboard.button(text = "🏆 Ліга нових клубів") 
+
+def menu_default_league(keyboard: ReplyKeyboardBuilder):
+    default_config = GetConfig.get_config(
+        type_league=TypeLeague.DEFAULT_LEAGUE
+    )
+    if default_config.league_is_active:
+        keyboard.button(text = "🏟 Стадіон - Ліга")
+
+
+def keyboard_menu_league():
+    keyboard = ReplyKeyboardBuilder()
+    menu_default_league(keyboard)
+    menu_best_league(keyboard)
+    menu_best_20_club(keyboard)
+    menu_new_club(keyboard)
+    keyboard.attach(menu_plosha())
+    return keyboard.adjust(1).as_markup()
+    
 def keyboard_to_join_character_to_fight(match_id: int):
     return (
         InlineKeyboardBuilder()
@@ -31,7 +74,7 @@ def donate_energy_to_match(match_id: str, time_end_goal: int):
         )
         .as_markup()
     )
-    
+
     
 def menu_league_zone():
     return(ReplyKeyboardBuilder()

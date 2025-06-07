@@ -92,6 +92,7 @@ BUY_TRAINING_KEY = FSInputFile("src/buy_key_training.jpg")
 NEED_TRAINING_KEY = FSInputFile("src/need_training_key.jpg")
 HALL_FAME_POSITION_PHOTO = FSInputFile("src/hall_fame_position_photo.jpg")
 PHOTO_NEW_BONUS_MEMBER_HAR = FSInputFile("src/new_member_bonus_har.png")
+PHOTO_MENU_MATCHES = FSInputFile("src/menu_matches.jpg")
 
 MAX_LEN_MEMBERS_CLUB = 11
 

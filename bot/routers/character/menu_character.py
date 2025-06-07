@@ -14,7 +14,7 @@ from utils.character_utils import get_character_text, get_referal_text
 
 menu_character_router = Router()
 
-@menu_character_router.message(F.text == "⚽️ Мій футболіст")
+@menu_character_router.message(F.text == "🏃‍♂️ Мій футболіст")
 async def get_my_character(message: Message, state: FSMContext, character: Character):
 
     await state.clear()

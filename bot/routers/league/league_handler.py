@@ -17,7 +17,7 @@ league_router = Router()
 
 
 
-@league_router.message(F.text == "🏟 Стадіон")
+@league_router.message(F.text == "🏟 Стадіон - Ліга")
 async def get_my_character(message: Message, character: Character):
     
     if not character.club_id:

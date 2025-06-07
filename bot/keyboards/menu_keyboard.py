@@ -1,37 +1,11 @@
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from aiogram.types import ReplyKeyboardRemove
 
-from datetime import datetime
-
 from database.models.user_bot import UserBot
 
 from constants import date_is_get_reward_christmas_tree
-from constants_leagues import config_new_club_league
 
 from ..callbacks.menu_callbacks import NextInstruction
-
-from constants import (
-    END_DAY_BEST_LEAGUE, 
-    START_DAY_BEST_LEAGUE,
-    START_DAY_BEST_20_CLUB_LEAGUE,
-    END_DAY_BEST_20_CLUB_LEAGUE
-)
-
-def menu_best_league(keyboard: ReplyKeyboardBuilder):
-    current_day = datetime.now().day
-    if current_day >= START_DAY_BEST_LEAGUE and current_day <= END_DAY_BEST_LEAGUE:
-        keyboard.button(text = "🏆 Єврокубки")
-    
-
-def menu_best_20_club(keyboard: ReplyKeyboardBuilder):
-    current_day = datetime.now().day
-    if current_day >= START_DAY_BEST_20_CLUB_LEAGUE and current_day <= END_DAY_BEST_20_CLUB_LEAGUE:
-        keyboard.button(text = "🏆 Національний Кубок України")
-    
-
-def menu_new_club_league(keyboard: ReplyKeyboardBuilder):
-    if config_new_club_league.league_is_active:
-        keyboard.button(text = "🏆 Ліга нових клубів") 
 
 
 def main_menu(user: UserBot):
@@ -39,13 +13,10 @@ def main_menu(user: UserBot):
     if not user.characters:
         keyboard.button(text="⚽️ Створити персонажа")
     else:
-        keyboard.button(text = "🏟 Стадіон")
+        keyboard.button(text="⚽️ Матчі")
         keyboard.button(text = "🖲 Тренування")
-        menu_best_league(keyboard)
-        menu_best_20_club(keyboard)
-        menu_new_club_league(keyboard)
         keyboard.button(text = "🗄 Тренувальна база")
-        keyboard.button(text ="⚽️ Мій футболіст")
+        keyboard.button(text ="🏃‍♂️ Мій футболіст")
         keyboard.button(text ="👥 Команда")
         keyboard.button(text = "🏬 Торговий квартал")
         keyboard.button(text = "🏆 Зал слави")

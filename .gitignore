@@ -7,7 +7,7 @@ Thumbs.db
 .idea/
 *.sublime-workspace
 *.sublime-project
-
+photos_info.json
 # Папка с виртуальным окружением
 venv/
 env/
