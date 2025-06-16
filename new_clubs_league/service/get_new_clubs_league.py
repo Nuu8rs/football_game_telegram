@@ -55,7 +55,11 @@ class NewClubLeaguRepository:
     ) -> None:
         
         matches_group:list[list[Club]] = generate_matches_club(clubs = group_clubs)
-        start_date_match = datetime.now().replace(hour = 21, minute = 0, second= 0 )
+        start_date_match = datetime.now().replace(
+            hour = config_new_club_league.HOUR_TIME_START_MATCH, 
+            minute = 0, 
+            second= 0
+        )
         for match in matches_group:
             group_id = str(uuid4())[:8]
             await self.create_matches_day(

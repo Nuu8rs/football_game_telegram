@@ -2,7 +2,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
 from apscheduler.triggers.cron import CronTrigger
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .service.get_new_clubs_league import NewClubLeaguRepository
 
@@ -55,10 +55,7 @@ class NewClubLeague:
             minute = 0
         )
         
-        time_send_join_match_text = match.time_to_start.replace(
-            hour = 20,
-            minute = 20
-        )
+        time_send_join_match_text = time_start_match - timedelta(minutes=15)
         
         user_sender = UserSender(
             match_id = match.match_id

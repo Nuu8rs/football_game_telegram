@@ -15,7 +15,6 @@ from bot.routers.register_user.config import (
     TEXT_STAGE_REGISTER_USER
 )
 from bot.routers.register_user.keyboard.join_first_training import join_first_training
-from bot.routers.register_user.keyboard.get_new_member_bonus import new_member_bonus_keyboard
 from bot.keyboards.menu_keyboard import main_menu
 
 from schedulers.scheduler_gym_rasks import GymScheduler
@@ -30,6 +29,7 @@ from constants import (
 )
 
 from ..message_new_member import SendMessageNewMember
+from .new_member_bonus import get_new_member_bonus_handler
 
 first_training_router = Router()
 
@@ -130,7 +130,7 @@ async def first_training_handler(
         status=new_status
     )
     await asyncio.sleep(6)
-    asyncio.create_task(send_message_first_step(query.message))
+    asyncio.create_task(send_message_first_step(query, character))
     asyncio.create_task(send_message_second_step(query.message))
     asyncio.create_task(send_message_last_step(query.message))
     await query.message.answer(
@@ -140,15 +140,19 @@ async def first_training_handler(
     await SendMessageNewMember.send_message(character=character)
     
 async def send_message_first_step(
-    message: Message
+    query: CallbackQuery,
+    character: Character
 ):
     await asyncio.sleep(15)
-    await message.answer_photo(
+    await query.message.answer_photo(
         photo=PHOTO_NEW_BONUS_MEMBER_HAR,
         caption = TEMPLATE_STARTER_POWER_POINTS,
-        reply_markup = new_member_bonus_keyboard()
     )
-
+    await get_new_member_bonus_handler(
+        query,
+        character
+    )
+    
 async def send_message_second_step(
     message: Message
 ):

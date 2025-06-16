@@ -41,7 +41,10 @@ class GenerateNewMemberXLS(BaseXLS):
                 f"Активний до {member.vip_pass_expiration_date.strftime('%Y-%m-%d %H:%M:%S')}"
                 if member.vip_pass_is_active else "Неактивний"
             )
-            
+            try:
+                last_traning = member.reminder.time_start_training.strftime('%Y-%m-%d %H:%M:%S') if member.reminder.time_start_training else "Немає даних"
+            except:
+                last_traning = "Немає даних"
             self.current_sheet.append([
                 member.characters_user_id,
                 f"@{user.user_name}" if user and user.user_name else "Невідомо",
@@ -52,7 +55,7 @@ class GenerateNewMemberXLS(BaseXLS):
                 member.money,
                 f"{member.exp} | {member.level} рівень",
                 member.club.name_club if member.club else "Без клубу",
-                member.reminder.time_start_training.strftime('%Y-%m-%d %H:%M:%S') if member.reminder.time_start_training else "Немає даних",
+                last_traning,
                 referred_by,
                 vip_status,
             ])

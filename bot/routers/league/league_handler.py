@@ -88,7 +88,7 @@ async def get_result_matches(message: Message, character: Character):
         )
 
     
-    all_matches = await LeagueService.get_month_league_by_club(club_id=character.club_id)
+    all_matches = await DefaultLeagueService.get_month_league_by_club(club_id=character.club_id)
     await message.answer(
         text=get_text_result(fights=all_matches, club_id=character.club_id)
     )

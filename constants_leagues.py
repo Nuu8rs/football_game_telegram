@@ -54,8 +54,8 @@ class BaseConfigLeague(ABC):
         now = datetime.now()
         return now.replace(
             day=self.DAY_END, 
-            hour=0, 
-            minute=0
+            hour=23, 
+            minute=59
         )
         
     @property
@@ -67,7 +67,7 @@ class BaseConfigLeague(ABC):
 class ConfigNewClubLeague(BaseConfigLeague):
     DAY_START = 5
     DAY_END = 15
-    HOUR_TIME_START_MATCH = 17
+    HOUR_TIME_START_MATCH = 18
 
     COUNT_GROUP = 4
     COUNT_CLUB_IN_GROUP = 10
@@ -76,7 +76,7 @@ class ConfigNewClubLeague(BaseConfigLeague):
 
 class ConfigDefaultLeague(BaseConfigLeague):
     DAY_START = 1
-    DAY_END = 10
+    DAY_END = 20
     HOUR_TIME_START_MATCH = 21
 
 

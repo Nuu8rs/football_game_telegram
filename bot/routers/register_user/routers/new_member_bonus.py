@@ -42,7 +42,6 @@ async def get_new_member_bonus_handler(
             type_characteristic = stat,
             amount_add_points = points 
         )
-    await query.message.delete()
     text_bonus = await get_text_bonus_new_member(
         character_id=character.id,
         stats=stats
