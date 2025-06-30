@@ -3,12 +3,12 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def new_member_bonus_keyboard() -> InlineKeyboardMarkup:
+def get_box_new_member() -> InlineKeyboardMarkup:
     return (
         InlineKeyboardBuilder()
         .button(
-            text = "Получити додаткові характеристики",
-            callback_data = "get_new_member_bonus"
+            text = "🗃 Получити кейс",
+            callback_data = "open_box_new_member"
         )
         .as_markup()
     )

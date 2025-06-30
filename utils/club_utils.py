@@ -64,7 +64,9 @@ async def get_club_description(club: Club) -> str:
     character_leader = await CharacterService.get_character(character_user_id=club.owner.user_id)
     text_leader = f"{character_leader.character_name} [{character_leader.owner.link_to_user}] [💪 <b>{character_leader.full_power:.2f}</b>] [<b>{character_leader.level} рів.</b>][<b>{character_leader.acronym_position}</b>]"
     club = await ClubService.get_club(club_id=club.id)
-
+    text_invite = "<b>вільний</b> — приєднуйся без запрошення!"
+    if club.is_invite_only:
+        text_invite = "<b>лише за запрошенням</b> — подай запит, щоб стати частиною еліти 🧐"
     
     text = f"""
 ⚽ Команда: {club.name_club}
@@ -74,7 +76,9 @@ async def get_club_description(club: Club) -> str:
 💪 Загальна сила команди: {club.total_power:.2f}
 👥 Кількість членів у команді: {len(club.characters)}
 
-🏢Опис: <i>{club.description}</i>
+🛂 Вступ до команди: {text_invite}
+
+🏢 Опис: <i>{club.description}</i>
     """
     return text
 

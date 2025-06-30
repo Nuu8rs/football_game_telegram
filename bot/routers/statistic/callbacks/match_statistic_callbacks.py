@@ -14,4 +14,4 @@ class SelectTypeMatchTop20League(CallbackData, prefix="select_type_league_match_
     ]
 
 class StatisticsMatches(CallbackData, prefix="select_group_id"):
-    group_id: int
+    group_id: int | str

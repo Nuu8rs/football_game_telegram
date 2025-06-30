@@ -27,6 +27,7 @@ class Club(Base):
     
     custom_url_photo_stadion = Column(String(255), nullable = False, default = "src/fight_club_menu.jpg", server_default= "src/fight_club_menu.jpg")
     custom_name_stadion  = Column(String(255), nullable = False, default = "Стадіон", server_default= "Стадіон")
+    is_invite_only = Column(Boolean, default=False, server_default='0')
     
     owner          = relationship("UserBot", back_populates="clubs", lazy="subquery")
     characters:Mapped[list['Character']]  = relationship("Character", back_populates="club", lazy="subquery")

@@ -11,11 +11,13 @@ from services.league_services.league_service import LeagueService
 
 from bot.states.club_states import SendMessageMembers, EditDescriptionClub
 from bot.callbacks.club_callbacks import TransferOwner, DeleteClub, SelectSchema, KickMember
+from bot.filters.check_admin_club_filter import CheckOwnerClub
 from bot.keyboards.club_keyboard import (
     transfer_club_owner_keyboard, 
     definitely_delete_club_keyboard, 
     select_schema_keyboard, 
-    select_user_kick
+    select_user_kick,
+    club_menu_keyboard
 )
 
 from utils.club_utils import send_message_characters_club, get_text_schemas, text_schemas
@@ -247,3 +249,28 @@ async def edit_description_club_handler(
     
     await message.answer("Ви змінили опис команди, тепер він виглядає так🔽\n\n" + message.text)
     await state.clear()
+    
+@owner_option_club_router.callback_query(
+    F.data == "only_is_approved",
+    CheckOwnerClub()
+)
+async def change_status_is_approved(
+    query: CallbackQuery,
+    character: Character
+):
+    club = await ClubService.get_club(club_id=character.club_id)
+    club.is_invite_only = not club.is_invite_only
+    await ClubService.change_status_invoice_invite(
+        club_id=club.id,
+        status=club.is_invite_only
+    )
+    status = "включено" if club.is_invite_only else "виключено"
+    await query.answer(
+        f"Статус «Тільки схвалені» {status} для вашої команди"
+    )
+    await query.message.edit_reply_markup(
+        reply_markup=club_menu_keyboard(
+            club=club,
+            character=character
+        )
+    )

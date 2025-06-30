@@ -70,6 +70,7 @@ def get_photo_character(character: Character) -> FSInputFile:
 
 GYM_PHOTO        = FSInputFile("src/gym_photo.jpg")
 CLUB_PHOTO       = FSInputFile("src/club_photo.jpg")
+CHARACTER_SEND_OFFER_JOIN_TO_CLUB = FSInputFile("src/character_send_offer_join_to_club.png")
 FIGHT_MENU       = FSInputFile("src/fight_club_menu.jpg")
 JOIN_TO_FIGHT    = FSInputFile("src/join_to_fight.jpg")
 LEAGUE_PHOTO     = FSInputFile("src/league_photo.jpg")

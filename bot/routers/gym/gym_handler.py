@@ -4,6 +4,10 @@ from aiogram.types import Message, CallbackQuery
 from datetime import datetime
 
 from database.models.character import Character
+from database.models.user_bot import (
+    UserBot,
+    STATUS_USER_REGISTER
+)
 
 from services.character_service import CharacterService
 from services.reminder_character_service import RemniderCharacterService
@@ -22,15 +26,28 @@ from datetime import timedelta
 
 gym_router = Router()
 
-@gym_router.message(F.text == "🖲 Тренування")
-async def go_to_gym(message: Message):
+@gym_router.message(
+    F.text.regexp(r"(✅\s*)?🖲 Тренування(\s*✅)?")
+)
+async def go_to_gym(
+    message: Message,
+    user: UserBot
+):
+    new_user = False
+    if user.status_register == STATUS_USER_REGISTER.FIRST_TRAINING:
+        new_user = True
     await message.answer_photo(
         photo=GYM_PHOTO,
         caption="Виберіть що ви хочете прокачати",
-        reply_markup=select_type_gym())
+        reply_markup=select_type_gym(new_user)
+    )
     
 @gym_router.callback_query(SelectGymType.filter())
-async def select_position_character(query: CallbackQuery, callback_data:SelectGymType):
+async def select_position_character(
+    query: CallbackQuery, 
+    callback_data:SelectGymType,
+):
+
     await query.message.edit_caption(
         caption="""
 <b>30 хвилин</b>, шанс підвищення навички <b>35%</b>  

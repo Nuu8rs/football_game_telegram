@@ -6,7 +6,7 @@ from bot.routers.statistic.keyboard.menu_statistic import menu_statistic
 menu_statistic_router = Router()
 
 @menu_statistic_router.message(
-    F.text == "📊 Статистика"
+    F.text.regexp(r"(✅\s*)?📊 Статистика(\s*✅)?")
 )
 async def menu_choice_league_club_handler(
     message: Message,

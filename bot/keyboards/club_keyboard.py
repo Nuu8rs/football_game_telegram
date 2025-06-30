@@ -17,8 +17,9 @@ from ..callbacks.club_callbacks import (
     ViewCharatcerClub,
     KickMember,
     SelectPhotoStadion,
-    ApprovedPhotoStadion
-    )
+    ApprovedPhotoStadion,
+    InvoiceClubCallback
+)
 from constants import MAX_LEN_MEMBERS_CLUB, ITEM_PER_PAGE
 from utils.club_shemas import SchemaClub 
 
@@ -38,6 +39,7 @@ def main_menu_club(character: Character):
 def club_menu_keyboard(club: Club, character: Character):
     keyboard = InlineKeyboardBuilder()
     _character_is_owner: bool = club.owner_id == character.characters_user_id
+    _text_only_invoice: str = "✅" if club.is_invite_only else "❌"
     
     if _character_is_owner:
         if not club.link_to_chat:
@@ -51,6 +53,7 @@ def club_menu_keyboard(club: Club, character: Character):
         keyboard.button(text = "🦶👤 Вигнати користувача", callback_data="kick_user")
         keyboard.button(text = "🏟 Налаштування виду стадіона", callback_data="custom_stadion")
         keyboard.button(text = "📝 Опис команди", callback_data="description_club")
+        keyboard.button(text = f"👞 Тільки за запитами: {_text_only_invoice}", callback_data="only_is_approved")
     else:
         keyboard.button(text = "🎮 Схема команди", callback_data="view_schema_club")
         keyboard.button(text = "⬅️ Вийти з команди", callback_data="leave_club")
@@ -216,5 +219,31 @@ def aproved_photo_stadion(patch_to_photo: str):
                 callback_data = ApprovedPhotoStadion(
                     patch_to_photo = patch_to_photo
                 ))
+        .as_markup()
+    )
+    
+def send_invite_to_join_club(
+    club_id: int,
+    character_id: int
+) -> InlineKeyboardBuilder:
+    return (
+        InlineKeyboardBuilder()
+        .button(
+            text = "✅ Принять игрока в команду",
+            callback_data = InvoiceClubCallback(
+                club_id = club_id,
+                character_id = character_id,
+                is_approved = True
+            )
+        )
+        .button(
+            text = "❌ Відхилити заявку",
+            callback_data = InvoiceClubCallback(
+                club_id = club_id,
+                character_id = character_id,
+                is_approved = False
+            )
+        )
+        .adjust(1)
         .as_markup()
     )

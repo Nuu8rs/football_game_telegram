@@ -20,9 +20,11 @@ from bot.training.routers.buy_training_key import buy_training_key_router
 from bot.training.routers.duel_stage import training_duel_router
 from bot.routers.register_user.router import register_user_router
 from bot.club_infrastructure.router_infrastructure import router_infrastructure
+from .commands.block_users import block_uses_router
 
 main_router = Router()
 main_router.include_routers(
+    block_uses_router,
     commands_router,
     register_user_router,
     character_router,

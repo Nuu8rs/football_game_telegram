@@ -11,8 +11,10 @@ from constants import GET_RANDOM_NUMBER, DELTA_TIME_EDUCATION_REWARD, EDUCATION_
 from constants import X2_REWARD_WEEKEND_START_DAY, X2_REWARD_WEEKEND_END_DAY
 
 from database.models.character import Character
+from database.models.user_bot import STATUS_USER_REGISTER
 
 from services.character_service import CharacterService
+from services.user_service import UserService
 
 from schedulers.scheduler_education import EducationRewardReminderScheduler
 
@@ -21,7 +23,9 @@ from utils.club_utils import get_text_education_center_reward
 
 education_center_router = Router()
 
-@education_center_router.message(F.text == "🏫 Навчальний центр")
+@education_center_router.message(
+    F.text.regexp(r"(✅\s*)?🏫 Навчальний центр(\s*✅)?")
+)
 async def go_to_gym(message: Message):
     await message.answer_photo(photo=EDUCATION_CENTER,
         caption="Ласкаво просимо до навчального центру\nТут Ви можете отримати досвід задля покращення рівня гравця, та отримати монети за вдале навчання, кожні 12 годин! ", reply_markup=menu_education_cernter()
@@ -71,7 +75,10 @@ async def get_rewards_education_cernter(query: CallbackQuery, character: Charact
             delta_time_education_reward=DELTA_TIME_EDUCATION_REWARD
         )
     )
-    
+    user = await UserService.get_user(character.characters_user_id)
+    from bot.routers.register_user.routers.buy_first_equipment import buy_first_equipment_handler
+    if user.status_register == STATUS_USER_REGISTER.TRAINING_CENTER:
+        await buy_first_equipment_handler(character)
     
 async def calculation_bonus(character: Character) -> tuple[int, int, int]:
 

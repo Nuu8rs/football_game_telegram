@@ -1,21 +1,20 @@
 import asyncio
-import random
-
 from datetime import datetime, timedelta
-
 from aiogram import F, Router
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import (
+    Message, 
+    CallbackQuery,
+)
 
-from database.models.user_bot import UserBot, STATUS_USER_REGISTER
+from database.models.user_bot import STATUS_USER_REGISTER
 from database.models.character import Character
 from database.events.event_new_member_exp import EXP_CONSTANT
-
+from bot.keyboards.menu_keyboard import main_menu
 from bot.routers.register_user.config import (
     PHOTO_STAGE_REGISTER_USER,
     TEXT_STAGE_REGISTER_USER
 )
-from bot.routers.register_user.keyboard.join_first_training import join_first_training
-from bot.keyboards.menu_keyboard import main_menu
+from bot.callbacks.gym_calbacks import SelectGymType
 
 from schedulers.scheduler_gym_rasks import GymScheduler
 from services.user_service import UserService
@@ -25,11 +24,13 @@ from services.club_infrastructure_service import ClubInfrastructureService
 from constants import (
     const_name_characteristics,
     TOTAL_POINTS_ADD_NEW_MEMBER,
-    PHOTO_NEW_BONUS_MEMBER_HAR
+    PHOTO_NEW_BONUS_MEMBER_HAR,
+    GYM_PHOTO
 )
 
 from ..message_new_member import SendMessageNewMember
 from .new_member_bonus import get_new_member_bonus_handler
+from .claim_training_center import claim_training_center_handler
 
 first_training_router = Router()
 
@@ -87,23 +88,29 @@ async def join_to_training(
         user_id=character.characters_user_id,
         status=new_status
     )
+    user = await UserService.get_user(
+        user_id=character.characters_user_id
+    )
     await message.answer_photo(
         caption = TEXT_STAGE_REGISTER_USER[new_status],
         photo   = PHOTO_STAGE_REGISTER_USER[new_status],
-        reply_markup = join_first_training()
+        reply_markup = main_menu(user)
     )
 
 
 @first_training_router.callback_query(
-    F.data == "join_first_training"
+    SelectGymType.filter(
+        F.new_user == True
+    )
 )
-async def first_training_handler(
+async def select_gym_type_first_training(
     query: CallbackQuery,
-    character: Character,
-    user: UserBot
-):
+    callback_data: SelectGymType,
+    character: Character
+) -> None:
+    gym_type = callback_data.gym_type
+    
     await query.message.delete()
-    gym_type = random.choice(list(const_name_characteristics.keys()))
     gym_time = timedelta(minutes=5)
     club_infrastructure = None
     if character.club_id:
@@ -124,47 +131,41 @@ async def first_training_handler(
     await RemniderCharacterService.toggle_character_training_status(
         character_id=character.id,   
     )
-    new_status = STATUS_USER_REGISTER.END_TRAINING    
-    await UserService.edit_status_register(
-        user_id=character.characters_user_id,
-        status=new_status
+    await claim_training_center_handler(
+        character=character
     )
-    await asyncio.sleep(6)
-    asyncio.create_task(send_message_first_step(query, character))
-    asyncio.create_task(send_message_second_step(query.message))
-    asyncio.create_task(send_message_last_step(query.message))
-    await query.message.answer(
-        text = TEXT_STAGE_REGISTER_USER[new_status],
-        reply_markup = main_menu(user)
-    )
-    await SendMessageNewMember.send_message(character=character)
+    # await SendMessageNewMember.send_message(character=character)
+    # await asyncio.sleep(6)
+    # asyncio.create_task(send_message_first_step(query, character))
+    # asyncio.create_task(send_message_second_step(query.message))
+    # asyncio.create_task(send_message_last_step(query.message))
     
-async def send_message_first_step(
-    query: CallbackQuery,
-    character: Character
-):
-    await asyncio.sleep(15)
-    await query.message.answer_photo(
-        photo=PHOTO_NEW_BONUS_MEMBER_HAR,
-        caption = TEMPLATE_STARTER_POWER_POINTS,
-    )
-    await get_new_member_bonus_handler(
-        query,
-        character
-    )
+# async def send_message_first_step(
+#     query: CallbackQuery,
+#     character: Character
+# ):
+#     await asyncio.sleep(15)
+#     await query.message.answer_photo(
+#         photo=PHOTO_NEW_BONUS_MEMBER_HAR,
+#         caption = TEMPLATE_STARTER_POWER_POINTS,
+#     )
+#     await get_new_member_bonus_handler(
+#         query,
+#         character
+#     )
     
-async def send_message_second_step(
-    message: Message
-):
-    await asyncio.sleep(45)
-    await message.answer(
-        text = TEXT_SECOND_STEP
-    )
+# async def send_message_second_step(
+#     message: Message
+# ):
+#     await asyncio.sleep(45)
+#     await message.answer(
+#         text = TEXT_SECOND_STEP
+#     )
 
-async def send_message_last_step(
-    message: Message
-):
-    await asyncio.sleep(310)
-    await message.answer(
-        text = TEXT_LAST_STEP
-    )
+# async def send_message_last_step(
+#     message: Message
+# ):
+#     await asyncio.sleep(310)
+#     await message.answer(
+#         text = TEXT_LAST_STEP
+#     )

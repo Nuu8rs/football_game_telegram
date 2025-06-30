@@ -32,3 +32,8 @@ class SelectPhotoStadion(CallbackData, prefix = "select_photo_stadion"):
     
 class ApprovedPhotoStadion(CallbackData, prefix = "aproved_photo_stadion"):
     patch_to_photo: str
+    
+class InvoiceClubCallback(CallbackData, prefix = "functional_invite_club"):
+    club_id: int
+    is_approved: bool
+    character_id: int

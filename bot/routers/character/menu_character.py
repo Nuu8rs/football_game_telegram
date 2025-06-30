@@ -7,6 +7,7 @@ from database.models.character import Character
 
 from bot.keyboards.character_keyboard import character_keyboard
 
+
 from constants import get_photo_character
 from utils.character_utils import get_character_text, get_referal_text
 
@@ -14,7 +15,9 @@ from utils.character_utils import get_character_text, get_referal_text
 
 menu_character_router = Router()
 
-@menu_character_router.message(F.text == "🏃‍♂️ Мій футболіст")
+@menu_character_router.message(
+    F.text.regexp(r"(✅\s*)?🏃‍♂️ Мій футболіст(\s*✅)?")
+)
 async def get_my_character(message: Message, state: FSMContext, character: Character):
 
     await state.clear()

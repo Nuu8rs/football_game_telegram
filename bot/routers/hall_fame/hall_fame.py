@@ -8,7 +8,6 @@ from services.club_service import ClubService
 from services.match_character_service import MatchCharacterService
 from services.duel_service import DuelService
 
-
 from services.league_services.default_league_service import DefaultLeagueService
 from services.league_services.league_service import LeagueService
 from services.league_services.top_20_club_league_service import Top20ClubLeagueService
@@ -30,7 +29,9 @@ from datetime import datetime
 hall_fame_router = Router()
 
 
-@hall_fame_router.message(F.text == "🏆 Зал слави")
+@hall_fame_router.message(
+    F.text.regexp(r"(✅\s*)?🏆 Зал слави(\s*✅)?")
+)
 async def menu_hall_of_fame(message: Message):
     await message.answer_photo(
         photo=HALL_FAME_PHOTO,

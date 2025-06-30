@@ -15,15 +15,16 @@ from bot.callbacks.club_callbacks import ViewCharatcerClub
 from bot.keyboards.club_keyboard import club_menu_keyboard, main_menu_club
 from bot.states.club_states import ChangeClubChatLink
 
-
 from utils.club_utils import get_club_text, rating_club, send_message_characters_club, get_text_schemas
 
 from constants import CLUB_PHOTO
 
-
 my_club_router = Router()
 
-@my_club_router.message(F.text == "👥 Команда")
+
+@my_club_router.message(
+    F.text.regexp(r"(✅\s*)?👥 Команда(\s*✅)?")
+)
 async def get_my_club_handler(message: Message, character: Character):
     await message.answer("Вітаю в меню команди",reply_markup=main_menu_club(character))
     

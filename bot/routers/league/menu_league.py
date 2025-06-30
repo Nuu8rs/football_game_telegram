@@ -4,7 +4,6 @@ from aiogram.fsm.context import FSMContext
 
 from bot.keyboards.league_keyboard import keyboard_menu_league
 
-
 from constants import PHOTO_MENU_MATCHES
 
 menu_league_router = Router()
@@ -21,7 +20,7 @@ TEXT_TEMPLATE_MENU_MATCHES = """
 """
 
 @menu_league_router.message(
-    F.text == "⚽️ Матчі"
+    F.text.regexp(r"(✅\s*)?⚽️ Матчі(\s*✅)?"),
 )
 async def menu_league(
     message: Message,

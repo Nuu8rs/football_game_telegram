@@ -18,7 +18,9 @@ TEXT_CHAT = """
 """
 
 
-@communication_router.message(F.text == "🗣 Cпілкування")
+@communication_router.message(
+    F.text.regexp(r"(✅\s*)?🗣 Cпілкування(\s*✅)?")
+)
 async def communication_handler(
     message: Message, 
     state: FSMContext, 

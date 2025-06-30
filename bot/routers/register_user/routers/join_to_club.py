@@ -13,7 +13,7 @@ from bot.routers.register_user.config import (
     TEXT_STAGE_REGISTER_USER
 )
 from bot.routers.register_user.state.register_user_state import JoinToClubState
-from bot.routers.register_user.routers.territory_academy import territory_academy
+from bot.routers.register_user.routers.join_to_training import join_to_training
 
 from bot.keyboards.club_keyboard import (
     register_join_club,
@@ -66,7 +66,9 @@ async def _join_to_club_handler(
     state: FSMContext,
     character: Character
 ):
-    all_clubs_to_join = await ClubService.get_all_clubs_to_join()
+    all_clubs_to_join = await ClubService.get_all_clubs_to_join(
+        filter_join_to_req=False
+    )
     await state.update_data(all_clubs = all_clubs_to_join)
     await query.message.edit_caption(
         caption = "Виберіть команду, до якої хочете приєднатися",
@@ -118,8 +120,8 @@ async def join_to_club_handler(
     character = await CharacterService.get_character_by_id(character.id)
     await query.message.edit_caption(caption = f"🔹 <b>Тренер:</b> Вітаю, {character.character_name}! Тепер ти частина команди!")
     
-    await territory_academy(
-        character= character,
-        message = query.message,
+    await join_to_training(
+        character=character,
+        message=query.message
     )
     await state.clear()

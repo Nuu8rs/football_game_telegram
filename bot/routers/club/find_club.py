@@ -22,6 +22,7 @@ from logging_config import logger
 
 from constants import CLUB_PHOTO
 from utils.club_utils import get_club_description, send_message_characters_club
+from .utils import send_message_approved_user
 
 find_club_router = Router()
 
@@ -87,6 +88,16 @@ async def view_club(query: CallbackQuery, callback_data: SelectClubToJoin):
 @find_club_router.callback_query(JoinToClub.filter())
 async def join_to_club(query: CallbackQuery, state: FSMContext, callback_data: JoinToClub, character: Character):
     club = await ClubService.get_club(callback_data.club_id)
+    
+    if not club:
+        return await query.answer("Команда не знайдена", show_alert=True)
+    
+    if club.is_invite_only:
+        await query.answer("Ви надіслали запрошення до клубу, очікуйте результатів", show_alert=True)
+        return await send_message_approved_user(
+            user_how_join=character,
+            club=club
+        )
     
     await asyncio.sleep(0.5)
     if len(club.characters) >= 11:

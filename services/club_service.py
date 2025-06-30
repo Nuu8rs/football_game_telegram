@@ -45,7 +45,10 @@ class ClubService:
                 return clubs
             
     @classmethod
-    async def get_all_clubs_to_join(cls) -> list[Club]:
+    async def get_all_clubs_to_join(
+        cls,
+        filter_join_to_req: bool = True
+    ) -> list[Club]:
         async for session in get_session():
             async with session.begin():
    
@@ -67,6 +70,10 @@ class ClubService:
                     .where(Club.is_fake_club == False)
                     .where(subquery.c.characters_count < MAX_LEN_MEMBERS_CLUB)
                 )
+                if not filter_join_to_req:
+                    stmt = stmt.where(
+                        Club.is_invite_only == False
+                    )
                 result = await session.execute(stmt)
                 clubs = result.unique().scalars().all()
                 return clubs
@@ -236,6 +243,23 @@ class ClubService:
                     update(Club)
                     .where(Club.id == club_id)
                     .values(description = new_description)
+                )
+                await session.execute(stmt)
+                await session.commit()
+                
+                
+    @classmethod
+    async def change_status_invoice_invite(
+        cls,
+        club_id: int,
+        status: bool
+    ) -> None:
+        async for session in get_session():
+            async with session.begin():
+                stmt = (
+                    update(Club)
+                    .where(Club.id == club_id)
+                    .values(is_invite_only = status)
                 )
                 await session.execute(stmt)
                 await session.commit()

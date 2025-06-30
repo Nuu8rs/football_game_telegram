@@ -26,17 +26,6 @@ async def start_command_handler(
     user: UserBot, 
     command: Command    
 ):
-    # from bot.routers.register_user.keyboard.get_new_member_bonus import new_member_bonus_keyboard
-    # from services.character_service import CharacterService
-    # await message.answer(
-    #     text = "Бонус для новачків",
-    #     reply_markup = new_member_bonus_keyboard()
-    # )
-    # characyter = await CharacterService.get_character(user.user_id)
-    # await CharacterService.add_exp_character(
-    #     character_id = characyter.id,
-    #     amount_exp_add = 1 
-    # )
     
     if command.args:
         await register_referal(user=user, referal=command.args) 
@@ -56,7 +45,7 @@ async def start_command_handler(
                 state=state,
                 is_sleep=False
             )
-        return
+        
         
     video_start = FSInputFile("src\start_video.MP4",filename="video_start") if not VIDEO_ID else VIDEO_ID
 
@@ -84,6 +73,7 @@ async def start_command_handler(
         reply_markup=main_menu(user)
     )
 
+
 async def register_referal(user: UserBot, referal: str):
     if not "ref_" in referal:
         return
@@ -93,12 +83,13 @@ async def register_referal(user: UserBot, referal: str):
         referal_user_id= referal_user_id
     )
     try:
-        await bot.send_message(
+        mess = await bot.send_message(
             chat_id=referal_user_id,
             text=f"🎉 <b>У вас з'явився новий реферал!</b>\n\n{user.link_to_user}")
     except:
         pass
     
+
 
 @start_router.message(F.text == "⬅️ Головна площа")
 async def plosha(message: Message, user: UserBot):

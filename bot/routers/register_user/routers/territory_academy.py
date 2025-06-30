@@ -29,7 +29,3 @@ async def territory_academy(
         caption=TEXT_STAGE_REGISTER_USER[new_status]
     )
 
-    await join_to_training(
-        character=character,
-        message=message
-    )

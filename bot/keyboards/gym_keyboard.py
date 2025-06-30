@@ -21,16 +21,48 @@ def menu_gym():
             .as_markup(resize_keyboard=True)
             )
 
-def select_type_gym():
+def select_type_gym(new_user: bool = False):
     return (InlineKeyboardBuilder()
-        .button(text = "🎯 Техніку"      , callback_data=SelectGymType(gym_type="technique"))
-        .button(text = "🥋 Удари"        , callback_data=SelectGymType(gym_type="kicks"))
-        .button(text = "🛡️ Відбір м’яча" , callback_data=SelectGymType(gym_type="ball_selection"))
-        .button(text = "⚡ Швидкість"    , callback_data=SelectGymType(gym_type="speed"))
-        .button(text = "🏃 Витривалість" , callback_data=SelectGymType(gym_type="endurance"))
+        .button(
+            text="🎯 Техніку",
+            callback_data=SelectGymType(
+                gym_type="technique",
+                new_user=new_user
+            )
+        )
+        .button(
+            text="🥋 Удари",
+            callback_data=SelectGymType(
+                gym_type="kicks",
+                new_user=new_user
+            )
+        )
+        .button(
+            text="🛡️ Відбір м’яча",
+            callback_data=SelectGymType(
+                gym_type="ball_selection",
+                new_user=new_user
+            )
+        )
+        .button(
+            text="⚡ Швидкість",
+            callback_data=SelectGymType(
+                gym_type="speed",
+                new_user=new_user
+            )
+        )
+        .button(
+            text="🏃 Витривалість",
+            callback_data=SelectGymType(
+                gym_type="endurance",
+                new_user=new_user
+            )
+        )
         .adjust(2)
         .as_markup()
-            )
+    )
+
+
 def select_time_to_gym(gym_type: str):
     return (InlineKeyboardBuilder()
             # .button(text="🕑 2 хвилини"  , callback_data=SelectTimeGym(gym_time=timedelta(minutes = 2) , gym_type = gym_type))
