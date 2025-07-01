@@ -107,11 +107,17 @@ async def join_to_club_handler(
         character=character,
         club_id=callback_data.club_id
     )
-
+    user = await UserService.get_user(
+        user_id=character.characters_user_id
+    )
+    user_nick = f"@{user.user_name}" if user.user_name else "Не вказано"
     await send_message_characters_club(
         characters_club=club.characters,
         my_character=character,
-        text=f"🎟 Вітаємо у вашій команді поповнення, приєднався новий учасник <b>{character.character_name}</b>"
+        text=f"""
+🎟 Вітаємо у вашій команді поповнення, приєднався новий учасник <b>{character.character_name}</b>
+👕 Ник игрока: {user_nick}
+"""
     )
     await message_join_to_club.edit_reply_markup(
         reply_markup = None

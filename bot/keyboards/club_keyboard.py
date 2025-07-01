@@ -72,7 +72,6 @@ def register_join_club():
     return (
         InlineKeyboardBuilder()
         .button(text="🕹 Приєднатися до команди", callback_data="join_club_new_member")
-        .button(text="➕ Створити свою команду", callback_data="create_club_new_member")
         .adjust(1, repeat=True)
         .as_markup()
     )
